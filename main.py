@@ -2,7 +2,7 @@ import torch
 from transformers import pipeline
 
 pipe = pipeline(
-    "image-text-to-text",
+    "text-generation",
     model="google/gemma-3-1b-it", # "google/gemma-3-12b-it", "google/gemma-3-27b-it" 
     device="cuda",
     torch_dtype=torch.bfloat16
@@ -12,8 +12,7 @@ messages = [
     {
         "role": "user",
         "content": [
-            {"type": "image", "url": "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/p-blog/candy.JPG"},
-            {"type": "text", "text": "What animal is on the candy?"}
+            {"type": "text", "text": "Hello world."}
         ]
     }
 ]
