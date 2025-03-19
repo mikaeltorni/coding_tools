@@ -9,6 +9,12 @@ providers:
       temperature: 0.01
       max_tokens: 16384
       apiEndpoint: http://127.0.0.1:8080/generate
+
+
+defaultTest:
+  options:
+    provider: openai:gpt-4o-mini-2024-07-18
+
 tests:
   - vars:
       topic: bananas
