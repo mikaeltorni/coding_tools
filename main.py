@@ -3,7 +3,7 @@ from transformers import pipeline
 
 pipe = pipeline(
     "text-generation",
-    model="google/gemma-3-1b-it", # "google/gemma-3-12b-it", "google/gemma-3-27b-it" 
+    model="google/gemma-3-1b-it",
     device="cuda",
     torch_dtype=torch.bfloat16
 )
