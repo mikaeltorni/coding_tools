@@ -1,0 +1,14 @@
+description: 'HF private inference endpoint'
+
+prompts:
+  - 'Write a tweet about {{topic}}:'
+
+providers:
+  - id: huggingface:text-generation:google/gemma-3-1b-it
+    config:
+      apiEndpoint: http://127.0.0.1:8080/generate
+tests:
+  - vars:
+      topic: bananas
+  - vars:
+      topic: potatoes
