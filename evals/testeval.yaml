@@ -6,6 +6,8 @@ prompts:
 providers:
   - id: huggingface:text-generation:google/gemma-3-1b-it
     config:
+      temperature: 0.01
+      max_tokens: 16384
       apiEndpoint: http://127.0.0.1:8080/generate
 tests:
   - vars:
