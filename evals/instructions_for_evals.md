@@ -8,6 +8,6 @@ npx promptfoo@latest eval -c testeval.yaml --max-concurrency 1 --repeat 10 -y
 
 # To view the results: open a new terminal and run:
 ```bash
-npx promptfoo@0.107.1 view -y
+npx promptfoo@latest view -y
 ```
 (advised to open a new terminal for this, since it's a server that needs to be running all the time)
