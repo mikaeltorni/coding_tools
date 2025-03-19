@@ -21,5 +21,5 @@ messages = [
     }
 ]
 
-output = pipe(text=messages, max_new_tokens=200)
+output = pipe(text_inputs=messages, max_new_tokens=200)
 print(output[0]["generated_text"][-1]["content"])
