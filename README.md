@@ -59,7 +59,7 @@ Since the Gemma model is hosted in a gated repository, you need to authenticate 
   Ensure your Hugging Face account has been granted access to the gated Gemma 1B model. You can check the model page for any access instructions: [Gemma 1B Model](https://huggingface.co/google/gemma-3-1b-it).
 
 - **GPU Support:**  
-  The example uses `torch.bfloat16` for potentially improved performance on supported hardware. Make sure your system is configured for GPU use if needed.
+  The example uses `torch.bfloat16` for potentially improved performance on supported hardware. Make sure your system is configured for GPU use if needed. You need at least version 12.6 of CUDA installed from Nvidia (AMD not supported right, don't have such card, figure it out).
 
 - **First Run:**  
   The initial model download may take some time. Once downloaded, subsequent runs will use the cached version.
