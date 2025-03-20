@@ -9,8 +9,15 @@ Classes:
 """
 import logging
 from git import Repo
+from enum import Enum, auto
 
 logger = logging.getLogger(__name__)
+
+class ChangeType(Enum):
+    """Enum for different types of file changes in git repository"""
+    UNSTAGED = auto()
+    STAGED = auto()
+    UNTRACKED = auto()
 
 class DiffFormatter:
     """
@@ -106,189 +113,138 @@ class DiffManager:
         logger.debug(f"Repository status - dirty: {is_dirty}, untracked files: {has_untracked}")
         return is_dirty or has_untracked
     
-    def get_unstaged_changes(self, repo, diff_id_start=1):
+    def _process_file_change(self, file_path, content, status, diff_id):
         """
-        Get unstaged changes from the repository.
+        Process a file change and create a diff item.
         
         Parameters:
-            repo (git.Repo): The Git repository object
-            diff_id_start (int): Starting ID for the diffs
+            file_path (str): Path to the changed file
+            content (str): Content of the diff
+            status (str): Status of the change (modified, staged, or untracked)
+            diff_id (int): ID for the diff
             
         Returns:
-            tuple: (list of diff items, dict of file diffs, next diff ID)
+            tuple: (diff item dict, updated diff ID)
         """
-        logger.debug(f"Getting unstaged changes starting with diff ID: {diff_id_start}")
+        item = {
+            'id': diff_id,
+            'file': file_path,
+            'content': content,
+            'status': status
+        }
         
-        diff_items = []
-        file_diffs = {}
-        diff_id = diff_id_start
-        
-        unstaged_changes = list(repo.index.diff(None))
-        logger.debug(f"Found {len(unstaged_changes)} unstaged changes")
-        
-        for diff_item in unstaged_changes:
-            try:
-                file_path = diff_item.a_path
-                logger.debug(f"Processing unstaged change for file: {file_path}")
-                
-                file_diff = repo.git.diff(file_path)
-                item = {
-                    'id': diff_id,
-                    'file': file_path,
-                    'content': file_diff,
-                    'status': 'modified'
-                }
-                diff_items.append(item)
-                file_diffs[file_path] = file_diff
-                diff_id += 1
-                logger.debug(f"Added unstaged change as diff #{diff_id-1}")
-                
-                # Display diff details
-                logger.debug(f"Unstaged change in {file_path}:")
-                lines = file_diff.split("\n")[:5]  # Show first 5 lines
-                for line in lines:
-                    logger.debug(f"  {line}")
-                if len(file_diff.split("\n")) > 5:
-                    logger.debug("  ...")
-            except Exception as e:
-                logger.error(f"Error getting diff for {diff_item.a_path}: {e}")
-                
-        logger.debug(f"Completed unstaged changes processing, next diff ID: {diff_id}")
-        return diff_items, file_diffs, diff_id
+        # Display content preview for logging
+        content_preview = content.split("\n")[:5]  # Show first 5 lines
+        for line in content_preview:
+            logger.debug(f"  {line}")
+        if len(content.split("\n")) > 5:
+            logger.debug("  ...")
+            
+        return item, diff_id + 1
     
-    def get_staged_changes(self, repo, diff_id_start):
+    def _read_untracked_file(self, file_path):
         """
-        Get staged changes from the repository.
+        Read an untracked file and format its content.
         
         Parameters:
-            repo (git.Repo): The Git repository object
-            diff_id_start (int): Starting ID for the diffs
+            file_path (str): Path to the untracked file
             
         Returns:
-            tuple: (list of diff items, dict of file diffs, next diff ID)
+            str: Formatted content of the file
         """
-        logger.debug(f"Getting staged changes starting with diff ID: {diff_id_start}")
-        
-        diff_items = []
-        file_diffs = {}
-        diff_id = diff_id_start
-        
-        staged_changes = list(repo.index.diff('HEAD'))
-        logger.debug(f"Found {len(staged_changes)} staged changes")
-        
-        for diff_item in staged_changes:
-            try:
-                file_path = diff_item.a_path
-                logger.debug(f"Processing staged change for file: {file_path}")
-                
-                file_diff = repo.git.diff('--cached', file_path)
-                item = {
-                    'id': diff_id,
-                    'file': file_path,
-                    'content': file_diff,
-                    'status': 'staged'
-                }
-                diff_items.append(item)
-                file_diffs[f"{file_path} (staged)"] = file_diff
-                diff_id += 1
-                logger.debug(f"Added staged change as diff #{diff_id-1}")
-                
-                # Display diff details
-                logger.debug(f"Staged change in {file_path}:")
-                lines = file_diff.split("\n")[:5]  # Show first 5 lines
-                for line in lines:
-                    logger.debug(f"  {line}")
-                if len(file_diff.split("\n")) > 5:
-                    logger.debug("  ...")
-            except Exception as e:
-                logger.error(f"Error getting staged diff for {diff_item.a_path}: {e}")
-                
-        logger.debug(f"Completed staged changes processing, next diff ID: {diff_id}")
-        return diff_items, file_diffs, diff_id
+        full_path = f"{self.repo_path}/{file_path}"
+        try:
+            with open(full_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                # Format content to be more similar to git diff for new files
+                formatted_content = f"New file: {file_path}\n\n" + "\n".join([f"+ {line}" for line in content.split('\n')])
+                return formatted_content, content
+        except UnicodeDecodeError:
+            # If not text, mark as binary
+            logger.debug(f"File {file_path} appears to be binary")
+            return f"Binary file: {file_path}\n+ [Binary file contents not shown]", "[Binary file]"
+        except Exception as e:
+            logger.error(f"Error reading untracked file {file_path}: {e}")
+            return f"Error reading file: {file_path}\n+ [Error: {e}]", f"[Error reading file: {e}]"
     
-    def get_untracked_files(self, repo, diff_id_start):
+    def get_changes(self, repo, diff_id_start=1, change_types=None):
         """
-        Get untracked files from the repository.
+        Get changes from the repository of specified types.
         
         Parameters:
             repo (git.Repo): The Git repository object
             diff_id_start (int): Starting ID for the diffs
+            change_types (list): List of ChangeType enums to include (default: all types)
             
         Returns:
             tuple: (list of diff items, dict of file diffs, next diff ID)
         """
-        logger.debug(f"Getting untracked files starting with diff ID: {diff_id_start}")
-        
-        untracked = repo.untracked_files
-        logger.debug(f"Found {len(untracked)} untracked files")
-        
-        if not untracked:
-            logger.debug("No untracked files found")
-            return [], {}, diff_id_start
+        if change_types is None:
+            change_types = [ChangeType.UNSTAGED, ChangeType.STAGED, ChangeType.UNTRACKED]
+            
+        logger.debug(f"Getting changes starting with diff ID: {diff_id_start}")
+        logger.debug(f"Change types to process: {[t.name for t in change_types]}")
         
         diff_items = []
         file_diffs = {}
         diff_id = diff_id_start
         
-        # Process each untracked file individually
-        for file_path in untracked:
-            try:
-                full_path = f"{self.repo_path}/{file_path}"
-                # Try to read as text first
+        # Process unstaged changes
+        if ChangeType.UNSTAGED in change_types:
+            logger.debug("Processing unstaged changes")
+            unstaged_changes = list(repo.index.diff(None))
+            logger.debug(f"Found {len(unstaged_changes)} unstaged changes")
+            
+            for diff_item in unstaged_changes:
                 try:
-                    with open(full_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                        # Format content to be more similar to git diff for new files
-                        formatted_content = f"New file: {file_path}\n\n" + "\n".join([f"+ {line}" for line in content.split('\n')])
-                        
-                        item = {
-                            'id': diff_id,
-                            'file': file_path,
-                            'content': formatted_content,
-                            'status': 'untracked'
-                        }
-                        diff_items.append(item)
-                        file_diffs[file_path] = content
-                        diff_id += 1
-                        logger.debug(f"Added untracked file as diff #{diff_id-1}")
-                except UnicodeDecodeError:
-                    # If not text, mark as binary
-                    logger.debug(f"File {file_path} appears to be binary")
-                    file_diff = f"New binary file: {file_path}"
+                    file_path = diff_item.a_path
+                    logger.debug(f"Processing unstaged change for file: {file_path}")
                     
-                    item = {
-                        'id': diff_id,
-                        'file': file_path,
-                        'content': f"Binary file: {file_path}\n+ [Binary file contents not shown]",
-                        'status': 'untracked'
-                    }
+                    file_diff = repo.git.diff(file_path)
+                    item, diff_id = self._process_file_change(file_path, file_diff, 'modified', diff_id)
                     diff_items.append(item)
-                    file_diffs[file_path] = "[Binary file]"
-                    diff_id += 1
-                    logger.debug(f"Added untracked binary file as diff #{diff_id-1}")
-            except Exception as e:
-                logger.error(f"Error reading untracked file {file_path}: {e}")
-                file_diff = f"Error reading file: {file_path}\n{e}"
-                
-                item = {
-                    'id': diff_id,
-                    'file': file_path,
-                    'content': f"Error reading file: {file_path}\n+ [Error: {e}]",
-                    'status': 'untracked'
-                }
-                diff_items.append(item)
-                file_diffs[file_path] = f"[Error reading file: {e}]"
-                diff_id += 1
-                logger.debug(f"Added untracked file with error as diff #{diff_id-1}")
+                    file_diffs[file_path] = file_diff
+                    logger.debug(f"Added unstaged change as diff #{diff_id-1}")
+                except Exception as e:
+                    logger.error(f"Error getting diff for {diff_item.a_path}: {e}")
+        
+        # Process staged changes
+        if ChangeType.STAGED in change_types:
+            logger.debug("Processing staged changes")
+            staged_changes = list(repo.index.diff('HEAD'))
+            logger.debug(f"Found {len(staged_changes)} staged changes")
             
-            # Display content preview
-            if file_path in file_diffs:
-                content_preview = file_diffs[file_path][:100] if isinstance(file_diffs[file_path], str) else str(file_diffs[file_path])
-                if len(content_preview) > 100:
-                    content_preview = content_preview[:100] + "..."
-                logger.debug(f"  Content preview for {file_path}: {content_preview}")
-                
-        logger.debug(f"Completed untracked files processing, next diff ID: {diff_id}")
+            for diff_item in staged_changes:
+                try:
+                    file_path = diff_item.a_path
+                    logger.debug(f"Processing staged change for file: {file_path}")
+                    
+                    file_diff = repo.git.diff('--cached', file_path)
+                    item, diff_id = self._process_file_change(file_path, file_diff, 'staged', diff_id)
+                    diff_items.append(item)
+                    file_diffs[f"{file_path} (staged)"] = file_diff
+                    logger.debug(f"Added staged change as diff #{diff_id-1}")
+                except Exception as e:
+                    logger.error(f"Error getting staged diff for {diff_item.a_path}: {e}")
+        
+        # Process untracked files
+        if ChangeType.UNTRACKED in change_types:
+            logger.debug("Processing untracked files")
+            untracked = repo.untracked_files
+            logger.debug(f"Found {len(untracked)} untracked files")
+            
+            for file_path in untracked:
+                try:
+                    logger.debug(f"Processing untracked file: {file_path}")
+                    formatted_content, raw_content = self._read_untracked_file(file_path)
+                    item, diff_id = self._process_file_change(file_path, formatted_content, 'untracked', diff_id)
+                    diff_items.append(item)
+                    file_diffs[file_path] = raw_content
+                    logger.debug(f"Added untracked file as diff #{diff_id-1}")
+                except Exception as e:
+                    logger.error(f"Error processing untracked file {file_path}: {e}")
+        
+        logger.debug(f"Completed changes processing, next diff ID: {diff_id}")
         return diff_items, file_diffs, diff_id
     
     def get_diffs(self):
@@ -312,30 +268,7 @@ class DiffManager:
                 return None, {}
             
             # Get all types of changes
-            diff_items = []
-            file_diffs = {}
-            
-            # Get unstaged changes
-            logger.debug("Retrieving unstaged changes")
-            unstaged_items, unstaged_diffs, next_id = self.get_unstaged_changes(repo)
-            diff_items.extend(unstaged_items)
-            file_diffs.update(unstaged_diffs)
-            logger.debug(f"Added {len(unstaged_items)} unstaged changes")
-            
-            # Get staged changes
-            logger.debug("Retrieving staged changes")
-            staged_items, staged_diffs, next_id = self.get_staged_changes(repo, next_id)
-            diff_items.extend(staged_items)
-            file_diffs.update(staged_diffs)
-            logger.debug(f"Added {len(staged_items)} staged changes")
-            
-            # Get untracked files
-            logger.debug("Retrieving untracked files")
-            untracked_items, untracked_diffs, next_id = self.get_untracked_files(repo, next_id)
-            if untracked_items:
-                diff_items.extend(untracked_items)
-                file_diffs.update(untracked_diffs)
-                logger.debug(f"Added {len(untracked_items)} untracked files")
+            diff_items, file_diffs, _ = self.get_changes(repo)
             
             # Handle the case where the repository is dirty but no specific diffs were found
             if not diff_items:
@@ -347,21 +280,12 @@ class DiffManager:
             xml_output = DiffFormatter.format_to_xml(diff_items)
             logger.info(f"Diff output generated with {len(diff_items)} changes")
             
-            # Display diffs in human-readable format
+            # Log a summary of changes at INFO level
             for item in diff_items:
                 if 'file' in item:
                     logger.info(f"Diff #{item['id']} - {item['file']} ({item['status']})")
                 else:
                     logger.info(f"Diff #{item['id']} - {item['status']}")
-                logger.info("-" * 80)
-                # Log the complete diff content
-                logger.info(item['content'])
-                logger.info("-" * 80)
-                logger.info("")
-            
-            # Log the complete XML payload being sent to the model
-            logger.info("XML payload sent to model:")
-            logger.info(xml_output)
             
             return xml_output, file_diffs
             
