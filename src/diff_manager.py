@@ -231,13 +231,21 @@ class DiffManager:
         for file_path in untracked:
             try:
                 full_path = f"{self.repo_path}/{file_path}"
-                with open(full_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                    untracked_content[file_path] = content
-                    file_contents.append(f"File: {file_path}\n{content}")
+                # Try to read as text first
+                try:
+                    with open(full_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                        untracked_content[file_path] = content
+                        file_contents.append(f"File: {file_path}\n{content}")
+                except UnicodeDecodeError:
+                    # If not text, mark as binary
+                    logger.debug(f"File {file_path} appears to be binary")
+                    untracked_content[file_path] = "[Binary file]"
+                    file_contents.append(f"File: {file_path}\n[Binary file]")
             except Exception as e:
                 logger.error(f"Error reading untracked file {file_path}: {e}")
-                file_contents.append(f"File: {file_path}\nError reading file: {e}")
+                untracked_content[file_path] = f"[Error reading file: {e}]"
+                file_contents.append(f"File: {file_path}\n[Error reading file: {e}]")
         
         # Join all file contents with separator lines
         combined_content = "\n".join([f"File: {file_path}\n{'-' * 40}\n{content}\n{'-' * 40}" 
@@ -257,6 +265,11 @@ class DiffManager:
         logger.debug("Untracked files:")
         for i, file in enumerate(untracked[:5]):  # Show first 5 files
             logger.debug(f"  {file}")
+            if file in untracked_content:
+                content_preview = untracked_content[file][:100] if isinstance(untracked_content[file], str) else str(untracked_content[file])
+                if len(content_preview) > 100:
+                    content_preview = content_preview[:100] + "..."
+                logger.debug(f"  Content preview: {content_preview}")
         if len(untracked) > 5:
             logger.debug(f"  ... and {len(untracked) - 5} more file(s)")
             

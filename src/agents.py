@@ -122,7 +122,7 @@ class DiffReceiver(Agent):
         Process Git diffs and generate a response.
         
         Parameters:
-            diffs (str): Text representation of Git diffs
+            diffs (str): XML representation of Git diffs
             file_diffs (dict): Dictionary mapping filenames to their diff content
             
         Returns:
@@ -133,11 +133,14 @@ class DiffReceiver(Agent):
         # Update file contexts
         self.conversation_manager.update_file_contexts(file_diffs)
         
+        # Log the diffs being sent to the model
+        logger.debug(f"Diffs being sent to model:\n{diffs}")
+        
+        # Format the message to ensure diffs are visible
+        message_content = f"Here are the current changes in my Git repository:\n\n```xml\n{diffs}\n```\n\nPlease analyze these changes and provide feedback."
+        
         # Add user message to conversation
-        self.conversation_manager.update_conversation(
-            "user", 
-            f"Here are the current changes in my Git repository:\n\n{diffs}"
-        )
+        self.conversation_manager.update_conversation("user", message_content)
         
         # Send message and get response
         messages = self.conversation_manager.get_conversation_history()
