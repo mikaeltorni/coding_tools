@@ -37,4 +37,4 @@ For each diff, provide analysis in the following format:
 - Suggestions: [Any improvement suggestions, if applicable]
 ```
 
-If there are no changes (<no_changes>) or no specific diffs (<no_diffs>), acknowledge this in your response. 
+If you receive input with an error tag (<error>), acknowledge the error and recommend checking the repository configuration. 
