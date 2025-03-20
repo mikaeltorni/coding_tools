@@ -223,12 +223,34 @@ class DiffManager:
         if not untracked:
             logger.debug("No untracked files found")
             return None, None
-            
+        
+        untracked_content = {}
+        file_contents = []
+        
+        # Read the content of each untracked file
+        for file_path in untracked:
+            try:
+                full_path = f"{self.repo_path}/{file_path}"
+                with open(full_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    untracked_content[file_path] = content
+                    file_contents.append(f"File: {file_path}\n{content}")
+            except Exception as e:
+                logger.error(f"Error reading untracked file {file_path}: {e}")
+                file_contents.append(f"File: {file_path}\nError reading file: {e}")
+        
+        # Join all file contents with separator lines
+        combined_content = "\n".join([f"File: {file_path}\n{'-' * 40}\n{content}\n{'-' * 40}" 
+                                   for file_path, content in untracked_content.items()])
+        
+        # Also keep the old format for backward compatibility
         untracked_text = "\n".join(untracked)
+        
         item = {
             'id': diff_id,
-            'content': untracked_text,
-            'status': 'untracked'
+            'content': combined_content,
+            'status': 'untracked',
+            'files': untracked
         }
         
         # Display untracked files
@@ -239,7 +261,7 @@ class DiffManager:
             logger.debug(f"  ... and {len(untracked) - 5} more file(s)")
             
         logger.debug(f"Created untracked files diff with ID: {diff_id}")
-        return item, {"untracked_files": untracked_text}
+        return item, {"untracked_files": untracked_content}
     
     def get_diffs(self):
         """
@@ -308,6 +330,10 @@ class DiffManager:
                 logger.info(item['content'])
                 logger.info("-" * 80)
                 logger.info("")
+            
+            # Log the complete XML payload being sent to the model
+            logger.info("XML payload sent to model:")
+            logger.info(xml_output)
             
             return xml_output, file_diffs
             
