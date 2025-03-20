@@ -40,11 +40,13 @@ class DiffFormatter:
             content = item['content']
             status = item['status']
             
+            # Always include the file attribute for all diffs, including untracked files
             if 'file' in item:
                 file_path = item['file']
                 logger.debug(f"Formatting diff item #{diff_id} for file: {file_path} with status: {status}")
                 xml_diff = f"<diff id=\"{diff_id}\" file=\"{file_path}\" status=\"{status}\">\n{content}\n</diff>"
             else:
+                # This path should almost never be taken now that we have individual untracked files
                 logger.debug(f"Formatting diff item #{diff_id} with status: {status}")
                 xml_diff = f"<diff id=\"{diff_id}\" status=\"{status}\">\n{content}\n</diff>"
                 
@@ -204,30 +206,31 @@ class DiffManager:
         logger.debug(f"Completed staged changes processing, next diff ID: {diff_id}")
         return diff_items, file_diffs, diff_id
     
-    def get_untracked_files(self, repo, diff_id):
+    def get_untracked_files(self, repo, diff_id_start):
         """
         Get untracked files from the repository.
         
         Parameters:
             repo (git.Repo): The Git repository object
-            diff_id (int): ID for the diff
+            diff_id_start (int): Starting ID for the diffs
             
         Returns:
-            tuple: (dict or None, dict or None)
+            tuple: (list of diff items, dict of file diffs, next diff ID)
         """
-        logger.debug(f"Getting untracked files with diff ID: {diff_id}")
+        logger.debug(f"Getting untracked files starting with diff ID: {diff_id_start}")
         
         untracked = repo.untracked_files
         logger.debug(f"Found {len(untracked)} untracked files")
         
         if not untracked:
             logger.debug("No untracked files found")
-            return None, None
+            return [], {}, diff_id_start
         
-        untracked_content = {}
-        file_contents = []
+        diff_items = []
+        file_diffs = {}
+        diff_id = diff_id_start
         
-        # Read the content of each untracked file
+        # Process each untracked file individually
         for file_path in untracked:
             try:
                 full_path = f"{self.repo_path}/{file_path}"
@@ -235,46 +238,58 @@ class DiffManager:
                 try:
                     with open(full_path, 'r', encoding='utf-8') as f:
                         content = f.read()
-                        untracked_content[file_path] = content
-                        file_contents.append(f"File: {file_path}\n{content}")
+                        # Format content to be more similar to git diff for new files
+                        formatted_content = f"New file: {file_path}\n\n" + "\n".join([f"+ {line}" for line in content.split('\n')])
+                        
+                        item = {
+                            'id': diff_id,
+                            'file': file_path,
+                            'content': formatted_content,
+                            'status': 'untracked'
+                        }
+                        diff_items.append(item)
+                        file_diffs[file_path] = content
+                        diff_id += 1
+                        logger.debug(f"Added untracked file as diff #{diff_id-1}")
                 except UnicodeDecodeError:
                     # If not text, mark as binary
                     logger.debug(f"File {file_path} appears to be binary")
-                    untracked_content[file_path] = "[Binary file]"
-                    file_contents.append(f"File: {file_path}\n[Binary file]")
+                    file_diff = f"New binary file: {file_path}"
+                    
+                    item = {
+                        'id': diff_id,
+                        'file': file_path,
+                        'content': f"Binary file: {file_path}\n+ [Binary file contents not shown]",
+                        'status': 'untracked'
+                    }
+                    diff_items.append(item)
+                    file_diffs[file_path] = "[Binary file]"
+                    diff_id += 1
+                    logger.debug(f"Added untracked binary file as diff #{diff_id-1}")
             except Exception as e:
                 logger.error(f"Error reading untracked file {file_path}: {e}")
-                untracked_content[file_path] = f"[Error reading file: {e}]"
-                file_contents.append(f"File: {file_path}\n[Error reading file: {e}]")
-        
-        # Join all file contents with separator lines
-        combined_content = "\n".join([f"File: {file_path}\n{'-' * 40}\n{content}\n{'-' * 40}" 
-                                   for file_path, content in untracked_content.items()])
-        
-        # Also keep the old format for backward compatibility
-        untracked_text = "\n".join(untracked)
-        
-        item = {
-            'id': diff_id,
-            'content': combined_content,
-            'status': 'untracked',
-            'files': untracked
-        }
-        
-        # Display untracked files
-        logger.debug("Untracked files:")
-        for i, file in enumerate(untracked[:5]):  # Show first 5 files
-            logger.debug(f"  {file}")
-            if file in untracked_content:
-                content_preview = untracked_content[file][:100] if isinstance(untracked_content[file], str) else str(untracked_content[file])
+                file_diff = f"Error reading file: {file_path}\n{e}"
+                
+                item = {
+                    'id': diff_id,
+                    'file': file_path,
+                    'content': f"Error reading file: {file_path}\n+ [Error: {e}]",
+                    'status': 'untracked'
+                }
+                diff_items.append(item)
+                file_diffs[file_path] = f"[Error reading file: {e}]"
+                diff_id += 1
+                logger.debug(f"Added untracked file with error as diff #{diff_id-1}")
+            
+            # Display content preview
+            if file_path in file_diffs:
+                content_preview = file_diffs[file_path][:100] if isinstance(file_diffs[file_path], str) else str(file_diffs[file_path])
                 if len(content_preview) > 100:
                     content_preview = content_preview[:100] + "..."
-                logger.debug(f"  Content preview: {content_preview}")
-        if len(untracked) > 5:
-            logger.debug(f"  ... and {len(untracked) - 5} more file(s)")
-            
-        logger.debug(f"Created untracked files diff with ID: {diff_id}")
-        return item, {"untracked_files": untracked_content}
+                logger.debug(f"  Content preview for {file_path}: {content_preview}")
+                
+        logger.debug(f"Completed untracked files processing, next diff ID: {diff_id}")
+        return diff_items, file_diffs, diff_id
     
     def get_diffs(self):
         """
@@ -316,11 +331,11 @@ class DiffManager:
             
             # Get untracked files
             logger.debug("Retrieving untracked files")
-            untracked_item, untracked_diffs = self.get_untracked_files(repo, next_id)
-            if untracked_item:
-                diff_items.append(untracked_item)
+            untracked_items, untracked_diffs, next_id = self.get_untracked_files(repo, next_id)
+            if untracked_items:
+                diff_items.extend(untracked_items)
                 file_diffs.update(untracked_diffs)
-                logger.debug("Added untracked files to diff items")
+                logger.debug(f"Added {len(untracked_items)} untracked files")
             
             # Handle the case where the repository is dirty but no specific diffs were found
             if not diff_items:

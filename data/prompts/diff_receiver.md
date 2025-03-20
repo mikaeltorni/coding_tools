@@ -19,9 +19,6 @@ You will receive diffs in XML format with the following structure:
   <diff id="2" file="another/file" status="staged">
     ... Git diff content ...
   </diff>
-  <diff id="3" status="untracked">
-    ... List of untracked files ...
-  </diff>
 </diffs>
 ```
 
