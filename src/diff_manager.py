@@ -89,6 +89,7 @@ class DiffManager:
             
             # Wrap all diffs in a root element
             xml_output = "<diffs>\n" + "\n".join(diffs) + "\n</diffs>"
+            logger.info(f"Diff output: {xml_output}")
             return xml_output, file_diffs
         except Exception as e:
             logger.error(f"Error accessing Git repository: {e}")
