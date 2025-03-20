@@ -34,7 +34,7 @@ class DiffManager:
             None
             
         Returns:
-            tuple: (str, dict) - XML representation of all diffs and dictionary mapping filenames to diffs
+            tuple: (str or None, dict) - XML representation of all diffs (or None if no changes) and dictionary mapping filenames to diffs
         """
         logger.debug(f"Getting diffs from: {self.repo_path}")
         
@@ -46,7 +46,7 @@ class DiffManager:
             
             if not has_changes and not repo.untracked_files:
                 logger.info("No changes detected in repository")
-                return "<no_changes>No changes detected in repository.</no_changes>", {}
+                return None, {}
             
             # Get diffs for all modified files
             diffs = []
@@ -85,7 +85,7 @@ class DiffManager:
             
             if not diffs:
                 logger.warning("Repository is marked as dirty but no diffs were found")
-                return "<no_diffs>Repository has changes, but no specific diffs were detected.</no_diffs>", {}
+                return None, {}
             
             # Wrap all diffs in a root element
             xml_output = "<diffs>\n" + "\n".join(diffs) + "\n</diffs>"
