@@ -1,7 +1,4 @@
-description: 'HF private inference endpoint'
-
-prompts:
-  - 'Write a tweet about {{topic}}:'
+description: 'Diff Analyzer Agent Evals'
 
 providers:
   - id: huggingface:text-generation:google/gemma-3-1b-it
@@ -13,9 +10,3 @@ providers:
 defaultTest:
   options:
     provider: openai:gpt-4o-mini-2024-07-18
-
-tests:
-  - vars:
-      topic: bananas
-  - vars:
-      topic: potatoes
