@@ -1,6 +1,11 @@
+Setup text-generation-interface (clarify url at least here later...)
+
+Configure it:
 set model=google/gemma-3-1b-it
 set volume=%cd%\data
 set token=hf_tokenhere
+
+Remember to get your token [FROM]
 
 docker run --gpus all --shm-size 1g -p 8080:80 -v %volume%:/data -e HF_TOKEN=%token% ghcr.io/huggingface/text-generation-inference:3.2.1 --model-id %model%  
 ```bash
