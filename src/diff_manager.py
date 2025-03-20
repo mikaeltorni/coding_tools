@@ -28,13 +28,13 @@ class DiffManager:
     
     def get_diffs(self):
         """
-        Gets the current uncommitted diffs from the Git repository.
+        Gets the current uncommitted diffs from the Git repository and formats them in XML.
         
         Parameters:
             None
             
         Returns:
-            tuple: (str, dict) - Text representation of all diffs and dictionary mapping filenames to diffs
+            tuple: (str, dict) - XML representation of all diffs and dictionary mapping filenames to diffs
         """
         logger.debug(f"Getting diffs from: {self.repo_path}")
         
@@ -46,18 +46,21 @@ class DiffManager:
             
             if not has_changes and not repo.untracked_files:
                 logger.info("No changes detected in repository")
-                return "No changes detected in repository.", {}
+                return "<no_changes>No changes detected in repository.</no_changes>", {}
             
             # Get diffs for all modified files
             diffs = []
             file_diffs = {}  # Dictionary to store diffs by filename
+            diff_id = 1
             
             # Get unstaged changes (working tree changes)
             for diff_item in repo.index.diff(None):
                 try:
                     file_diff = repo.git.diff(diff_item.a_path)
-                    diffs.append(f"File: {diff_item.a_path}\n{file_diff}\n")
+                    xml_diff = f"<diff id=\"{diff_id}\" file=\"{diff_item.a_path}\" status=\"modified\">\n{file_diff}\n</diff>"
+                    diffs.append(xml_diff)
                     file_diffs[diff_item.a_path] = file_diff
+                    diff_id += 1
                 except Exception as e:
                     logger.error(f"Error getting diff for {diff_item.a_path}: {e}")
             
@@ -65,23 +68,28 @@ class DiffManager:
             for diff_item in repo.index.diff('HEAD'):
                 try:
                     file_diff = repo.git.diff('--cached', diff_item.a_path)
-                    diffs.append(f"File (staged): {diff_item.a_path}\n{file_diff}\n")
+                    xml_diff = f"<diff id=\"{diff_id}\" file=\"{diff_item.a_path}\" status=\"staged\">\n{file_diff}\n</diff>"
+                    diffs.append(xml_diff)
                     file_diffs[f"{diff_item.a_path} (staged)"] = file_diff
+                    diff_id += 1
                 except Exception as e:
                     logger.error(f"Error getting staged diff for {diff_item.a_path}: {e}")
             
             # Add untracked files
             untracked = repo.untracked_files
             if untracked:
-                untracked_text = "Untracked files:\n" + "\n".join(untracked)
-                diffs.append(untracked_text)
+                untracked_text = "\n".join(untracked)
+                xml_untracked = f"<diff id=\"{diff_id}\" status=\"untracked\">\n{untracked_text}\n</diff>"
+                diffs.append(xml_untracked)
                 file_diffs["untracked_files"] = untracked_text
             
             if not diffs:
                 logger.warning("Repository is marked as dirty but no diffs were found")
-                return "Repository has changes, but no specific diffs were detected.", {}
-                
-            return "\n".join(diffs), file_diffs
+                return "<no_diffs>Repository has changes, but no specific diffs were detected.</no_diffs>", {}
+            
+            # Wrap all diffs in a root element
+            xml_output = "<diffs>\n" + "\n".join(diffs) + "\n</diffs>"
+            return xml_output, file_diffs
         except Exception as e:
             logger.error(f"Error accessing Git repository: {e}")
-            return f"Error accessing Git repository: {e}", {} 
+            return f"<error>Error accessing Git repository: {e}</error>", {} 
