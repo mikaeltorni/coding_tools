@@ -8,6 +8,7 @@ Functions:
     load_quantized_gemma_model(): Loads the Gemma LLM model with 4-bit quantization
 """
 import torch
+import time
 from transformers import pipeline, BitsAndBytesConfig, AutoModelForCausalLM
 import logging
 

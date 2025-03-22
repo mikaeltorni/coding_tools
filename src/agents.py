@@ -10,6 +10,7 @@ Classes:
 """
 import logging
 import os
+import time
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -31,6 +32,7 @@ class Agent:
         self.name = name
         self.model_pipe, self.model_config = model
         self.conversation_manager = conversation_manager
+        self.is_quantized_model = hasattr(self.model_pipe, 'get_performance_metrics')
         logger.debug(f"Agent '{name}' initialized")
     
     def load_system_prompt(self, prompt_path):
@@ -68,14 +70,58 @@ class Agent:
             str: Response from the LLM
         """
         logger.debug(f"Agent '{self.name}' sending messages to model: {len(messages)} messages")
+        
         try:
-            output = self.model_pipe(
-                text_inputs=messages, 
-                max_new_tokens=self.model_config["max_new_tokens"], 
-                temperature=self.model_config["temperature"]
-            )
+            # Initial setup phase - don't measure this time
+            pipe_args = {
+                "text_inputs": messages,
+                "max_new_tokens": self.model_config["max_new_tokens"],
+                "temperature": self.model_config["temperature"]
+            }
+            
+            # Start timing ONLY after all setup is done
+            start_time = time.time()
+            
+            # Send the message to the model
+            output = self.model_pipe(**pipe_args)
+            
+            # End timing as soon as we get a response
+            end_time = time.time()
+            
+            # Get the response
             response = output[0]["generated_text"][-1]["content"]
-            logger.debug(f"Agent '{self.name}' received response from model")
+            
+            # Calculate generation metrics
+            elapsed_time = end_time - start_time
+            
+            # Use a more accurate tokenizer estimate for tokens
+            # GPT models estimate: 1 token ≈ 4 characters (including spaces)
+            char_count = len(response)
+            token_count = char_count // 4
+            
+            # Alternative count based on words (typically more accurate for English)
+            word_count = len(response.split())
+            # Most models: 1 token ≈ 0.75 words for English text
+            token_count_by_words = int(word_count / 0.75)
+            
+            # Use the larger of the two estimates to be conservative
+            token_count = max(token_count, token_count_by_words)
+            
+            tokens_per_second = token_count / elapsed_time if elapsed_time > 0 else 0
+            
+            # Ensure performance metrics are inside the response text, not after any markers
+            if "========== END RESPONSE ==========" in response:
+                # Split the response and insert performance info before the END marker
+                parts = response.split("========== END RESPONSE ==========")
+                performance_info = f"\n\n[Performance: {tokens_per_second:.2f} tokens/sec | {token_count} tokens in {elapsed_time:.2f}s]"
+                response = f"{parts[0]}{performance_info}\n\n========== END RESPONSE =========={parts[1]}"
+            else:
+                # Just append performance info to the end of the response
+                performance_info = f"\n\n[Performance: {tokens_per_second:.2f} tokens/sec | {token_count} tokens in {elapsed_time:.2f}s]"
+                if not response.endswith("]"):  # Avoid adding if already has performance metrics
+                    response += performance_info
+            
+            logger.debug(f"Generation: {token_count} tokens in {elapsed_time:.2f}s = {tokens_per_second:.2f} tokens/sec")
             return response
         except Exception as e:
             logger.error(f"Error sending message to model: {e}")
