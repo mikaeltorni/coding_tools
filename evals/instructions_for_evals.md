@@ -13,7 +13,7 @@ docker run --gpus all --shm-size 1g -p 8080:80 -v %volume%:/data -e HF_TOKEN=%to
 ```
 
 ```bash
-npx promptfoo@latest eval -c instructions_for_evals.yaml --max-concurrency 1 --repeat 10 -y
+npx promptfoo@latest eval -c diff_analyzer_eval.yaml --max-concurrency 1 --repeat 10
 ```
 
 # To view the results: open a new terminal and run:
