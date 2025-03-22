@@ -34,7 +34,7 @@ class ModelManager:
         default_config = {
             "model_name": "google/gemma-3-1b-it",
             "device": "cuda",
-            "torch_dtype": torch.float32,
+            "torch_dtype": torch.bfloat16,
             "max_new_tokens": 16384,
             "temperature": 0.01
         }
