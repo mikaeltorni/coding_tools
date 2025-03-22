@@ -111,7 +111,7 @@ class DiffReceiver(Agent):
         super().__init__("DiffReceiver", model, conversation_manager)
         
         # Load system prompt
-        prompt_path = os.path.join("data", "prompts", "diff_receiver.md")
+        prompt_path = os.path.join("data", "prompts", "system", "diff_analyzer.xml")
         system_prompt = self.load_system_prompt(prompt_path)
         
         # Initialize conversation with system prompt
