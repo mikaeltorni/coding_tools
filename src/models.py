@@ -33,7 +33,7 @@ class ModelManager:
         # Default configuration
         default_config = {
             "model_name": "google/gemma-3-1b-it",
-            "revision": "e735e8d98f6d2ccdb3bdfc43ac1c252bebb2527f",
+            "revision": "b13e02e0952a32651f3445bc26517c999a1a928b",
             "device": "cuda",
             "torch_dtype": torch.bfloat16,
             "max_new_tokens": 16384,
