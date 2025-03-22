@@ -7,7 +7,7 @@ set token=hf_tokenhere
 
 Remember to get your token [FROM]
 
-docker run --gpus all --shm-size 1g -p 8080:80 -v %volume%:/data -e HF_TOKEN=%token% ghcr.io/huggingface/text-generation-inference:3.2.1 --model-id %model%  
+docker run --gpus all --shm-size 1g -p 8080:80 -v %volume%:/data -e HF_TOKEN=%token% ghcr.io/huggingface/text-generation-inference:3.2.1 --model-id %model%
 ```bash
 npx promptfoo@latest eval -c instructions_for_evals.yaml --max-concurrency 1 --repeat 10 -y
 ```
