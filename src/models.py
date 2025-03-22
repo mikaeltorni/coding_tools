@@ -39,6 +39,7 @@ class ModelManager:
             "max_new_tokens": 16384,
             "temperature": 0,
             "do_sample": True,
+            "top_p": 0.9,            
         }
         
         # Use provided config or default
