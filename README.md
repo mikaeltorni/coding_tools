@@ -1,6 +1,6 @@
-# Gemma 1B Model Setup Documentation
+# Model Inference with llama.cpp
 
-This guide explains how to set up your environment to download and run the Gemma 1B model from Hugging Face. Follow these steps:
+This guide explains how to set up your environment to run optimized inference with llama.cpp. Follow these steps:
 
 ---
 
@@ -23,45 +23,79 @@ With the Conda environment activated, install the dependencies using pip:
 pip install -r requirements.txt
 ```
 
----
+For GPU acceleration (recommended), reinstall llama-cpp-python with CUDA support:
 
-## 3. Configure Hugging Face Authentication
-
-Since the Gemma model is hosted in a gated repository, you need to authenticate with Hugging Face:
-
-1. **Log in or Sign Up on Hugging Face:**  
-   Visit [Hugging Face](https://huggingface.co/) and either log in or create a new account.
-
-2. **Model Access:**  
-   Ensure your Hugging Face account has been granted access to the gated Gemma 1B model. You can check the model page for any access instructions: [Gemma 1B Model](https://huggingface.co/google/gemma-3-1b-it).
-
-3. **Generate an Access Token:**  
-   - Click on your profile picture and go to **Settings**.
-   - Navigate to the **Access Tokens** section.
-   - Click on **New token**, give it a name, and set the required scope (usually "read").
-   - Copy the generated token.
-
-4. **Authenticate Using the CLI (Optional):**  
-   Since the Hugging Face CLI is installed, log in (with the same conda environment that you installed requirements.txt to):
-
-   ```bash
-   huggingface-cli login
-   ```
-
-   Paste your token when prompted.  
-   *If you prefer not to use the CLI, you can pass the token directly in your code (see the next step).*
+```bash
+pip uninstall -y llama-cpp-python
+CMAKE_ARGS="-DLLAMA_CUBLAS=on" pip install llama-cpp-python
+```
 
 ---
 
-## Additional Notes
+## 3. Download a GGUF Model
 
-- **Model Access:**  
-  Ensure your Hugging Face account has been granted access to the gated Gemma 1B model. You can check the model page for any access instructions: [Gemma 1B Model](https://huggingface.co/google/gemma-3-1b-it).
+1. **Download a Compatible GGUF Model:**
+   - Visit [Hugging Face](https://huggingface.co/) and search for models with GGUF format
+   - Common GGUF models include llama, gemma, mistral, and others with different quantization levels
+   - Download the model file (typically ending with .gguf extension)
+   - Recommended models for good performance:
+     - [TheBloke/Llama-3-8B-Instruct-GGUF](https://huggingface.co/TheBloke/Llama-3-8B-Instruct-GGUF)
+     - [TheBloke/Mistral-7B-Instruct-v0.2-GGUF](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF)
+     - [TheBloke/Gemma-3-1b-it-GGUF](https://huggingface.co/TheBloke/Gemma-3-1b-it-GGUF)
 
-- **GPU Support:**  
-  The example uses `torch.bfloat16` for potentially improved performance on supported hardware. Make sure your system is configured for GPU use if needed. You need at least version 12.6 of CUDA installed from Nvidia (AMD not supported right, don't have such card, figure it out).
+2. **Choose the Right Quantization Level:**
+   - Q4_K_M is typically a good balance between performance and quality
+   - Q2_K offers smaller size but lower quality
+   - Q8_0 offers higher quality but larger size
 
-- **First Run:**  
-  The initial model download may take some time. Once downloaded, subsequent runs will use the cached version.
+---
 
-Following these instructions will set up your Conda environment, install necessary packages, and allow you to download and run the Gemma 1B model.
+## 4. Using the Model in Your Code
+
+```python
+from src.models import ModelManager
+
+# Initialize the model with optimized settings
+model_path = "path/to/your/model.gguf"
+model, config = ModelManager.load_model(model_path)
+
+# Example of generating text
+output = model.create_completion(
+    "Your prompt text here",
+    max_tokens=config["max_tokens"],
+    temperature=config["temperature"],
+    top_p=config["top_p"],
+    top_k=config["top_k"],
+    repeat_penalty=config["repeat_penalty"]
+)
+
+# Get the generated text
+generated_text = output["choices"][0]["text"]
+```
+
+---
+
+## Performance Optimization
+
+The ModelManager is already configured with optimal default settings, but you can fine-tune these parameters:
+
+```python
+custom_config = {
+    "n_gpu_layers": -1,     # Use all layers on GPU
+    "n_ctx": 8192,          # Context window size
+    "n_batch": 512,         # Batch size for prompt processing
+    "n_threads": 8,         # Number of CPU threads
+    "temperature": 0.7,     # Higher values = more creative output
+    "top_p": 0.9,           # Controls diversity
+    "top_k": 40,            # Controls vocabulary selection
+    "repeat_penalty": 1.1   # Discourages repetition
+}
+
+model, config = ModelManager.load_model("path/to/model.gguf", custom_config)
+```
+
+## GPU Requirements
+
+- CUDA 12.6 or newer is recommended for best performance
+- At least 6GB VRAM for 7B models with Q4_K_M quantization
+- More VRAM needed for larger models or higher quantization levels

@@ -12,6 +12,7 @@ import logging
 import os
 import time
 from pathlib import Path
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -26,13 +27,12 @@ class Agent:
         
         Parameters:
             name (str): The name of the agent
-            model (tuple): (pipeline, config) tuple from ModelManager
+            model (tuple): (model, config) tuple from ModelManager
             conversation_manager (ConversationManager): Manager for conversations
         """
         self.name = name
-        self.model_pipe, self.model_config = model
+        self.model, self.model_config = model
         self.conversation_manager = conversation_manager
-        self.is_quantized_model = hasattr(self.model_pipe, 'get_performance_metrics')
         logger.debug(f"Agent '{name}' initialized")
     
     def load_system_prompt(self, prompt_path):
@@ -72,24 +72,27 @@ class Agent:
         logger.debug(f"Agent '{self.name}' sending messages to model: {len(messages)} messages")
         
         try:
-            # Initial setup phase - don't measure this time
-            pipe_args = {
-                "text_inputs": messages,
-                "max_new_tokens": self.model_config["max_new_tokens"],
-                "temperature": self.model_config["temperature"]
-            }
+            # Convert messages to a prompt string for llama.cpp
+            prompt = self._format_messages_for_llamacpp(messages)
             
             # Start timing ONLY after all setup is done
             start_time = time.time()
             
-            # Send the message to the model
-            output = self.model_pipe(**pipe_args)
+            # Send the message to the model using llama.cpp interface
+            output = self.model.create_completion(
+                prompt,
+                max_tokens=self.model_config["max_tokens"],
+                temperature=self.model_config["temperature"],
+                top_p=self.model_config["top_p"],
+                top_k=self.model_config.get("top_k", 40),
+                repeat_penalty=self.model_config.get("repeat_penalty", 1.1)
+            )
             
             # End timing as soon as we get a response
             end_time = time.time()
             
             # Get the response
-            response = output[0]["generated_text"][-1]["content"]
+            response = output["choices"][0]["text"]
             
             # Calculate generation metrics
             elapsed_time = end_time - start_time
@@ -127,6 +130,42 @@ class Agent:
             logger.error(f"Error sending message to model: {e}")
             return f"Error: Could not get a response from the model: {e}"
     
+    def _format_messages_for_llamacpp(self, messages):
+        """
+        Format messages for the llama.cpp model.
+        
+        Parameters:
+            messages (list): List of message dictionaries
+            
+        Returns:
+            str: Formatted prompt string
+        """
+        prompt = ""
+        
+        for message in messages:
+            role = message.get("role", "")
+            content = message.get("content", "")
+            
+            if role == "system":
+                prompt += f"<s>[INST] <<SYS>>\n{content}\n<</SYS>>\n\n"
+            elif role == "user":
+                # If we had a previous system message without a closing tag
+                if prompt.endswith("\n\n") and "<</SYS>>" in prompt and not "[/INST]" in prompt:
+                    prompt += f"{content} [/INST]\n"
+                else:
+                    prompt += f"<s>[INST] {content} [/INST]\n"
+            elif role == "assistant":
+                # Add the assistant's response
+                prompt += f"{content}</s>\n"
+        
+        # If prompt doesn't end with a user message expecting a response, 
+        # we need to add a closing tag to the last message
+        if not prompt.endswith("[/INST]\n"):
+            prompt += " [/INST]\n"
+            
+        logger.debug(f"Formatted prompt for llama.cpp: {prompt[:100]}...")
+        return prompt
+    
     def process(self, input_text):
         """
         Process input text and generate a response.
@@ -151,7 +190,7 @@ class DiffReceiver(Agent):
         Initialize a new DiffReceiver agent.
         
         Parameters:
-            model (tuple): (pipeline, config) tuple from ModelManager
+            model (tuple): (model, config) tuple from ModelManager
             conversation_manager (ConversationManager): Manager for conversations
         """
         super().__init__("DiffReceiver", model, conversation_manager)
