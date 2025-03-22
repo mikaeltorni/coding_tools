@@ -38,6 +38,7 @@ class ModelManager:
             "torch_dtype": torch.bfloat16,
             "max_new_tokens": 16384,
             "temperature": 0,
+            "do_sample": True,
         }
         
         # Use provided config or default
