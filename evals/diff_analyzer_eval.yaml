@@ -1,5 +1,8 @@
 description: 'Diff Analyzer Agent Evals'
 
+prompts:
+  - file://formats/default.json
+
 providers:
   - id: huggingface:text-generation:google/gemma-3-1b-it
     config:
