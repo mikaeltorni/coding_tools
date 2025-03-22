@@ -1,0 +1,18 @@
+<diff id="1" file="main.py" status="modified">
+diff --git a/main.py b/main.py
+index c981ad7..35232c0 100644
+--- a/main.py
++++ b/main.py
+@@ -1,11 +1,7 @@
+class Calc:
+    def add(self, a, b): return a + b
+    def sub(self, a, b): return a - b
+-    def mul(self, a, b): return a * b
+-    def div(self, a, b): return a / b
+
+c = Calc()
+print(c.add(3, 2))
+print(c.sub(3, 2))
+-print(c.mul(3, 2))
+-print(c.div(3, 2))
+</diff>
