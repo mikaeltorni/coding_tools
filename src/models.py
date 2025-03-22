@@ -37,7 +37,7 @@ class ModelManager:
             "device": "cuda",
             "torch_dtype": torch.bfloat16,
             "max_new_tokens": 16384,
-            "temperature": 0.01
+            "temperature": 0,
         }
         
         # Use provided config or default
