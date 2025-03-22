@@ -9,7 +9,7 @@ set model=google/gemma-3-1b-it
 set volume=%cd%\data
 set token=hf_tokenhere
 
-docker run --gpus all --shm-size 1g -p 8080:80 -v %volume%:/data -e HF_TOKEN=%token% ghcr.io/huggingface/text-generation-inference:3.2.1 --model-id %model% --revision b13e02e0952a32651f3445bc26517c999a1a928b
+docker run --gpus all --shm-size 1g -p 8080:80 -v %volume%:/data -e HF_TOKEN=%token% ghcr.io/huggingface/text-generation-inference:3.2.1 --model-id %model% --quantize bitsandbytes-nf4
 ```
 
 ```bash
