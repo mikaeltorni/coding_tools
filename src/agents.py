@@ -89,12 +89,12 @@ class Agent:
             
             # Send the message to the model
             # Get the model configuration values
-            # Access ModelConfig attributes directly or provide defaults
-            max_tokens = getattr(self.model_config, 'max_tokens', 4000)
-            temperature = getattr(self.model_config, 'temperature', 0.01)
-            top_p = getattr(self.model_config, 'top_p', 0.9)
-            top_k = getattr(self.model_config, 'top_k', 40)
-            repeat_penalty = getattr(self.model_config, 'repeat_penalty', 1.1)
+            # Access ModelConfig attributes directly or provide defaults from ModelConfig class
+            max_tokens = getattr(self.model_config, 'max_tokens', ModelConfig.DEFAULT_MAX_TOKENS)
+            temperature = getattr(self.model_config, 'temperature', ModelConfig.DEFAULT_TEMPERATURE)
+            top_p = getattr(self.model_config, 'top_p', ModelConfig.DEFAULT_TOP_P)
+            top_k = getattr(self.model_config, 'top_k', ModelConfig.DEFAULT_TOP_K)
+            repeat_penalty = getattr(self.model_config, 'repeat_penalty', ModelConfig.DEFAULT_REPEAT_PENALTY)
             
             output = self.model.create_completion(
                 prompt,

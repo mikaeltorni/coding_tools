@@ -20,14 +20,21 @@ class ModelConfig:
     """
     Configuration class for LLM models.
     """
+    # Class-level defaults that can be accessed from anywhere
+    DEFAULT_MODEL_TYPE = "llama_server"
+    DEFAULT_MAX_TOKENS = 4000
+    DEFAULT_TEMPERATURE = 0.01
+    DEFAULT_TOP_P = 0.9
+    DEFAULT_TOP_K = 40
+    DEFAULT_REPEAT_PENALTY = 1.1
     
     def __init__(self, 
-                 model_type: str = "llama_server",
-                 max_tokens: int = 16384,
-                 temperature: float = 0.01,
-                 top_p: float = 0.9,
-                 top_k: int = 40,
-                 repeat_penalty: float = 1.1,
+                 model_type: str = DEFAULT_MODEL_TYPE,
+                 max_tokens: int = DEFAULT_MAX_TOKENS,
+                 temperature: float = DEFAULT_TEMPERATURE,
+                 top_p: float = DEFAULT_TOP_P,
+                 top_k: int = DEFAULT_TOP_K,
+                 repeat_penalty: float = DEFAULT_REPEAT_PENALTY,
                  **kwargs):
         """
         Initialize a new model configuration.
@@ -88,12 +95,12 @@ class ModelConfig:
             ModelConfig: New configuration instance
         """
         # Extract known parameters
-        model_type = config_dict.pop("model_type", "llama_server")
-        max_tokens = config_dict.pop("max_tokens", 4000)
-        temperature = config_dict.pop("temperature", 0.01)
-        top_p = config_dict.pop("top_p", 0.9)
-        top_k = config_dict.pop("top_k", 40)
-        repeat_penalty = config_dict.pop("repeat_penalty", 1.1)
+        model_type = config_dict.pop("model_type", cls.DEFAULT_MODEL_TYPE)
+        max_tokens = config_dict.pop("max_tokens", cls.DEFAULT_MAX_TOKENS)
+        temperature = config_dict.pop("temperature", cls.DEFAULT_TEMPERATURE)
+        top_p = config_dict.pop("top_p", cls.DEFAULT_TOP_P)
+        top_k = config_dict.pop("top_k", cls.DEFAULT_TOP_K)
+        repeat_penalty = config_dict.pop("repeat_penalty", cls.DEFAULT_REPEAT_PENALTY)
         
         # Create with known parameters and pass the rest as extra_params
         return cls(
@@ -143,11 +150,11 @@ class LlamaServerClient:
         # Prepare the payload for the llama server
         payload = {
             "prompt": prompt,
-            "n_predict": config_dict.get("n_predict", config_dict.get("max_tokens", 4000)),
-            "temperature": config_dict.get("temperature", 0.01),
-            "top_p": config_dict.get("top_p", 0.9),
-            "top_k": config_dict.get("top_k", 40),
-            "repeat_penalty": config_dict.get("repeat_penalty", 1.1)
+            "n_predict": config_dict.get("n_predict", config_dict.get("max_tokens", ModelConfig.DEFAULT_MAX_TOKENS)),
+            "temperature": config_dict.get("temperature", ModelConfig.DEFAULT_TEMPERATURE),
+            "top_p": config_dict.get("top_p", ModelConfig.DEFAULT_TOP_P),
+            "top_k": config_dict.get("top_k", ModelConfig.DEFAULT_TOP_K),
+            "repeat_penalty": config_dict.get("repeat_penalty", ModelConfig.DEFAULT_REPEAT_PENALTY)
         }
         
         # Send the request to the server

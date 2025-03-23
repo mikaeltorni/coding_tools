@@ -46,17 +46,17 @@ def main():
     parser.add_argument('--server-url', type=str, default='http://localhost:8080', 
                         help='URL of the llama server (default: http://localhost:8080)')
     
-    # Model configuration arguments
-    parser.add_argument('--temperature', type=float, default=0.01,
-                        help='Temperature parameter for text generation (default: 0.01)')
-    parser.add_argument('--top-p', type=float, default=0.9,
-                        help='Top-p sampling parameter (default: 0.9)')
-    parser.add_argument('--top-k', type=int, default=40,
-                        help='Top-k sampling parameter (default: 40)')
-    parser.add_argument('--max-tokens', type=int, default=4000,
-                        help='Maximum number of tokens to generate (default: 4000)')
-    parser.add_argument('--repeat-penalty', type=float, default=1.1,
-                        help='Penalty for repeated tokens (default: 1.1)')
+    # Model configuration arguments - using defaults from ModelConfig class
+    parser.add_argument('--temperature', type=float, default=ModelConfig.DEFAULT_TEMPERATURE,
+                        help=f'Temperature parameter for text generation (default: {ModelConfig.DEFAULT_TEMPERATURE})')
+    parser.add_argument('--top-p', type=float, default=ModelConfig.DEFAULT_TOP_P,
+                        help=f'Top-p sampling parameter (default: {ModelConfig.DEFAULT_TOP_P})')
+    parser.add_argument('--top-k', type=int, default=ModelConfig.DEFAULT_TOP_K,
+                        help=f'Top-k sampling parameter (default: {ModelConfig.DEFAULT_TOP_K})')
+    parser.add_argument('--max-tokens', type=int, default=ModelConfig.DEFAULT_MAX_TOKENS,
+                        help=f'Maximum number of tokens to generate (default: {ModelConfig.DEFAULT_MAX_TOKENS})')
+    parser.add_argument('--repeat-penalty', type=float, default=ModelConfig.DEFAULT_REPEAT_PENALTY,
+                        help=f'Penalty for repeated tokens (default: {ModelConfig.DEFAULT_REPEAT_PENALTY})')
     
     try:
         args = parser.parse_args()
