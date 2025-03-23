@@ -5,6 +5,7 @@ A simple script for loading and interacting with the Gemma 3 1B model using llam
 
 Functions:
     setup_logging(): Configures the logging system
+    check_cuda_support(): Checks if CUDA is available and enabled
     load_model(model_path): Loads the GGUF model using llama-cpp-python
     generate_response(model, prompt): Generates a response from the model
     main(): Main function to run the application
@@ -18,7 +19,9 @@ import sys
 import argparse
 import logging
 import time
-from typing import Dict, Any, Optional, Tuple
+import subprocess
+import platform
+from typing import Dict, Any, Optional, Tuple, List
 
 # Configure logging
 logging.basicConfig(
@@ -42,17 +45,102 @@ def setup_logging() -> None:
     # Logging is already configured at the module level
     logger.info("Logging configured successfully")
 
-def load_model(model_path: str) -> Any:
+def check_cuda_support() -> Tuple[bool, Dict[str, Any]]:
+    """
+    Checks if CUDA is available and enabled in llama-cpp-python.
+    
+    Parameters:
+        None
+        
+    Returns:
+        Tuple[bool, Dict[str, Any]]: Whether CUDA is supported and additional info
+    """
+    logger.info("Checking CUDA support...")
+    
+    cuda_info = {
+        "available": False,
+        "version": None,
+        "devices": [],
+        "llama_cpp_backends": []
+    }
+    
+    # Check system CUDA availability using torch if available
+    try:
+        import torch
+        cuda_info["available"] = torch.cuda.is_available()
+        if cuda_info["available"]:
+            cuda_info["devices"] = [torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())]
+            cuda_info["version"] = torch.version.cuda
+            logger.info(f"CUDA available: {cuda_info['available']}, version: {cuda_info['version']}")
+            logger.info(f"CUDA devices: {cuda_info['devices']}")
+    except ImportError:
+        logger.info("torch not available, using alternative CUDA detection")
+    
+    # Check if llama-cpp-python has CUDA support
+    try:
+        import llama_cpp
+        
+        # Try different ways to check for CUDA support
+        cuda_info["has_cuda_backend"] = hasattr(llama_cpp, "LLAMA_BACKEND_CUDA")
+        
+        # Check for other backends
+        for attr in dir(llama_cpp):
+            if attr.startswith("LLAMA_BACKEND_"):
+                cuda_info["llama_cpp_backends"].append(attr)
+        
+        # Get package version
+        cuda_info["llama_cpp_version"] = getattr(llama_cpp, "__version__", "unknown")
+        
+        # Log info about llama-cpp-python
+        logger.info(f"llama-cpp-python version: {cuda_info['llama_cpp_version']}")
+        logger.info(f"CUDA backend available in llama-cpp-python: {cuda_info['has_cuda_backend']}")
+        logger.info(f"Available backends: {cuda_info['llama_cpp_backends']}")
+        
+        # Check if compiled with CUDA via requirements.txt
+        try:
+            with open('requirements.txt', 'r') as f:
+                req_content = f.read()
+                if '--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124' in req_content:
+                    logger.info("llama-cpp-python was installed with CUDA support from pre-built wheel")
+                    cuda_info["from_cuda_wheel"] = True
+        except Exception as e:
+            logger.warning(f"Could not check requirements.txt: {e}")
+        
+        # Check if process can access NVIDIA GPU
+        if platform.system() == "Windows":
+            try:
+                result = subprocess.run("nvidia-smi", capture_output=True, text=True, check=False)
+                if result.returncode == 0:
+                    logger.info("NVIDIA GPU is accessible (nvidia-smi successful)")
+                    cuda_info["nvidia_smi_ok"] = True
+                else:
+                    logger.warning("NVIDIA GPU not accessible or nvidia-smi not found")
+                    cuda_info["nvidia_smi_ok"] = False
+            except Exception as e:
+                logger.warning(f"Error checking nvidia-smi: {e}")
+                cuda_info["nvidia_smi_ok"] = False
+                
+        return cuda_info.get("has_cuda_backend", False), cuda_info
+        
+    except ImportError as e:
+        logger.error(f"Error importing llama_cpp: {e}")
+        return False, cuda_info
+
+def load_model(model_path: str, force_cpu: bool = False) -> Any:
     """
     Loads the GGUF model using llama-cpp-python.
     
     Parameters:
         model_path (str): Path to the GGUF model file
+        force_cpu (bool): Force CPU-only mode even if CUDA is available
         
     Returns:
         Any: The loaded model object
     """
-    logger.debug(f"model_path: {model_path}")
+    logger.debug(f"model_path: {model_path} | force_cpu: {force_cpu}")
+    
+    # First check CUDA support
+    cuda_supported, cuda_info = check_cuda_support()
     
     try:
         from llama_cpp import Llama
@@ -69,18 +157,51 @@ def load_model(model_path: str) -> Any:
         # Load model with CUDA support if available
         logger.info(f"Loading model from {model_path}")
         
+        # GPU layers (0 = CPU only, -1 = all layers on GPU)
+        n_gpu_layers = 0 if force_cpu else -1
+        
+        # Print a very clear warning message if using CPU
+        if force_cpu or not cuda_supported:
+            print("\n" + "="*60)
+            print("WARNING: RUNNING IN CPU-ONLY MODE - EXPECT SLOW PERFORMANCE")
+            if force_cpu:
+                print("Reason: Forced CPU mode by user")
+            else:
+                print("Reason: CUDA not detected or not properly enabled")
+            print(f"llama-cpp-python version: {cuda_info.get('llama_cpp_version', 'unknown')}")
+            print("To enable CUDA, make sure:")
+            print("1. You have a compatible NVIDIA GPU with proper drivers installed")
+            print("2. llama-cpp-python is installed with CUDA support:")
+            print("   pip install --force-reinstall llama-cpp-python --extra-index-url")
+            print("   https://abetlen.github.io/llama-cpp-python/whl/cu124")
+            print("="*60 + "\n")
+            
+            # Wait a moment for user to read the message
+            time.sleep(1)
+        else:
+            print("\n" + "="*60)
+            print("CUDA SUPPORT DETECTED - Using GPU acceleration")
+            print(f"llama-cpp-python version: {cuda_info.get('llama_cpp_version', 'unknown')}")
+            print("="*60 + "\n")
+        
         # Model parameters optimized for Gemma 3
         model_params = {
             "model_path": model_path,
-            "n_ctx": 8192,          # Context window size
-            "n_batch": 512,         # Batch size for prompt processing
-            "n_gpu_layers": -1,     # -1 means offload all layers to GPU if possible
-            "seed": 42,             # For reproducibility
-            "verbose": False        # Set to True for more debug information
+            "n_ctx": 8192,                    # Context window size
+            "n_batch": 1024,                  # Increased batch size for better throughput
+            "n_gpu_layers": n_gpu_layers,     # GPU layers setting
+            "seed": 42,                       # For reproducibility
+            "verbose": False,                 # No need for verbose output after checks
+            "f16_kv": True,                   # Use half precision for key/value cache
+            "use_mlock": True,                # Lock memory to prevent swapping
         }
         
+        # Load the model
         model = Llama(**model_params)
+        
+        # Log model loaded successfully
         logger.info("Model loaded successfully")
+            
         return model
         
     except Exception as e:
@@ -116,7 +237,8 @@ def generate_response(model: Any, prompt: str) -> Tuple[Dict[str, Any], float, i
             "top_k": 64,            # Official recommended value
             "top_p": 0.95,          # Official recommended value
             "repeat_penalty": 1.0,  # Official recommended value
-            "min_p": 0.01           # Works well according to documentation
+            "min_p": 0.01,          # Works well according to documentation
+            "stream": False,        # Streaming disabled for token speed measurement
         }
         
         logger.info("Generating response...")
@@ -166,13 +288,21 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run the Gemma 3 1B model with llama-cpp-python")
     parser.add_argument("--model_path", type=str, default="gemma-3-1b-it-Q4_K_M.gguf",
                         help="Path to the GGUF model file")
+    parser.add_argument("--verbose", action="store_true", 
+                        help="Enable verbose logging")
+    parser.add_argument("--cpu", action="store_true",
+                        help="Force CPU-only mode (disable CUDA)")
     args = parser.parse_args()
+    
+    # Set log level based on verbose flag
+    if args.verbose:
+        logging.getLogger().setLevel(logging.DEBUG)
     
     setup_logging()
     
     try:
         # Load the model
-        model = load_model(args.model_path)
+        model = load_model(args.model_path, force_cpu=args.cpu)
         
         print("\n===== Gemma 3 1B Interactive Chat =====")
         print("Type 'exit', 'quit', or press Ctrl+C to end the conversation.\n")
