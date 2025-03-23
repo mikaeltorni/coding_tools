@@ -15,12 +15,6 @@ import os
 import sys
 import requests
 
-# Import our modules
-# from src.conversation import ConversationManager
-# from src.diff_manager import DiffManager
-# from src.agents import DiffReceiver
-# from src.monitor import KeyMonitor
-
 # Configure logging
 logging.basicConfig(
     level=logging.DEBUG,
@@ -76,23 +70,6 @@ def main():
         
         # Initialize components
         logger.info("Initializing components")
-        
-        # # Connect to the llama server
-        # logger.info(f"Connecting to llama server at: {server_url}")
-        # model_tuple = ModelManager.create_server_client(server_url, model_config)
-        
-        # # Create conversation manager
-        # conversation_manager = ConversationManager()
-        
-        # # Create diff manager
-        # diff_manager = DiffManager(repo_path)
-        
-        # # Create agent
-        # agent = DiffReceiver(model_tuple, conversation_manager)
-        
-        # # Create and start key monitor
-        # key_monitor = KeyMonitor(repo_path, diff_manager, agent)
-        # key_monitor.start_monitoring()
 
         payload_with_parameters = {
             "prompt": "Testing the llama server",
