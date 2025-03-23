@@ -42,16 +42,20 @@ def send_prompt_to_server(server_url, prompt, model_args):
     
     try:
         payload = {
-            "system_prompt": model_args.get("system_prompt", ""),
             "prompt": prompt,
-            "max_tokens": model_args.get("max_tokens", DEFAULT_MAX_TOKENS)
+            "n_predict": model_args.get("max_tokens", DEFAULT_MAX_TOKENS),
+            "temperature": model_args.get("temperature", DEFAULT_TEMPERATURE),
+            "top_p": model_args.get("top_p", DEFAULT_TOP_P),
+            "top_k": model_args.get("top_k", DEFAULT_TOP_K),
+            "repeat_penalty": model_args.get("repeat_penalty", DEFAULT_REPEAT_PENALTY),
+            "system_prompt": model_args.get("system_prompt", "")
         }
         
-        response = requests.post(f"{server_url}/completions", json=payload)
+        response = requests.post(f"{server_url}/completion", json=payload)
+        final_response = json.dumps(response.json(), indent=2)
         response.raise_for_status()  # Raise exception for HTTP errors
         
         formatted_response = json.dumps(response.json(), indent=2)
-        formatted_response = json.dumps(response_json, indent=2)
         
         logger.debug(f"response received | content length: {len(formatted_response)}")
         return formatted_response
@@ -110,7 +114,7 @@ def handle_hotkey_press(server_url, model_args):
         
         # Create a prompt with the diff content
         if diff_content:
-            prompt = diff_content
+            prompt = f"{diff_content}"
         else:
             prompt = "User pressed the hotkey, but no changes were found in the repository."
         
