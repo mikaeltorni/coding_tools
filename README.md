@@ -6,10 +6,10 @@ This guide explains how to set up your environment to run optimized inference wi
 
 ## 1. Create and Activate the Conda Environment
 
-Make sure you have [Conda](https://www.anaconda.com/docs/getting-started/miniconda/main) installed (via Anaconda or Miniconda). Create a new environment named **ct** with Python version 3.13.1:
+Make sure you have [Conda](https://www.anaconda.com/docs/getting-started/miniconda/main) installed (via Anaconda or Miniconda). Create a new environment named **ct** with Python version 3.12.8:
 
 ```bash
-conda create --name ct python=3.13.1
+conda create --name ct python=3.12.8
 conda activate ct
 ```
 
