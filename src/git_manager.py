@@ -59,6 +59,8 @@ def get_repo_diff(repo_path):
         
         # Get the diff for all changes (including unstaged)
         diff = repo.git.diff(None)
+
+        logger.debug(f"Diff: {diff}")
         
         # If there are no unstaged changes, check for staged changes
         if not diff:
