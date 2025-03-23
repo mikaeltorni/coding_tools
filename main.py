@@ -96,11 +96,11 @@ def main():
 
         payload_with_parameters = {
             "prompt": "Testing the llama server",
-            "n_predict": 4096,
-            "temperature": DEFAULT_TEMPERATURE,
-            "top_p": DEFAULT_TOP_P,
-            "top_k": DEFAULT_TOP_K,
-            "repeat_penalty": DEFAULT_REPEAT_PENALTY
+            "n_predict": args.max_tokens,
+            "temperature": args.temperature,
+            "top_p": args.top_p,
+            "top_k": args.top_k,
+            "repeat_penalty": args.repeat_penalty
         }
         response = requests.post(f"{server_url}/completion", json=payload_with_parameters)
         print(response.json()["content"])
