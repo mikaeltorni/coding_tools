@@ -8,7 +8,7 @@ providers:
     config:
       temperature: 0
       context_length: 32768
-      max_tokens: 16384
+      max_tokens: 4096
       apiEndpoint: http://127.0.0.1:8080/generate
       top_p: 0.9
       frequency_penalty: 0
