@@ -78,16 +78,6 @@ def main():
         # Initialize components
         logger.info("Initializing components")
         
-        # Create model configuration from command line arguments
-        model_config = ModelConfig(
-            model_type="llama_server",
-            temperature=args.temperature,
-            top_p=args.top_p,
-            top_k=args.top_k,
-            max_tokens=args.max_tokens,
-            repeat_penalty=args.repeat_penalty
-        )
-        
         # # Connect to the llama server
         # logger.info(f"Connecting to llama server at: {server_url}")
         # model_tuple = ModelManager.create_server_client(server_url, model_config)
