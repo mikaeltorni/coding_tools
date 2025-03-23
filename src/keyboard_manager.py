@@ -52,12 +52,14 @@ def send_prompt_to_server(server_url, prompt, model_args):
         }
         
         response = requests.post(f"{server_url}/completion", json=payload)
-        final_response = json.dumps(response.json(), indent=2)
+        response = requests.post(f"{server_url}/generate", json=payload)
         response.raise_for_status()  # Raise exception for HTTP errors
         
-        logger.debug(f"response received | content length: {len(final_response)}")
-        logger.debug(f"Raw server response: {final_response}")
-        return final_response
+        result = response.json()
+        logger.debug(f"response received | content length: {len(result.get('response', ''))}")
+        logger.debug(f"Raw server response: {json.dumps(result, indent=2)}")
+        return result.get("response", "")
+        return json.dumps(result, indent=2)
     
     except requests.RequestException as e:
         logger.error(f"Error sending request to server: {e}")

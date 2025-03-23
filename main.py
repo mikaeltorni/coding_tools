@@ -51,6 +51,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Monitor Git repository and feed diffs to LLM on hotkey press.'
     )
+    parser.add_argument('repo_path', type=str, help='Path to the Git repository to monitor')
     parser.add_argument('--server-url', type=str, default='http://localhost:8080', 
                         help='URL of the llama server (default: http://localhost:8080)')
     parser.add_argument('--hotkey', type=str, default=DEFAULT_HOTKEY,
@@ -70,7 +71,7 @@ def main():
     
     try:
         args = parser.parse_args()
-        repo_path = "C:/Projects/ai/test_repo"
+        repo_path = args.repo_path
         server_url = args.server_url
         hotkey = args.hotkey
         
@@ -93,6 +94,7 @@ def main():
             "max_tokens": args.max_tokens,
             "repeat_penalty": args.repeat_penalty,
             "system_prompt": open(os.path.join("data", "prompts", "system", "diff_analyzer.xml")).read(),
+            "repo_path": repo_path  # Add repo_path to model_args for the hotkey handler
         }
         
         # Initialize components
