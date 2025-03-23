@@ -11,17 +11,17 @@ Functions:
 import logging
 import requests
 import keyboard
+from data.model_config import (
+    DEFAULT_TEMPERATURE,
+    DEFAULT_MAX_TOKENS,
+    DEFAULT_TOP_P,
+    DEFAULT_TOP_K,
+    DEFAULT_REPEAT_PENALTY,
+    DEFAULT_HOTKEY
+)
 
 # Configure logging
 logger = logging.getLogger(__name__)
-
-# Default model parameters
-DEFAULT_TEMPERATURE = 0
-DEFAULT_MAX_TOKENS = 4096
-DEFAULT_TOP_P = 0.9
-DEFAULT_TOP_K = 40
-DEFAULT_REPEAT_PENALTY = 0
-DEFAULT_HOTKEY = "ctrl+space"
 
 def send_prompt_to_server(server_url, prompt, model_args):
     """

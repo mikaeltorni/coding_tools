@@ -14,15 +14,19 @@ import logging
 import os
 import sys
 import time
-from src.keyboard_manager import (
-    send_prompt_to_server,
-    setup_keyboard_listener,
+from data.model_config import (
+    DEFAULT_MODEL_TYPE,
     DEFAULT_TEMPERATURE,
     DEFAULT_MAX_TOKENS,
     DEFAULT_TOP_P,
     DEFAULT_TOP_K,
     DEFAULT_REPEAT_PENALTY,
-    DEFAULT_HOTKEY
+    DEFAULT_HOTKEY,
+    get_default_model_args
+)
+from src.keyboard_manager import (
+    send_prompt_to_server,
+    setup_keyboard_listener
 )
 
 # Configure logging
@@ -31,8 +35,6 @@ logging.basicConfig(
     format='%(levelname)s:%(funcName)s: %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-DEFAULT_MODEL_TYPE = "llama_server"
 
 def main():
     """
@@ -53,7 +55,7 @@ def main():
     parser.add_argument('--hotkey', type=str, default=DEFAULT_HOTKEY,
                         help=f'Hotkey combination to trigger LLM feedback (default: {DEFAULT_HOTKEY})')
     
-    # Model configuration arguments - using defaults from ModelConfig class
+    # Model configuration arguments - using defaults from model_config
     parser.add_argument('--temperature', type=float, default=DEFAULT_TEMPERATURE,
                         help=f'Temperature parameter for text generation (default: {DEFAULT_TEMPERATURE})')
     parser.add_argument('--top-p', type=float, default=DEFAULT_TOP_P,
