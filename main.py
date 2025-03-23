@@ -24,7 +24,6 @@ from src.keyboard_manager import (
     setup_keyboard_listener
 )
 from src.git_manager import (
-    get_repo_diff,
     is_git_repo
 )
 
