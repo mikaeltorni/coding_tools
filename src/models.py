@@ -26,7 +26,7 @@ class ModelConfig:
     DEFAULT_TEMPERATURE = 0.01
     DEFAULT_TOP_P = 0.9
     DEFAULT_TOP_K = 40
-    DEFAULT_REPEAT_PENALTY = 0
+    DEFAULT_REPEAT_PENALTY = 1.1
     
     def __init__(self, 
                  model_type: str = DEFAULT_MODEL_TYPE,
