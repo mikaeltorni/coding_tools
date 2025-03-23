@@ -32,19 +32,10 @@ cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_COMPILER="C:\Program Files\NVIDIA GPU
 
 ## 3. Download a GGUF Model
 
-1. **Download a Compatible GGUF Model:**
-   - Visit [Hugging Face](https://huggingface.co/) and search for models with GGUF format
-   - Common GGUF models include llama, gemma, mistral, and others with different quantization levels
-   - Download the model file (typically ending with .gguf extension)
-   - Recommended models for good performance:
-     - [TheBloke/Llama-3-8B-Instruct-GGUF](https://huggingface.co/TheBloke/Llama-3-8B-Instruct-GGUF)
-     - [TheBloke/Mistral-7B-Instruct-v0.2-GGUF](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF)
-     - [TheBloke/Gemma-3-1b-it-GGUF](https://huggingface.co/TheBloke/Gemma-3-1b-it-GGUF)
-
-2. **Choose the Right Quantization Level:**
-   - Q4_K_M is typically a good balance between performance and quality
-   - Q2_K offers smaller size but lower quality
-   - Q8_0 offers higher quality but larger size
+1. **Download the Gemma 3 1B Model:**
+   - Visit [unsloth/gemma-3-1b-it-GGUF](https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/tree/main)
+   - Download the Q4_K_M quantized model file (ending with .gguf extension)
+   - This quantization level provides a good balance between model size and inference quality
 
 ---
 
