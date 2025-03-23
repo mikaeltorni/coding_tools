@@ -12,9 +12,6 @@ import logging
 import requests
 import keyboard
 
-from src.git_manager import get_repo_diff
-import json
-
 from data.model_config import (
     DEFAULT_HOTKEY
 )
@@ -22,7 +19,7 @@ from data.model_config import (
 # Configure logging
 logger = logging.getLogger(__name__)
 
-def send_prompt_to_server(server_url, prompt, model_args):
+def send_prompt_to_server(server_url, payload):
     """
     Send a prompt to the LLM server and return the response.
     
@@ -34,22 +31,9 @@ def send_prompt_to_server(server_url, prompt, model_args):
     Returns:
         str: LLM response content
     """
-    logger.debug(f"server_url: {server_url} | prompt length: {len(prompt)}")
+    logger.debug(f"server_url: {server_url} | payload: {payload}")
     
-    try:
-        payload = {
-            "prompt": prompt,
-            "n_predict": model_args.get("n_predict"),
-            "temp": model_args.get("temp"),
-            "top_p": model_args.get("top_p"),
-            "top_k": model_args.get("top_k"),
-            "repeat_penalty": model_args.get("repeat_penalty"),
-            "ctx_size": model_args.get("ctx_size"),
-            "frequency_penalty": model_args.get("frequency_penalty"),
-            "presence_penalty": model_args.get("presence_penalty"),
-            "system_prompt": model_args.get("system_prompt")
-        }
-        
+    try:       
         response = requests.post(f"{server_url}/completion", json=payload)
         response.raise_for_status()  # Raise exception for HTTP errors
         
@@ -84,7 +68,7 @@ def save_diff_to_file(diff_content, output_file="output.txt"):
         logger.error(f"Error saving diff content to file: {e}")
         return False
 
-def handle_hotkey_press(server_url, model_args):
+def handle_hotkey_press(server_url, payload, repo_path):
     """
     Callback function for hotkey press event.
     
@@ -97,10 +81,7 @@ def handle_hotkey_press(server_url, model_args):
     """
     logger.info("Hotkey pressed - sending prompt to LLM")
     
-    try:
-        # Get repository path from model_args
-        repo_path = model_args.get("repo_path", "")
-        
+    try:        
         # Get diff from the repository
         logger.info(f"Getting diff from repository: {repo_path}")
         diff_content = get_repo_diff(repo_path)
@@ -112,12 +93,12 @@ def handle_hotkey_press(server_url, model_args):
         
         # Create a prompt with the diff content
         if diff_content:
-            prompt = f"{diff_content}"
+            payload["prompt"] = f"{diff_content}"
         else:
-            prompt = "User pressed the hotkey, but no changes were found in the repository."
+            return
         
         # Send the prompt to the server
-        response = send_prompt_to_server(server_url, prompt, model_args)
+        response = send_prompt_to_server(server_url, payload)
         print("\n--- LLM Response ---")
         print(response)
         print("-------------------\n")
@@ -125,7 +106,7 @@ def handle_hotkey_press(server_url, model_args):
         logger.error(f"Error handling hotkey press: {e}")
         print(f"Error: {e}")
 
-def setup_keyboard_listener(server_url, model_args, hotkey=DEFAULT_HOTKEY):
+def setup_keyboard_listener(server_url, payload, repo_path, hotkey=DEFAULT_HOTKEY):
     """
     Set up keyboard listener for the specified hotkey.
     
@@ -140,9 +121,9 @@ def setup_keyboard_listener(server_url, model_args, hotkey=DEFAULT_HOTKEY):
     logger.debug(f"Setting up keyboard listener for hotkey: {hotkey}")
     
     try:
-        # Create a callback that includes the server_url and model_args
+        # Create a callback that includes the server_url and payload
         def hotkey_callback():
-            handle_hotkey_press(server_url, model_args)
+            handle_hotkey_press(server_url, payload, repo_path)
         
         # Register the hotkey
         keyboard.add_hotkey(hotkey, hotkey_callback)
