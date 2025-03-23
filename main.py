@@ -15,11 +15,14 @@ import os
 import sys
 import time
 from data.model_config import (
-    DEFAULT_TEMPERATURE,
-    DEFAULT_MAX_TOKENS,
+    DEFAULT_TEMP,
+    DEFAULT_N_PREDICT,
     DEFAULT_TOP_P,
     DEFAULT_TOP_K,
     DEFAULT_REPEAT_PENALTY,
+    DEFAULT_CTX_SIZE,
+    DEFAULT_FREQUENCY_PENALTY,
+    DEFAULT_PRESENCE_PENALTY,
     DEFAULT_HOTKEY
 )
 from src.keyboard_manager import (
@@ -58,14 +61,14 @@ def main():
                         help=f'Hotkey combination to trigger LLM feedback (default: {DEFAULT_HOTKEY})')
     
     # Model configuration arguments - using defaults from model_config
-    parser.add_argument('--temperature', type=float, default=DEFAULT_TEMPERATURE,
-                        help=f'Temperature parameter for text generation (default: {DEFAULT_TEMPERATURE})')
+    parser.add_argument('--temperature', type=float, default=DEFAULT_TEMP,
+                        help=f'Temperature parameter for text generation (default: {DEFAULT_TEMP})')
     parser.add_argument('--top-p', type=float, default=DEFAULT_TOP_P,
                         help=f'Top-p sampling parameter (default: {DEFAULT_TOP_P})')
     parser.add_argument('--top-k', type=int, default=DEFAULT_TOP_K,
                         help=f'Top-k sampling parameter (default: {DEFAULT_TOP_K})')
-    parser.add_argument('--max-tokens', type=int, default=DEFAULT_MAX_TOKENS,
-                        help=f'Maximum number of tokens to generate (default: {DEFAULT_MAX_TOKENS})')
+    parser.add_argument('--max-tokens', type=int, default=DEFAULT_N_PREDICT,
+                        help=f'Maximum number of tokens to generate (default: {DEFAULT_N_PREDICT})')
     parser.add_argument('--repeat-penalty', type=float, default=DEFAULT_REPEAT_PENALTY,
                         help=f'Penalty for repeated tokens (default: {DEFAULT_REPEAT_PENALTY})')
     

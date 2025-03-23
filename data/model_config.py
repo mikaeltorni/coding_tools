@@ -12,12 +12,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Default model parameters
-DEFAULT_TEMPERATURE = 0
-DEFAULT_MAX_TOKENS = 4096
+DEFAULT_TEMP = 0
+DEFAULT_N_PREDICT = 4096
 DEFAULT_TOP_P = 0.9
 DEFAULT_TOP_K = 40
-DEFAULT_REPEAT_PENALTY = 0
-DEFAULT_CONTEXT_LENGTH = 32768
+DEFAULT_REPEAT_PENALTY = 1.0
+DEFAULT_CTX_SIZE = 4096
 DEFAULT_FREQUENCY_PENALTY = 0
 DEFAULT_PRESENCE_PENALTY = 0
 
@@ -37,12 +37,12 @@ def get_default_model_args():
     logger.debug("Retrieving default model arguments")
     
     default_args = {
-        "temperature": DEFAULT_TEMPERATURE,
-        "max_tokens": DEFAULT_MAX_TOKENS,
+        "temp": DEFAULT_TEMP,
+        "n_predict": DEFAULT_N_PREDICT,
         "top_p": DEFAULT_TOP_P,
         "top_k": DEFAULT_TOP_K,
         "repeat_penalty": DEFAULT_REPEAT_PENALTY,
-        "context_length": DEFAULT_CONTEXT_LENGTH,
+        "ctx_size": DEFAULT_CTX_SIZE,
         "frequency_penalty": DEFAULT_FREQUENCY_PENALTY,
         "presence_penalty": DEFAULT_PRESENCE_PENALTY
     }

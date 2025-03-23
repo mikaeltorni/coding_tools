@@ -11,20 +11,13 @@ Functions:
 import logging
 import requests
 import keyboard
-import os
-from data.model_config import (
-    DEFAULT_TEMPERATURE,
-    DEFAULT_MAX_TOKENS,
-    DEFAULT_TOP_P,
-    DEFAULT_TOP_K,
-    DEFAULT_REPEAT_PENALTY,
-    DEFAULT_CONTEXT_LENGTH,
-    DEFAULT_FREQUENCY_PENALTY,
-    DEFAULT_PRESENCE_PENALTY,
-    DEFAULT_HOTKEY
-)
+
 from src.git_manager import get_repo_diff
 import json
+
+from data.model_config import (
+    DEFAULT_HOTKEY
+)
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -46,15 +39,15 @@ def send_prompt_to_server(server_url, prompt, model_args):
     try:
         payload = {
             "prompt": prompt,
-            "max_tokens": model_args.get("max_tokens", DEFAULT_MAX_TOKENS),
-            "temperature": model_args.get("temperature", DEFAULT_TEMPERATURE),
-            "top_p": model_args.get("top_p", DEFAULT_TOP_P),
-            "top_k": model_args.get("top_k", DEFAULT_TOP_K),
-            "repeat_penalty": model_args.get("repeat_penalty", DEFAULT_REPEAT_PENALTY),
-            "context_length": model_args.get("context_length", DEFAULT_CONTEXT_LENGTH),
-            "frequency_penalty": model_args.get("frequency_penalty", DEFAULT_FREQUENCY_PENALTY),
-            "presence_penalty": model_args.get("presence_penalty", DEFAULT_PRESENCE_PENALTY),
-            "system_prompt": model_args.get("system_prompt", "")
+            "n_predict": model_args.get("n_predict"),
+            "temp": model_args.get("temp"),
+            "top_p": model_args.get("top_p"),
+            "top_k": model_args.get("top_k"),
+            "repeat_penalty": model_args.get("repeat_penalty"),
+            "ctx_size": model_args.get("ctx_size"),
+            "frequency_penalty": model_args.get("frequency_penalty"),
+            "presence_penalty": model_args.get("presence_penalty"),
+            "system_prompt": model_args.get("system_prompt")
         }
         
         response = requests.post(f"{server_url}/completion", json=payload)
