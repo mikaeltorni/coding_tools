@@ -114,7 +114,7 @@ def main():
             "top_k": DEFAULT_TOP_K,
             "repeat_penalty": DEFAULT_REPEAT_PENALTY
         }
-        response = requests.post("http://localhost:8080/completion", json=payload)
+        response = requests.post(f"{server_url}/completion", json=payload)
         print(response.json()["content"])
         
     except KeyboardInterrupt:
