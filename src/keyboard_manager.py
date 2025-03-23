@@ -11,6 +11,7 @@ Functions:
 import logging
 import requests
 import keyboard
+import os
 from data.model_config import (
     DEFAULT_TEMPERATURE,
     DEFAULT_MAX_TOKENS,
@@ -19,6 +20,7 @@ from data.model_config import (
     DEFAULT_REPEAT_PENALTY,
     DEFAULT_HOTKEY
 )
+from src.git_manager import get_repo_diff
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -70,9 +72,26 @@ def handle_hotkey_press(server_url, model_args):
         None
     """
     logger.info("Hotkey pressed - sending prompt to LLM")
-    prompt = "User pressed the hotkey. Please provide feedback on the current code."
     
     try:
+        # Get repository path from model_args
+        repo_path = model_args.get("repo_path", "")
+        
+        if not repo_path:
+            logger.warning("Repository path not found in model_args")
+            prompt = "User pressed the hotkey. Please provide feedback on the current code."
+        else:
+            # Get diff from the repository
+            logger.info(f"Getting diff from repository: {repo_path}")
+            diff_content = get_repo_diff(repo_path)
+            
+            # Create a prompt with the diff content
+            if diff_content:
+                prompt = f"Please analyze the following Git diff and provide feedback:\n\n{diff_content}"
+            else:
+                prompt = "User pressed the hotkey, but no changes were found in the repository."
+        
+        # Send the prompt to the server
         response = send_prompt_to_server(server_url, prompt, model_args)
         print("\n--- LLM Response ---")
         print(response)

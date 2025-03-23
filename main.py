@@ -27,6 +27,10 @@ from src.keyboard_manager import (
     send_prompt_to_server,
     setup_keyboard_listener
 )
+from src.git_manager import (
+    get_repo_diff,
+    is_git_repo
+)
 
 # Configure logging
 logging.basicConfig(
@@ -77,21 +81,34 @@ def main():
             print(f"Error: Repository path not found: {repo_path}")
             sys.exit(1)
         
+        # Check if the path is a valid Git repository
+        if not is_git_repo(repo_path):
+            logger.error(f"Not a valid Git repository: {repo_path}")
+            print(f"Error: Not a valid Git repository: {repo_path}")
+            sys.exit(1)
+        
         # Create model args dictionary
         model_args = {
             "temperature": args.temperature,
             "top_p": args.top_p,
             "top_k": args.top_k,
             "max_tokens": args.max_tokens,
-            "repeat_penalty": args.repeat_penalty
+            "repeat_penalty": args.repeat_penalty,
+            "system_prompt": os.path.join("data", "prompts", "system", "diff_analyzer.xml"),
+            "repo_path": repo_path  # Add repo_path to model_args for the hotkey handler
         }
         
         # Initialize components
         logger.info("Initializing components")
         
-        # Test server connectivity
+        # Get diff from repository
+        logger.info(f"Getting diff from repository: {repo_path}")
+        diff_content = get_repo_diff(repo_path)
+        
+        # Test server connectivity with the diff content
         logger.info(f"Testing connection to LLM server at {server_url}")
-        test_response = send_prompt_to_server(server_url, "Testing server connectivity", model_args)
+        test_prompt = f"Testing server connectivity. Here is the current diff from the repository:\n\n{diff_content}"
+        test_response = send_prompt_to_server(server_url, test_prompt, model_args)
         logger.info("Successfully connected to LLM server")
         
         # Set up keyboard listener
