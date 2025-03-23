@@ -62,7 +62,7 @@ EDIT THIS LATER?
 
 ---
 
-## 6. Monitoring and Verification
+## 5. Monitoring and Verification
 
 - Open a separate Command Prompt and run `nvidia-smi -l 1` to monitor GPU usage during inference
 - Check the server logs to ensure that layers are being offloaded to the GPU as intended
