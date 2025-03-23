@@ -107,8 +107,7 @@ def main():
         
         # Test server connectivity with the diff content
         logger.info(f"Testing connection to LLM server at {server_url}")
-        test_prompt = f"Testing server connectivity. Here is the current diff from the repository:\n\n{diff_content}"
-        test_response = send_prompt_to_server(server_url, test_prompt, model_args)
+        test_response = send_prompt_to_server(server_url, diff_content, model_args)
         logger.info("Successfully connected to LLM server")
         
         # Set up keyboard listener
