@@ -88,32 +88,6 @@ class Agent:
             # Get the response
             response = output["choices"][0]["text"]
             
-            # Get accurate performance metrics from the output
-            if "performance" in output:
-                perf = output["performance"]
-                eval_time = perf.get("eval_time", 0)
-                completion_tokens = output["usage"].get("completion_tokens", 0)
-                tokens_per_second = perf.get("tokens_per_second", 0)
-            else:
-                # Fallback to estimates if server doesn't provide performance data
-                eval_time = 0
-                completion_tokens = len(response.split()) * 1.3  # Rough estimate
-                tokens_per_second = 0
-            
-            # Format the performance info with the correct metrics
-            performance_info = f"\n\n[Performance: {tokens_per_second:.2f} tokens/sec | {completion_tokens} tokens in {eval_time:.2f}s]"
-            
-            # Add performance metrics to the response
-            if "========== END RESPONSE ==========" in response:
-                # Split the response and insert performance info before the END marker
-                parts = response.split("========== END RESPONSE ==========")
-                response = f"{parts[0]}{performance_info}\n\n========== END RESPONSE =========={parts[1]}"
-            else:
-                # Just append performance info to the end of the response
-                if not response.endswith("]"):  # Avoid adding if already has performance metrics
-                    response += performance_info
-            
-            logger.debug(f"Generation: {completion_tokens} tokens in {eval_time:.2f}s = {tokens_per_second:.2f} tokens/sec")
             return response
         except Exception as e:
             logger.error(f"Error sending message to model: {e}")

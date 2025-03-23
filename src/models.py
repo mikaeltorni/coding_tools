@@ -10,7 +10,6 @@ import logging
 import requests
 import json
 from pathlib import Path
-import time
 
 logger = logging.getLogger(__name__)
 
@@ -91,45 +90,14 @@ class ModelManager:
                         "repeat_penalty": request_config.get("repeat_penalty", 1.1)
                     }
                     
-                    # Start timing
-                    start_time = time.time()
-                    
                     # Send the request to the server
                     try:
                         response = requests.post(f"{self.server_url}/completion", json=payload)
                         response.raise_for_status()
                         result = response.json()
                         
-                        # End timing
-                        end_time = time.time()
-                        elapsed_time = end_time - start_time
-                        
                         # Extract the content from the response
                         content = result.get("content", "")
-                        
-                        # Get timing information from the server if available
-                        timings = result.get("timings", {})
-                        prompt_eval_time = timings.get("prompt_eval", {}).get("total_ms", 0) / 1000
-                        eval_time = timings.get("eval", {}).get("total_ms", 0) / 1000
-                        total_time = prompt_eval_time + eval_time
-                        
-                        # Get token counts from the server if available
-                        prompt_tokens = timings.get("prompt_eval", {}).get("n_tokens", 0)
-                        completion_tokens = timings.get("eval", {}).get("n_tokens", 0)
-                        total_tokens = prompt_tokens + completion_tokens
-                        
-                        # If server doesn't provide timing info, use our estimates
-                        if total_time <= 0:
-                            total_time = elapsed_time
-                        
-                        if total_tokens <= 0:
-                            # Estimate token count if not available from server
-                            prompt_tokens = len(prompt.split()) * 1.3  # Rough estimate
-                            completion_tokens = len(content.split()) * 1.3  # Rough estimate
-                            total_tokens = prompt_tokens + completion_tokens
-                        
-                        # Calculate tokens per second
-                        tokens_per_second = completion_tokens / eval_time if eval_time > 0 else 0
                         
                         # Convert the result to a standardized format
                         formatted_result = {
@@ -138,18 +106,7 @@ class ModelManager:
                                     "text": content,
                                     "finish_reason": "stop"
                                 }
-                            ],
-                            "usage": {
-                                "prompt_tokens": int(prompt_tokens),
-                                "completion_tokens": int(completion_tokens),
-                                "total_tokens": int(total_tokens)
-                            },
-                            "performance": {
-                                "prompt_eval_time": prompt_eval_time,
-                                "eval_time": eval_time,
-                                "total_time": total_time,
-                                "tokens_per_second": tokens_per_second
-                            }
+                            ]
                         }
                         
                         return formatted_result
@@ -162,18 +119,7 @@ class ModelManager:
                                     "text": f"Error communicating with LLM server: {e}",
                                     "finish_reason": "error"
                                 }
-                            ],
-                            "usage": {
-                                "prompt_tokens": 0,
-                                "completion_tokens": 0,
-                                "total_tokens": 0
-                            },
-                            "performance": {
-                                "prompt_eval_time": 0,
-                                "eval_time": 0,
-                                "total_time": 0,
-                                "tokens_per_second": 0
-                            }
+                            ]
                         }
             
             # Create the server client

@@ -53,11 +53,6 @@ class ConversationManager:
         elif not isinstance(content, str):
             content = str(content)
         
-        # Clean up performance metrics if this is an assistant response
-        if role == "assistant" and "[Performance:" in content:
-            # Remove performance metrics from the content before storing
-            content = content.split("[Performance:")[0].strip()
-        
         # Add the message to conversation history
         self.conversation_history.append({
             "role": role,
