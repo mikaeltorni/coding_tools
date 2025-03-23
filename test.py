@@ -17,7 +17,8 @@ import os
 import sys
 import argparse
 import logging
-from typing import Dict, Any, Optional
+import time
+from typing import Dict, Any, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(
@@ -86,7 +87,7 @@ def load_model(model_path: str) -> Any:
         logger.error(f"Error loading model: {e}")
         sys.exit(1)
 
-def generate_response(model: Any, prompt: str) -> Dict[str, Any]:
+def generate_response(model: Any, prompt: str) -> Tuple[Dict[str, Any], float, int]:
     """
     Generates a response from the model for the given prompt.
     
@@ -95,7 +96,7 @@ def generate_response(model: Any, prompt: str) -> Dict[str, Any]:
         prompt (str): The input prompt for the model
         
     Returns:
-        Dict[str, Any]: The model's response
+        Tuple[Dict[str, Any], float, int]: The model's response, tokens per second, and token count
     """
     logger.debug(f"prompt: {prompt}")
     
@@ -119,9 +120,34 @@ def generate_response(model: Any, prompt: str) -> Dict[str, Any]:
         }
         
         logger.info("Generating response...")
+        
+        # Start timing
+        start_time = time.time()
+        
+        # Generate response
         response = model(**generation_params)
-        logger.info("Response generated successfully")
-        return response
+        
+        # End timing
+        end_time = time.time()
+        generation_time = end_time - start_time
+        
+        # Calculate tokens per second
+        token_count = response.get("usage", {}).get("completion_tokens", 0)
+        if "usage" not in response:
+            # Try to get token count from different response formats
+            if "choices" in response and len(response["choices"]) > 0:
+                # Some versions of llama-cpp-python may return tokens differently
+                choice = response["choices"][0]
+                if "tokens_generated" in choice:
+                    token_count = choice["tokens_generated"]
+                # If we have the raw text, we can estimate tokens as words / 0.75
+                elif "text" in choice and token_count == 0:
+                    token_count = len(choice["text"].split()) // 0.75
+        
+        tokens_per_second = token_count / generation_time if generation_time > 0 else 0
+        
+        logger.info(f"Response generated successfully: {token_count} tokens in {generation_time:.2f} seconds ({tokens_per_second:.2f} tokens/sec)")
+        return response, tokens_per_second, token_count
     
     except Exception as e:
         logger.error(f"Error generating response: {e}")
@@ -159,11 +185,14 @@ def main() -> None:
                 print("Exiting chat. Goodbye!")
                 break
             
-            response = generate_response(model, user_input)
+            response, tokens_per_second, token_count = generate_response(model, user_input)
             
             # Extract the model's output text
             output_text = response["choices"][0]["text"] if "choices" in response else response["text"]
             print(f"\nGemma 3: {output_text}")
+            
+            # Display token generation statistics
+            print(f"\n[Generation stats: {token_count} tokens, {tokens_per_second:.2f} tokens/sec]")
             
     except KeyboardInterrupt:
         print("\nExiting chat. Goodbye!")
