@@ -22,8 +22,8 @@ class ModelConfig:
     """
     # Class-level defaults that can be accessed from anywhere
     DEFAULT_MODEL_TYPE = "llama_server"
+    DEFAULT_TEMPERATURE = 0
     DEFAULT_MAX_TOKENS = 4000
-    DEFAULT_TEMPERATURE = 0.01
     DEFAULT_TOP_P = 0.9
     DEFAULT_TOP_K = 40
     DEFAULT_REPEAT_PENALTY = 0
