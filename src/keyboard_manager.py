@@ -46,7 +46,8 @@ def send_prompt_to_server(server_url, prompt, model_args):
             "temperature": model_args.get("temperature", DEFAULT_TEMPERATURE),
             "top_p": model_args.get("top_p", DEFAULT_TOP_P),
             "top_k": model_args.get("top_k", DEFAULT_TOP_K),
-            "repeat_penalty": model_args.get("repeat_penalty", DEFAULT_REPEAT_PENALTY)
+            "repeat_penalty": model_args.get("repeat_penalty", DEFAULT_REPEAT_PENALTY),
+            "system_prompt": model_args.get("system_prompt", "")
         }
         
         response = requests.post(f"{server_url}/completion", json=payload)
@@ -87,7 +88,7 @@ def handle_hotkey_press(server_url, model_args):
             
             # Create a prompt with the diff content
             if diff_content:
-                prompt = f"Please analyze the following Git diff and provide feedback:\n\n{diff_content}"
+                prompt = f"{diff_content}"
             else:
                 prompt = "User pressed the hotkey, but no changes were found in the repository."
         
