@@ -21,6 +21,7 @@ from data.model_config import (
     DEFAULT_HOTKEY
 )
 from src.git_manager import get_repo_diff
+import json
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -56,8 +57,9 @@ def send_prompt_to_server(server_url, prompt, model_args):
         
         result = response.json()
         logger.debug(f"response received | content length: {len(result.get('response', ''))}")
-        return result.get("content", "")
+        logger.debug(f"Raw server response: {json.dumps(result, indent=2)}")
         return result.get("response", "")
+        return json.dumps(result, indent=2)
     
     except requests.RequestException as e:
         logger.error(f"Error sending request to server: {e}")

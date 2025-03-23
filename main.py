@@ -20,8 +20,7 @@ from data.model_config import (
     DEFAULT_TOP_P,
     DEFAULT_TOP_K,
     DEFAULT_REPEAT_PENALTY,
-    DEFAULT_HOTKEY,
-    get_default_model_args
+    DEFAULT_HOTKEY
 )
 from src.keyboard_manager import (
     send_prompt_to_server,
