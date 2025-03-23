@@ -18,7 +18,7 @@ conda activate ct
 ## 2. GPU Acceleration Setup for Llama.cpp
 
 ### Prerequisites
-- Install CUDA Toolkit 12.8 from the official NVIDIA website.
+- Install CUDA Toolkit 12.8 (or newer) from the official NVIDIA website.
 - Verify that your NVIDIA GPU (for example, an RTX 4090 with compute capability 8.9) is supported.
 
 ### Build Instructions
