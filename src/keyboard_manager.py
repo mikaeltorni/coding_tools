@@ -51,11 +51,13 @@ def send_prompt_to_server(server_url, prompt, model_args):
         }
         
         response = requests.post(f"{server_url}/completion", json=payload)
+        response = requests.post(f"{server_url}/generate", json=payload)
         response.raise_for_status()  # Raise exception for HTTP errors
         
         result = response.json()
-        logger.debug(f"response received | content length: {len(result.get('content', ''))}")
+        logger.debug(f"response received | content length: {len(result.get('response', ''))}")
         return result.get("content", "")
+        return result.get("response", "")
     
     except requests.RequestException as e:
         logger.error(f"Error sending request to server: {e}")
