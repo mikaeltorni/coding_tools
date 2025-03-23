@@ -43,7 +43,7 @@ def send_prompt_to_server(server_url, prompt, model_args):
     try:
         payload = {
             "prompt": prompt,
-            "n_predict": model_args.get("max_tokens", DEFAULT_MAX_TOKENS),
+            "max_tokens": model_args.get("max_tokens", DEFAULT_MAX_TOKENS),
             "temperature": model_args.get("temperature", DEFAULT_TEMPERATURE),
             "top_p": model_args.get("top_p", DEFAULT_TOP_P),
             "top_k": model_args.get("top_k", DEFAULT_TOP_K),
