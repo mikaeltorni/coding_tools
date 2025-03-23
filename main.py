@@ -6,6 +6,7 @@ This script initializes all components and starts the monitoring system.
 Command Line Usage Examples:
     python main.py /path/to/git/repository
     python main.py C:/Projects/my-project
+    python main.py /path/to/git/repository --server-url http://localhost:8080
 """
 import argparse
 import logging
@@ -41,10 +42,13 @@ def main():
         description='Monitor Git repository and feed diffs to LLM on hotkey press.'
     )
     parser.add_argument('repo_path', type=str, help='Path to the Git repository to monitor')
+    parser.add_argument('--server-url', type=str, default='http://localhost:8080', 
+                        help='URL of the llama server (default: http://localhost:8080)')
     
     try:
         args = parser.parse_args()
         repo_path = args.repo_path
+        server_url = args.server_url
         
         if not os.path.exists(repo_path):
             logger.error(f"Repository path not found: {repo_path}")
@@ -54,24 +58,9 @@ def main():
         # Initialize components
         logger.info("Initializing components")
         
-        # Get the path to the GGUF model file
-        current_dir = Path(__file__).parent
-        model_path = current_dir / "gemma-3-1b-it-Q4_K_M.gguf"
-        
-        if not model_path.exists():
-            logger.error(f"Model file not found: {model_path}")
-            print(f"Error: Model file not found: {model_path}")
-            print(f"Please ensure the GGUF model file is in: {current_dir}")
-            sys.exit(1)
-        
-        # Load the model using llama.cpp - avoid tuple unpacking
-        logger.info(f"Loading model from: {model_path}")
-        result = ModelManager.load_model(str(model_path))
-        
-        # Create model tuple manually to avoid unpacking issues
-        llm_model = result[0]  # The Llama model object
-        llm_config = result[1]  # The configuration dictionary
-        model_tuple = (llm_model, llm_config)
+        # Connect to the llama server
+        logger.info(f"Connecting to llama server at: {server_url}")
+        model_tuple = ModelManager.create_server_client(server_url)
         
         # Create conversation manager
         conversation_manager = ConversationManager()
@@ -79,7 +68,7 @@ def main():
         # Create diff manager
         diff_manager = DiffManager(repo_path)
         
-        # Create agent with manually created tuple
+        # Create agent
         agent = DiffReceiver(model_tuple, conversation_manager)
         
         # Create and start key monitor

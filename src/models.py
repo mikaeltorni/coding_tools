@@ -1,55 +1,45 @@
 """
-Models module for loading and configuring language models.
+Models module for connecting to LLM servers.
 
-This module handles the loading and configuration of language models using llama.cpp.
+This module handles the connection to external LLM servers through REST APIs.
 
-Functions:
-    load_model(): Loads a model using llama.cpp for optimized inference
+Classes:
+    ModelManager: Manages connections to LLM servers
 """
-import torch
-import time
 import logging
+import requests
+import json
 from pathlib import Path
-import os
-
-# Import llama-cpp-python
-from llama_cpp import Llama
 
 logger = logging.getLogger(__name__)
 
 class ModelManager:
     """
-    Manages the loading and configuration of language models.
+    Manages connections to LLM servers.
     """
     
     @staticmethod
-    def load_model(model_path=None, config=None):
+    def create_server_client(server_url="http://localhost:8080", config=None):
         """
-        Loads and initializes a model using llama.cpp for optimized inference.
+        Creates a client for connecting to a LLM server.
         
         Parameters:
-            model_path (str): Path to the GGUF model file
-            config (dict, optional): Configuration parameters for the model
+            server_url (str): URL of the LLM server
+            config (dict, optional): Configuration parameters for model generation
             
         Returns:
-            tuple: (model, config) - Initialized llama.cpp model and its configuration
+            tuple: (server_client, config) - Server client object and its configuration
         """
-        logger.debug("Loading model with llama.cpp")
+        logger.debug(f"Creating LLM server client for server at {server_url}")
         
         # Default configuration with optimized settings
         default_config = {
-            "n_gpu_layers": -1,  # -1 means all layers on GPU
-            "n_ctx": 8192,       # Context window size
-            "n_batch": 512,      # Batch size for prompt processing
-            "n_threads": 8,      # Number of CPU threads to use
-            "f16_kv": True,      # Use half-precision for KV cache
-            "use_mlock": True,   # Lock memory to prevent swapping to disk
-            "max_tokens": 16384, # Maximum number of tokens to generate
+            "max_tokens": 4000,  # Maximum number of tokens to generate
             "top_p": 0.9,        # Top-p sampling
             "top_k": 40,         # Top-k sampling
             "temperature": 0.01, # Temperature for sampling
             "repeat_penalty": 1.1, # Penalty for repeated tokens
-            "verbose": False     # Verbose output
+            "n_predict": 4000    # Number of tokens to predict (server-specific)
         }
         
         # Use provided config or default, with provided values overriding defaults
@@ -57,51 +47,95 @@ class ModelManager:
         if config:
             merged_config.update(config)
         
-        # Check if model path is provided
-        if not model_path:
-            raise ValueError("Model path must be provided for llama.cpp model loading")
-        
-        # Validate model path
-        model_path = Path(model_path)
-        if not model_path.exists():
-            raise FileNotFoundError(f"Model file not found: {model_path}")
-        
         try:
-            # Determine the number of available CPU cores if not specified
-            if merged_config.get("n_threads") is None:
-                merged_config["n_threads"] = os.cpu_count() or 4
-                logger.debug(f"Using {merged_config['n_threads']} CPU threads")
+            # Verify server is accessible
+            try:
+                response = requests.get(f"{server_url}/health")
+                if response.status_code != 200:
+                    logger.warning(f"Server health check failed with status {response.status_code}")
+            except requests.RequestException as e:
+                logger.warning(f"Could not connect to LLM server: {e}")
+                logger.warning("Continuing anyway, as the server might be available later")
+                
+            # Create a server client class
+            class LlamaServerClient:
+                def __init__(self, server_url, config):
+                    self.server_url = server_url
+                    self.config = config
+                
+                def create_completion(self, prompt, **kwargs):
+                    """
+                    Creates a completion by sending a request to the LLM server.
+                    
+                    Parameters:
+                        prompt (str): The prompt to complete
+                        **kwargs: Additional parameters to override config
+                        
+                    Returns:
+                        dict: The completion response
+                    """
+                    logger.debug("Sending completion request to LLM server")
+                    
+                    # Merge config with kwargs
+                    request_config = self.config.copy()
+                    request_config.update(kwargs)
+                    
+                    # Prepare the payload
+                    payload = {
+                        "prompt": prompt,
+                        "n_predict": request_config.get("max_tokens", request_config.get("n_predict", 4000)),
+                        "temperature": request_config.get("temperature", 0.01),
+                        "top_p": request_config.get("top_p", 0.9),
+                        "top_k": request_config.get("top_k", 40),
+                        "repeat_penalty": request_config.get("repeat_penalty", 1.1)
+                    }
+                    
+                    # Send the request to the server
+                    try:
+                        response = requests.post(f"{self.server_url}/completion", json=payload)
+                        response.raise_for_status()
+                        result = response.json()
+                        
+                        # Convert the result to a standardized format
+                        formatted_result = {
+                            "choices": [
+                                {
+                                    "text": result.get("content", ""),
+                                    "finish_reason": "stop"
+                                }
+                            ],
+                            "usage": {
+                                "prompt_tokens": len(prompt) // 4,  # Rough estimate
+                                "completion_tokens": len(result.get("content", "")) // 4,  # Rough estimate
+                                "total_tokens": (len(prompt) + len(result.get("content", ""))) // 4  # Rough estimate
+                            }
+                        }
+                        
+                        return formatted_result
+                    except Exception as e:
+                        logger.error(f"Error in server request: {e}")
+                        # Return a minimal response format on error
+                        return {
+                            "choices": [
+                                {
+                                    "text": f"Error communicating with LLM server: {e}",
+                                    "finish_reason": "error"
+                                }
+                            ],
+                            "usage": {
+                                "prompt_tokens": 0,
+                                "completion_tokens": 0,
+                                "total_tokens": 0
+                            }
+                        }
             
-            # Check for CUDA device if not specified
-            if merged_config.get("n_gpu_layers") is None:
-                if torch.cuda.is_available():
-                    merged_config["n_gpu_layers"] = -1  # Use all layers on GPU
-                    logger.debug("CUDA available, offloading all layers to GPU")
-                else:
-                    merged_config["n_gpu_layers"] = 0  # CPU only
-                    logger.debug("CUDA not available, using CPU only")
+            # Create the server client
+            server_client = LlamaServerClient(server_url, merged_config)
             
-            # Load the model with llama.cpp
-            logger.debug(f"Creating llama.cpp model with config: {merged_config}")
+            logger.debug("LLM server client created successfully")
+            # Explicitly return a tuple of (server_client, config)
+            return (server_client, merged_config)
             
-            # Create the model arguments by extracting only the parameters that llama.cpp accepts
-            llama_args = {
-                "model_path": str(model_path),
-                "n_gpu_layers": merged_config["n_gpu_layers"],
-                "n_ctx": merged_config["n_ctx"],
-                "n_batch": merged_config["n_batch"],
-                "n_threads": merged_config["n_threads"],
-                "f16_kv": merged_config["f16_kv"],
-                "use_mlock": merged_config["use_mlock"],
-                "verbose": merged_config["verbose"]
-            }
-            
-            # Create the model object
-            model = Llama(**llama_args)
-            
-            logger.debug("llama.cpp model loaded successfully")
-            # Explicitly return a tuple of (model, config)
-            return (model, merged_config)
         except Exception as e:
-            logger.error(f"Error loading llama.cpp model: {e}")
-            raise RuntimeError(f"Failed to load llama.cpp model: {e}") 
+            logger.error(f"Error creating LLM server client: {e}")
+            raise RuntimeError(f"Failed to create LLM server client: {e}") 
