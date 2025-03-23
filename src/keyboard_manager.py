@@ -18,6 +18,9 @@ from data.model_config import (
     DEFAULT_TOP_P,
     DEFAULT_TOP_K,
     DEFAULT_REPEAT_PENALTY,
+    DEFAULT_CONTEXT_LENGTH,
+    DEFAULT_FREQUENCY_PENALTY,
+    DEFAULT_PRESENCE_PENALTY,
     DEFAULT_HOTKEY
 )
 from src.git_manager import get_repo_diff
@@ -48,6 +51,9 @@ def send_prompt_to_server(server_url, prompt, model_args):
             "top_p": model_args.get("top_p", DEFAULT_TOP_P),
             "top_k": model_args.get("top_k", DEFAULT_TOP_K),
             "repeat_penalty": model_args.get("repeat_penalty", DEFAULT_REPEAT_PENALTY),
+            "context_length": model_args.get("context_length", DEFAULT_CONTEXT_LENGTH),
+            "frequency_penalty": model_args.get("frequency_penalty", DEFAULT_FREQUENCY_PENALTY),
+            "presence_penalty": model_args.get("presence_penalty", DEFAULT_PRESENCE_PENALTY),
             "system_prompt": model_args.get("system_prompt", "")
         }
         
