@@ -94,7 +94,7 @@ def handle_hotkey_press(server_url, payload, repo_path):
         
         # Create a prompt with the diff content
         if diff_content:
-            payload["prompt"] = diff_content
+            payload["prompt"] = f"{diff_content}"
         else:
             logger.info("No diff content found - skipping prompt")
             return

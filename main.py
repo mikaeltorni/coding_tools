@@ -21,9 +21,11 @@ from data.model_config import (
     DEFAULT_HOTKEY
 )
 from src.keyboard_manager import (
+    send_prompt_to_server,
     setup_keyboard_listener
 )
 from src.git_manager import (
+    get_repo_diff,
     is_git_repo
 )
 
@@ -95,6 +97,15 @@ def main():
         
         # Initialize components
         logger.info("Initializing components")
+        
+        # Get diff from repository
+        logger.info(f"Getting diff from repository: {repo_path}")
+        diff_content = get_repo_diff(repo_path)
+        
+        # Test server connectivity with the diff content
+        # logger.info(f"Testing connection to LLM server at {server_url}")
+        # test_response = send_prompt_to_server(server_url, diff_content, payload)
+        # logger.info("Successfully connected to LLM server")
         
         # Set up keyboard listener
         setup_keyboard_listener(server_url, payload, repo_path, hotkey)
