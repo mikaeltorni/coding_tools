@@ -11,6 +11,7 @@ Functions:
 import logging
 import requests
 import keyboard
+import json
 
 from data.model_config import (
     DEFAULT_HOTKEY
@@ -95,6 +96,7 @@ def handle_hotkey_press(server_url, payload, repo_path):
         if diff_content:
             payload["prompt"] = f"{diff_content}"
         else:
+            logger.info("No diff content found - skipping prompt")
             return
         
         # Send the prompt to the server

@@ -96,9 +96,6 @@ def main():
         # Initialize components
         logger.info("Initializing components")
         
-        # Get diff from repository
-        logger.info(f"Getting diff from repository: {repo_path}")
-        
         # Set up keyboard listener
         setup_keyboard_listener(server_url, payload, repo_path, hotkey)
         
