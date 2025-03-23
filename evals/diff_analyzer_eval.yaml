@@ -13,6 +13,7 @@ providers:
       top_k: 30
       repeat_penalty: 1.4
       repeat_last_n: 64
+      repetition_penalty: 1.4
       mirostat: 0
       apiEndpoint: ${LLAMA_BASE_URL:-http://localhost:8080}
 
