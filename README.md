@@ -69,9 +69,3 @@ EDIT THIS LATER?
 - Look for performance metrics in the server output to verify acceleration is working properly
 
 ---
-
-## GPU Requirements
-
-- CUDA 12.6 or newer is recommended for best performance
-- At least 6GB VRAM for 7B models with Q4_K_M quantization
-- More VRAM needed for larger models or higher quantization levels
