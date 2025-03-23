@@ -14,7 +14,6 @@ import logging
 import os
 import sys
 import requests
-import json
 
 # Import our modules
 # from src.conversation import ConversationManager
