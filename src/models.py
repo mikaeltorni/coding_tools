@@ -10,8 +10,6 @@ Classes:
 """
 import logging
 import requests
-import json
-from pathlib import Path
 from typing import Dict, Any, Tuple, Optional, Union
 
 logger = logging.getLogger(__name__)
