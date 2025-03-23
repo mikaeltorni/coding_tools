@@ -102,24 +102,20 @@ def handle_hotkey_press(server_url, model_args):
         # Get repository path from model_args
         repo_path = model_args.get("repo_path", "")
         
-        if not repo_path:
-            logger.warning("Repository path not found in model_args")
-            prompt = "User pressed the hotkey. Please provide feedback on the current code."
+        # Get diff from the repository
+        logger.info(f"Getting diff from repository: {repo_path}")
+        diff_content = get_repo_diff(repo_path)
+        
+        # Save diff content to output.txt
+        if diff_content and diff_content != "No changes detected in the repository.":
+            save_diff_to_file(diff_content)
+            print(f"Diff content saved to output.txt")
+        
+        # Create a prompt with the diff content
+        if diff_content:
+            prompt = f"{diff_content}"
         else:
-            # Get diff from the repository
-            logger.info(f"Getting diff from repository: {repo_path}")
-            diff_content = get_repo_diff(repo_path)
-            
-            # Save diff content to output.txt
-            if diff_content and diff_content != "No changes detected in the repository.":
-                save_diff_to_file(diff_content)
-                print(f"Diff content saved to output.txt")
-            
-            # Create a prompt with the diff content
-            if diff_content:
-                prompt = f"{diff_content}"
-            else:
-                prompt = "User pressed the hotkey, but no changes were found in the repository."
+            prompt = "User pressed the hotkey, but no changes were found in the repository."
         
         # Send the prompt to the server
         response = send_prompt_to_server(server_url, prompt, model_args)
