@@ -17,9 +17,7 @@ import time
 from data.model_config import (
     DEFAULT_TEMPERATURE,
     DEFAULT_MAX_TOKENS,
-    DEFAULT_TOP_P,
-    DEFAULT_TOP_K,
-    DEFAULT_REPEAT_PENALTY,
+    DEFAULT_CONTEXT_LENGTH,
     DEFAULT_HOTKEY
 )
 from src.keyboard_manager import (
@@ -60,14 +58,10 @@ def main():
     # Model configuration arguments - using defaults from model_config
     parser.add_argument('--temperature', type=float, default=DEFAULT_TEMPERATURE,
                         help=f'Temperature parameter for text generation (default: {DEFAULT_TEMPERATURE})')
-    parser.add_argument('--top-p', type=float, default=DEFAULT_TOP_P,
-                        help=f'Top-p sampling parameter (default: {DEFAULT_TOP_P})')
-    parser.add_argument('--top-k', type=int, default=DEFAULT_TOP_K,
-                        help=f'Top-k sampling parameter (default: {DEFAULT_TOP_K})')
     parser.add_argument('--max-tokens', type=int, default=DEFAULT_MAX_TOKENS,
                         help=f'Maximum number of tokens to generate (default: {DEFAULT_MAX_TOKENS})')
-    parser.add_argument('--repeat-penalty', type=float, default=DEFAULT_REPEAT_PENALTY,
-                        help=f'Penalty for repeated tokens (default: {DEFAULT_REPEAT_PENALTY})')
+    parser.add_argument('--context-length', type=int, default=DEFAULT_CONTEXT_LENGTH,
+                        help=f'Context length for the model (default: {DEFAULT_CONTEXT_LENGTH})')
     
     try:
         args = parser.parse_args()
@@ -88,13 +82,10 @@ def main():
         
         # Create model args dictionary
         model_args = {
-            "temperature": args.temperature,
-            "top_p": args.top_p,
-            "top_k": args.top_k,
+            "temp": args.temperature,
             "max_tokens": args.max_tokens,
-            "repeat_penalty": args.repeat_penalty,
             "system_prompt": open(os.path.join("data", "prompts", "system", "diff_analyzer.xml")).read(),
-            "repo_path": repo_path
+            "ctx-size": args.context_length
         }
         
         # Initialize components
