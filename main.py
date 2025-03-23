@@ -94,7 +94,7 @@ def main():
             "top_k": args.top_k,
             "max_tokens": args.max_tokens,
             "repeat_penalty": args.repeat_penalty,
-            "system_prompt": os.path.join("data", "prompts", "system", "diff_analyzer.xml"),
+            "system_prompt": open(os.path.join("data", "prompts", "system", "diff_analyzer.xml")).read(),
             "repo_path": repo_path  # Add repo_path to model_args for the hotkey handler
         }
         
