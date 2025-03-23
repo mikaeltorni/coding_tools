@@ -80,8 +80,8 @@ def main():
             print(f"Error: Not a valid Git repository: {repo_path}")
             sys.exit(1)
         
-        # Create model args dictionary
-        model_args = {
+        payload = {
+            "prompt": "",
             "temp": args.temperature,
             "top_p": 0.95,
             "top_k": 40,
@@ -94,7 +94,6 @@ def main():
             "system_prompt": open(os.path.join("data", "prompts", "system", "diff_analyzer.xml")).read(),
             "ctx-size": args.context_length
         }
-
         
         # Initialize components
         logger.info("Initializing components")
@@ -104,12 +103,12 @@ def main():
         diff_content = get_repo_diff(repo_path)
         
         # Test server connectivity with the diff content
-        logger.info(f"Testing connection to LLM server at {server_url}")
-        test_response = send_prompt_to_server(server_url, diff_content, model_args)
-        logger.info("Successfully connected to LLM server")
+        # logger.info(f"Testing connection to LLM server at {server_url}")
+        # test_response = send_prompt_to_server(server_url, diff_content, payload)
+        # logger.info("Successfully connected to LLM server")
         
         # Set up keyboard listener
-        setup_keyboard_listener(server_url, model_args, hotkey)
+        setup_keyboard_listener(server_url, payload, repo_path, hotkey)
         
         # Keep the program running until Ctrl+C is pressed
         print("Monitoring keyboard. Press Ctrl+C to exit.")
