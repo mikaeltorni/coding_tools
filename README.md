@@ -52,16 +52,8 @@ set CUDA_VISIBLE_DEVICES=-0 && ../llama.cpp/build/bin/Release/llama-server --mod
 
 ---
 
-## 5. Tuning GPU Offloading
+EDIT THIS LATER?
 
-Llama.cpp automatically determines how many layers to offload to the GPU, but you can override this setting for optimal performance:
-
-- To manually specify the number of GPU offloaded layers, add the `--n-gpu-layers` flag
-- For example:
-```bash
-set CUDA_VISIBLE_DEVICES=-0 && llama-server --model your_model.gguf --n-gpu-layers 26
-```
-- If the performance is slow, increase the value. In one test, adjusting `--n-gpu-layers` to 420 significantly improved token throughput.
 - Other useful parameters:
   - `--ctx-size`: Context window size (default: 2048)
   - `--batch-size`: Batch size for prompt processing
