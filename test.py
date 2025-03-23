@@ -76,6 +76,23 @@ def check_cuda_support() -> Tuple[bool, Dict[str, Any]]:
     except ImportError:
         logger.info("torch not available, using alternative CUDA detection")
     
+    # Check if process can access NVIDIA GPU via nvidia-smi
+    # This is the most reliable way to check if CUDA is actually available
+    try:
+        if platform.system() == "Windows":
+            result = subprocess.run("nvidia-smi", capture_output=True, text=True, check=False)
+            if result.returncode == 0:
+                logger.info("NVIDIA GPU is accessible (nvidia-smi successful)")
+                cuda_info["nvidia_smi_ok"] = True
+                # If nvidia-smi works, we can force CUDA to be considered available
+                cuda_info["available"] = True
+            else:
+                logger.warning("NVIDIA GPU not accessible or nvidia-smi not found")
+                cuda_info["nvidia_smi_ok"] = False
+    except Exception as e:
+        logger.warning(f"Error checking nvidia-smi: {e}")
+        cuda_info["nvidia_smi_ok"] = False
+    
     # Check if llama-cpp-python has CUDA support
     try:
         import llama_cpp
@@ -100,31 +117,29 @@ def check_cuda_support() -> Tuple[bool, Dict[str, Any]]:
         try:
             with open('requirements.txt', 'r') as f:
                 req_content = f.read()
-                if '--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124' in req_content:
+                # Check for either cu124 or cu125 in the requirements
+                if any(f'llama-cpp-python/whl/cu{ver}' in req_content for ver in ['124', '125']):
                     logger.info("llama-cpp-python was installed with CUDA support from pre-built wheel")
                     cuda_info["from_cuda_wheel"] = True
+                    # If installed with CUDA wheel, override detection
+                    cuda_info["available"] = True
         except Exception as e:
             logger.warning(f"Could not check requirements.txt: {e}")
         
-        # Check if process can access NVIDIA GPU
-        if platform.system() == "Windows":
-            try:
-                result = subprocess.run("nvidia-smi", capture_output=True, text=True, check=False)
-                if result.returncode == 0:
-                    logger.info("NVIDIA GPU is accessible (nvidia-smi successful)")
-                    cuda_info["nvidia_smi_ok"] = True
-                else:
-                    logger.warning("NVIDIA GPU not accessible or nvidia-smi not found")
-                    cuda_info["nvidia_smi_ok"] = False
-            except Exception as e:
-                logger.warning(f"Error checking nvidia-smi: {e}")
-                cuda_info["nvidia_smi_ok"] = False
+        # Make the final decision on CUDA availability based on multiple factors
+        cuda_available = (
+            cuda_info.get("nvidia_smi_ok", False) or  # GPU is accessible
+            cuda_info.get("has_cuda_backend", False) or  # Library has CUDA backend
+            cuda_info.get("from_cuda_wheel", False) or  # Installed from CUDA wheel
+            cuda_info.get("available", False)  # torch reported CUDA available
+        )
                 
-        return cuda_info.get("has_cuda_backend", False), cuda_info
+        return cuda_available, cuda_info
         
     except ImportError as e:
         logger.error(f"Error importing llama_cpp: {e}")
-        return False, cuda_info
+        # If we can't import llama_cpp but nvidia-smi works, still consider CUDA available
+        return cuda_info.get("nvidia_smi_ok", False), cuda_info
 
 def load_model(model_path: str, force_cpu: bool = False) -> Any:
     """
@@ -160,28 +175,36 @@ def load_model(model_path: str, force_cpu: bool = False) -> Any:
         # GPU layers (0 = CPU only, -1 = all layers on GPU)
         n_gpu_layers = 0 if force_cpu else -1
         
-        # Print a very clear warning message if using CPU
-        if force_cpu or not cuda_supported:
+        # OVERRIDE: Force GPU usage if nvidia-smi works, regardless of other detection
+        if not force_cpu and cuda_info.get("nvidia_smi_ok", False):
+            n_gpu_layers = -1
+            cuda_supported = True
+            logger.info("NVIDIA GPU detected via nvidia-smi, forcing GPU usage")
+        
+        # Print messaging based on detection
+        if force_cpu:
             print("\n" + "="*60)
             print("WARNING: RUNNING IN CPU-ONLY MODE - EXPECT SLOW PERFORMANCE")
-            if force_cpu:
-                print("Reason: Forced CPU mode by user")
-            else:
-                print("Reason: CUDA not detected or not properly enabled")
+            print("Reason: Forced CPU mode by user")
+            print(f"llama-cpp-python version: {cuda_info.get('llama_cpp_version', 'unknown')}")
+            print("="*60 + "\n")
+        elif cuda_supported:
+            print("\n" + "="*60)
+            print("CUDA SUPPORT DETECTED - Using GPU acceleration")
+            print(f"llama-cpp-python version: {cuda_info.get('llama_cpp_version', 'unknown')}")
+            if cuda_info.get("nvidia_smi_ok", False):
+                print("NVIDIA GPU detected via nvidia-smi")
+            print("="*60 + "\n")
+        else:
+            print("\n" + "="*60)
+            print("WARNING: RUNNING IN CPU-ONLY MODE - EXPECT SLOW PERFORMANCE")
+            print("Reason: CUDA not detected or not properly enabled")
             print(f"llama-cpp-python version: {cuda_info.get('llama_cpp_version', 'unknown')}")
             print("To enable CUDA, make sure:")
             print("1. You have a compatible NVIDIA GPU with proper drivers installed")
             print("2. llama-cpp-python is installed with CUDA support:")
             print("   pip install --force-reinstall llama-cpp-python --extra-index-url")
             print("   https://abetlen.github.io/llama-cpp-python/whl/cu124")
-            print("="*60 + "\n")
-            
-            # Wait a moment for user to read the message
-            time.sleep(1)
-        else:
-            print("\n" + "="*60)
-            print("CUDA SUPPORT DETECTED - Using GPU acceleration")
-            print(f"llama-cpp-python version: {cuda_info.get('llama_cpp_version', 'unknown')}")
             print("="*60 + "\n")
         
         # Model parameters optimized for Gemma 3
@@ -197,6 +220,7 @@ def load_model(model_path: str, force_cpu: bool = False) -> Any:
         }
         
         # Load the model
+        logger.info(f"Creating model with n_gpu_layers = {n_gpu_layers}")
         model = Llama(**model_params)
         
         # Log model loaded successfully
@@ -292,6 +316,8 @@ def main() -> None:
                         help="Enable verbose logging")
     parser.add_argument("--cpu", action="store_true",
                         help="Force CPU-only mode (disable CUDA)")
+    parser.add_argument("--force-gpu", action="store_true", 
+                        help="Force GPU usage regardless of CUDA detection")
     args = parser.parse_args()
     
     # Set log level based on verbose flag
@@ -301,8 +327,9 @@ def main() -> None:
     setup_logging()
     
     try:
-        # Load the model
-        model = load_model(args.model_path, force_cpu=args.cpu)
+        # Load the model (override force_cpu if force-gpu is specified)
+        force_cpu = args.cpu and not args.force_gpu
+        model = load_model(args.model_path, force_cpu=force_cpu)
         
         print("\n===== Gemma 3 1B Interactive Chat =====")
         print("Type 'exit', 'quit', or press Ctrl+C to end the conversation.\n")
