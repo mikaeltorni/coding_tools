@@ -1,9 +1,19 @@
+# Requirements for CUDA-enabled LLM inference
+# Uses CUDA 12.4 wheels for GPU acceleration
 --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124
-llama-cpp-python
-gitpython==3.1.44
-keyboard==0.13.5
-bitsandbytes==0.45.3
+llama-cpp-python==0.3.4
+
+# Python packages for GPU support
 --extra-index-url https://download.pytorch.org/whl/cu124
 torch==2.6.0+cu124
 torchaudio==2.6.0+cu124
 torchvision==0.21.0+cu124
+
+# Other dependencies
+gitpython==3.1.44
+keyboard==0.13.5
+bitsandbytes==0.45.3
+
+# Optional packages for development
+cmake
+ninja

@@ -214,7 +214,7 @@ def load_model(model_path: str, force_cpu: bool = False) -> Any:
             "n_batch": 1024,                  # Increased batch size for better throughput
             "n_gpu_layers": n_gpu_layers,     # GPU layers setting
             "seed": 42,                       # For reproducibility
-            "verbose": False,                 # No need for verbose output after checks
+            "verbose": True,                  # Enable verbose output to debug CUDA usage
             "f16_kv": True,                   # Use half precision for key/value cache
             "use_mlock": True,                # Lock memory to prevent swapping
         }
