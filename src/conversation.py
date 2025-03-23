@@ -38,9 +38,30 @@ class ConversationManager:
         Returns:
             list: Updated conversation history
         """
+        # Ensure content is properly formatted as a string
+        if isinstance(content, list):
+            # If content is a nested list format from server response, extract the text
+            formatted_content = ""
+            for item in content:
+                if isinstance(item, dict) and "text" in item:
+                    formatted_content += item["text"]
+                elif isinstance(item, list):
+                    for subitem in item:
+                        if isinstance(subitem, dict) and "text" in subitem:
+                            formatted_content += subitem["text"]
+            content = formatted_content or str(content)
+        elif not isinstance(content, str):
+            content = str(content)
+        
+        # Clean up performance metrics if this is an assistant response
+        if role == "assistant" and "[Performance:" in content:
+            # Remove performance metrics from the content before storing
+            content = content.split("[Performance:")[0].strip()
+        
+        # Add the message to conversation history
         self.conversation_history.append({
             "role": role,
-            "content": [{"type": "text", "text": content}]
+            "content": content
         })
         logger.debug(f"Added message with role '{role}' to conversation history")
         return self.conversation_history

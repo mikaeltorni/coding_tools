@@ -75,10 +75,7 @@ class Agent:
             # Convert messages to a prompt string for llama.cpp
             prompt = self._format_messages_for_llamacpp(messages)
             
-            # Start timing ONLY after all setup is done
-            start_time = time.time()
-            
-            # Send the message to the model using llama.cpp interface
+            # Send the message to the model
             output = self.model.create_completion(
                 prompt,
                 max_tokens=self.model_config["max_tokens"],
@@ -88,43 +85,35 @@ class Agent:
                 repeat_penalty=self.model_config.get("repeat_penalty", 1.1)
             )
             
-            # End timing as soon as we get a response
-            end_time = time.time()
-            
             # Get the response
             response = output["choices"][0]["text"]
             
-            # Calculate generation metrics
-            elapsed_time = end_time - start_time
+            # Get accurate performance metrics from the output
+            if "performance" in output:
+                perf = output["performance"]
+                eval_time = perf.get("eval_time", 0)
+                completion_tokens = output["usage"].get("completion_tokens", 0)
+                tokens_per_second = perf.get("tokens_per_second", 0)
+            else:
+                # Fallback to estimates if server doesn't provide performance data
+                eval_time = 0
+                completion_tokens = len(response.split()) * 1.3  # Rough estimate
+                tokens_per_second = 0
             
-            # Use a more accurate tokenizer estimate for tokens
-            # GPT models estimate: 1 token ≈ 4 characters (including spaces)
-            char_count = len(response)
-            token_count = char_count // 4
+            # Format the performance info with the correct metrics
+            performance_info = f"\n\n[Performance: {tokens_per_second:.2f} tokens/sec | {completion_tokens} tokens in {eval_time:.2f}s]"
             
-            # Alternative count based on words (typically more accurate for English)
-            word_count = len(response.split())
-            # Most models: 1 token ≈ 0.75 words for English text
-            token_count_by_words = int(word_count / 0.75)
-            
-            # Use the larger of the two estimates to be conservative
-            token_count = max(token_count, token_count_by_words)
-            
-            tokens_per_second = token_count / elapsed_time if elapsed_time > 0 else 0
-            
-            # Ensure performance metrics are inside the response text, not after any markers
+            # Add performance metrics to the response
             if "========== END RESPONSE ==========" in response:
                 # Split the response and insert performance info before the END marker
                 parts = response.split("========== END RESPONSE ==========")
-                performance_info = f"\n\n[Performance: {tokens_per_second:.2f} tokens/sec | {token_count} tokens in {elapsed_time:.2f}s]"
                 response = f"{parts[0]}{performance_info}\n\n========== END RESPONSE =========={parts[1]}"
             else:
                 # Just append performance info to the end of the response
-                performance_info = f"\n\n[Performance: {tokens_per_second:.2f} tokens/sec | {token_count} tokens in {elapsed_time:.2f}s]"
                 if not response.endswith("]"):  # Avoid adding if already has performance metrics
                     response += performance_info
             
-            logger.debug(f"Generation: {token_count} tokens in {elapsed_time:.2f}s = {tokens_per_second:.2f} tokens/sec")
+            logger.debug(f"Generation: {completion_tokens} tokens in {eval_time:.2f}s = {tokens_per_second:.2f} tokens/sec")
             return response
         except Exception as e:
             logger.error(f"Error sending message to model: {e}")
@@ -145,6 +134,17 @@ class Agent:
         for message in messages:
             role = message.get("role", "")
             content = message.get("content", "")
+            
+            # Handle different content formats
+            if isinstance(content, list):
+                # If content is a list of message parts, concatenate them
+                formatted_content = ""
+                for item in content:
+                    if isinstance(item, dict) and "text" in item:
+                        formatted_content += item["text"]
+                    elif isinstance(item, str):
+                        formatted_content += item
+                content = formatted_content
             
             if role == "system":
                 prompt += f"<s>[INST] <<SYS>>\n{content}\n<</SYS>>\n\n"
