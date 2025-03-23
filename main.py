@@ -88,8 +88,6 @@ def main():
             "repeat_penalty": 1.2,
             "repeat_last_n": 64,
             "mirostat": 0,
-            "mirostat_tau": 5.0,
-            "mirostat_eta": 0.1,
             "max_tokens": args.max_tokens,
             "system_prompt": open(os.path.join("data", "prompts", "system", "diff_analyzer.xml")).read(),
             "ctx-size": args.context_length

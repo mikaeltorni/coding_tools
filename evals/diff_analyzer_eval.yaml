@@ -14,8 +14,6 @@ providers:
       repeat_penalty: 1.2
       repeat_last_n: 64
       mirostat: 0
-      mirostat_tau: 5.0
-      mirostat_eta: 0.1
       apiEndpoint: ${LLAMA_BASE_URL:-http://localhost:8080}
 
 defaultTest:
