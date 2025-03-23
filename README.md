@@ -44,7 +44,7 @@ cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_COMPILER="C:\Program Files\NVIDIA GPU
 1. Open a new Command Prompt.
 2. Set the CUDA_VISIBLE_DEVICES environment variable and start the server with your model by running:
 ```bash
-set CUDA_VISIBLE_DEVICES=-0 && llama-server --model your_model.gguf
+set CUDA_VISIBLE_DEVICES=-0 && ../llama.cpp/build/bin/Release/llama-server --model ../models/gemma-3-1b-it-Q4_K_M.gguf --n-gpu-layers 420
 ```
 
 3. The server will start and display information about the model and inference settings.
