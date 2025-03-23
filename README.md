@@ -23,7 +23,7 @@ conda activate ct
 
 ### Build Instructions
 1. Open a Windows Command Prompt.
-2. Configure and build llama.cpp by running the following command:
+2. Configure and build llama.cpp by running the following commands:
 ```bash
 cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_COMPILER="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\bin\nvcc.exe" -DCMAKE_CUDA_ARCHITECTURES="89" && cmake --build build --config Release
 ```
