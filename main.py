@@ -30,6 +30,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+DEFAULT_MODEL_TYPE = "llama_server"
+DEFAULT_TEMPERATURE = 0
+DEFAULT_MAX_TOKENS = 4096
+DEFAULT_TOP_P = 0.9
+DEFAULT_TOP_K = 40
+DEFAULT_REPEAT_PENALTY = 0
+
 def main():
     """
     Main function that parses command line arguments and runs the program.
@@ -48,16 +55,16 @@ def main():
                         help='URL of the llama server (default: http://localhost:8080)')
     
     # Model configuration arguments - using defaults from ModelConfig class
-    parser.add_argument('--temperature', type=float, default=ModelConfig.DEFAULT_TEMPERATURE,
-                        help=f'Temperature parameter for text generation (default: {ModelConfig.DEFAULT_TEMPERATURE})')
-    parser.add_argument('--top-p', type=float, default=ModelConfig.DEFAULT_TOP_P,
-                        help=f'Top-p sampling parameter (default: {ModelConfig.DEFAULT_TOP_P})')
-    parser.add_argument('--top-k', type=int, default=ModelConfig.DEFAULT_TOP_K,
-                        help=f'Top-k sampling parameter (default: {ModelConfig.DEFAULT_TOP_K})')
-    parser.add_argument('--max-tokens', type=int, default=ModelConfig.DEFAULT_MAX_TOKENS,
-                        help=f'Maximum number of tokens to generate (default: {ModelConfig.DEFAULT_MAX_TOKENS})')
-    parser.add_argument('--repeat-penalty', type=float, default=ModelConfig.DEFAULT_REPEAT_PENALTY,
-                        help=f'Penalty for repeated tokens (default: {ModelConfig.DEFAULT_REPEAT_PENALTY})')
+    parser.add_argument('--temperature', type=float, default=DEFAULT_TEMPERATURE,
+                        help=f'Temperature parameter for text generation (default: {DEFAULT_TEMPERATURE})')
+    parser.add_argument('--top-p', type=float, default=DEFAULT_TOP_P,
+                        help=f'Top-p sampling parameter (default: {DEFAULT_TOP_P})')
+    parser.add_argument('--top-k', type=int, default=DEFAULT_TOP_K,
+                        help=f'Top-k sampling parameter (default: {DEFAULT_TOP_K})')
+    parser.add_argument('--max-tokens', type=int, default=DEFAULT_MAX_TOKENS,
+                        help=f'Maximum number of tokens to generate (default: {DEFAULT_MAX_TOKENS})')
+    parser.add_argument('--repeat-penalty', type=float, default=DEFAULT_REPEAT_PENALTY,
+                        help=f'Penalty for repeated tokens (default: {DEFAULT_REPEAT_PENALTY})')
     
     try:
         args = parser.parse_args()
@@ -101,7 +108,11 @@ def main():
 
         payload = {
             "prompt": "Testing the llama server",
-            "n_predict": 4096
+            "n_predict": 4096,
+            "temperature": DEFAULT_TEMPERATURE,
+            "top_p": DEFAULT_TOP_P,
+            "top_k": DEFAULT_TOP_K,
+            "repeat_penalty": DEFAULT_REPEAT_PENALTY
         }
         response = requests.post("http://localhost:8080/completion", json=payload)
         print(response.json()["content"])
