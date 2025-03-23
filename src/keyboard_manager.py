@@ -52,7 +52,6 @@ def send_prompt_to_server(server_url, prompt, model_args):
         }
         
         response = requests.post(f"{server_url}/completion", json=payload)
-        final_response = json.dumps(response.json(), indent=2)
         response.raise_for_status()  # Raise exception for HTTP errors
         
         formatted_response = json.dumps(response.json(), indent=2)
