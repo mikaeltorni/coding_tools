@@ -21,7 +21,6 @@ from data.model_config import (
     DEFAULT_HOTKEY
 )
 from src.keyboard_manager import (
-    send_prompt_to_server,
     setup_keyboard_listener
 )
 from src.git_manager import (
