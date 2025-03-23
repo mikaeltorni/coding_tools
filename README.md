@@ -15,19 +15,17 @@ conda activate ct
 
 ---
 
-## 2. Install Dependencies
+## 2. GPU Acceleration Setup for Llama.cpp
 
-With the Conda environment activated, install the dependencies using pip:
+### Prerequisites
+- Install CUDA Toolkit 12.8 from the official NVIDIA website.
+- Verify that your NVIDIA GPU (for example, an RTX 4090 with compute capability 8.9) is supported.
 
+### Build Instructions
+1. Open a Windows Command Prompt.
+2. Configure and build llama.cpp by running the following command:
 ```bash
-pip install -r requirements.txt
-```
-
-For GPU acceleration (recommended), reinstall llama-cpp-python with CUDA support:
-
-```bash
-pip uninstall -y llama-cpp-python
-CMAKE_ARGS="-DLLAMA_CUBLAS=on" pip install llama-cpp-python
+cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_COMPILER="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\bin\nvcc.exe" -DCMAKE_CUDA_ARCHITECTURES="89" && cmake --build build --config Release
 ```
 
 ---
@@ -50,49 +48,44 @@ CMAKE_ARGS="-DLLAMA_CUBLAS=on" pip install llama-cpp-python
 
 ---
 
-## 4. Using the Model in Your Code
+## 4. Running the Llama Server
 
-```python
-from src.models import ModelManager
-
-# Initialize the model with optimized settings
-model_path = "path/to/your/model.gguf"
-model, config = ModelManager.load_model(model_path)
-
-# Example of generating text
-output = model.create_completion(
-    "Your prompt text here",
-    max_tokens=config["max_tokens"],
-    temperature=config["temperature"],
-    top_p=config["top_p"],
-    top_k=config["top_k"],
-    repeat_penalty=config["repeat_penalty"]
-)
-
-# Get the generated text
-generated_text = output["choices"][0]["text"]
+1. Open a new Command Prompt.
+2. Set the CUDA_VISIBLE_DEVICES environment variable and start the server with your model by running:
+```bash
+set CUDA_VISIBLE_DEVICES=-0 && llama-server --model your_model.gguf
 ```
+
+3. The server will start and display information about the model and inference settings.
+4. Connect to the server using HTTP requests to localhost on the default port.
 
 ---
 
-## Performance Optimization
+## 5. Tuning GPU Offloading
 
-The ModelManager is already configured with optimal default settings, but you can fine-tune these parameters:
+Llama.cpp automatically determines how many layers to offload to the GPU, but you can override this setting for optimal performance:
 
-```python
-custom_config = {
-    "n_gpu_layers": -1,     # Use all layers on GPU
-    "n_ctx": 8192,          # Context window size
-    "n_batch": 512,         # Batch size for prompt processing
-    "n_threads": 8,         # Number of CPU threads
-    "temperature": 0.7,     # Higher values = more creative output
-    "top_p": 0.9,           # Controls diversity
-    "top_k": 40,            # Controls vocabulary selection
-    "repeat_penalty": 1.1   # Discourages repetition
-}
-
-model, config = ModelManager.load_model("path/to/model.gguf", custom_config)
+- To manually specify the number of GPU offloaded layers, add the `--n-gpu-layers` flag
+- For example:
+```bash
+set CUDA_VISIBLE_DEVICES=-0 && llama-server --model your_model.gguf --n-gpu-layers 26
 ```
+- If the performance is slow, increase the value. In one test, adjusting `--n-gpu-layers` to 420 significantly improved token throughput.
+- Other useful parameters:
+  - `--ctx-size`: Context window size (default: 2048)
+  - `--batch-size`: Batch size for prompt processing
+  - `--threads`: Number of CPU threads to use
+  - `--stream`: Enable streaming mode
+
+---
+
+## 6. Monitoring and Verification
+
+- Open a separate Command Prompt and run `nvidia-smi -l 1` to monitor GPU usage during inference
+- Check the server logs to ensure that layers are being offloaded to the GPU as intended
+- Look for performance metrics in the server output to verify acceleration is working properly
+
+---
 
 ## GPU Requirements
 
