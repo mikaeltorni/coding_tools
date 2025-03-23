@@ -13,6 +13,8 @@ import argparse
 import logging
 import os
 import sys
+import requests
+import json
 
 # Import our modules
 from src.models import ModelManager, ModelConfig
@@ -80,22 +82,29 @@ def main():
             repeat_penalty=args.repeat_penalty
         )
         
-        # Connect to the llama server
-        logger.info(f"Connecting to llama server at: {server_url}")
-        model_tuple = ModelManager.create_server_client(server_url, model_config)
+        # # Connect to the llama server
+        # logger.info(f"Connecting to llama server at: {server_url}")
+        # model_tuple = ModelManager.create_server_client(server_url, model_config)
         
-        # Create conversation manager
-        conversation_manager = ConversationManager()
+        # # Create conversation manager
+        # conversation_manager = ConversationManager()
         
-        # Create diff manager
-        diff_manager = DiffManager(repo_path)
+        # # Create diff manager
+        # diff_manager = DiffManager(repo_path)
         
-        # Create agent
-        agent = DiffReceiver(model_tuple, conversation_manager)
+        # # Create agent
+        # agent = DiffReceiver(model_tuple, conversation_manager)
         
-        # Create and start key monitor
-        key_monitor = KeyMonitor(repo_path, diff_manager, agent)
-        key_monitor.start_monitoring()
+        # # Create and start key monitor
+        # key_monitor = KeyMonitor(repo_path, diff_manager, agent)
+        # key_monitor.start_monitoring()
+
+        payload = {
+            "prompt": "Testing the llama server",
+            "n_predict": 4096
+        }
+        response = requests.post("http://localhost:8080/completion", json=payload)
+        print(response.json()["content"])
         
     except KeyboardInterrupt:
         logger.info("Program terminated by user")
