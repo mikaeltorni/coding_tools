@@ -102,11 +102,6 @@ def main():
         logger.info(f"Getting diff from repository: {repo_path}")
         diff_content = get_repo_diff(repo_path)
         
-        # Test server connectivity with the diff content
-        # logger.info(f"Testing connection to LLM server at {server_url}")
-        # test_response = send_prompt_to_server(server_url, diff_content, payload)
-        # logger.info("Successfully connected to LLM server")
-        
         # Set up keyboard listener
         setup_keyboard_listener(server_url, payload, repo_path, hotkey)
         
