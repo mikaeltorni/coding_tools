@@ -11,9 +11,6 @@ import logging
 # Configure logging
 logger = logging.getLogger(__name__)
 
-# Model type configuration
-DEFAULT_MODEL_TYPE = "llama_server"
-
 # Default model parameters
 DEFAULT_TEMPERATURE = 0
 DEFAULT_MAX_TOKENS = 4096
@@ -37,7 +34,6 @@ def get_default_model_args():
     logger.debug("Retrieving default model arguments")
     
     default_args = {
-        "model_type": DEFAULT_MODEL_TYPE,
         "temperature": DEFAULT_TEMPERATURE,
         "max_tokens": DEFAULT_MAX_TOKENS,
         "top_p": DEFAULT_TOP_P,

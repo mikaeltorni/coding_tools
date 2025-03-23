@@ -15,7 +15,6 @@ import os
 import sys
 import time
 from data.model_config import (
-    DEFAULT_MODEL_TYPE,
     DEFAULT_TEMPERATURE,
     DEFAULT_MAX_TOKENS,
     DEFAULT_TOP_P,
