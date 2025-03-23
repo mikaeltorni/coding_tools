@@ -7,6 +7,7 @@ Command Line Usage Examples:
     python main.py /path/to/git/repository
     python main.py C:/Projects/my-project
     python main.py /path/to/git/repository --server-url http://localhost:8080
+    python main.py /path/to/git/repository --temperature 0.7 --top-p 0.95
 """
 import argparse
 import logging
@@ -15,7 +16,7 @@ import sys
 from pathlib import Path
 
 # Import our modules
-from src.models import ModelManager
+from src.models import ModelManager, ModelConfig
 from src.conversation import ConversationManager
 from src.diff_manager import DiffManager
 from src.agents import DiffReceiver
@@ -45,6 +46,18 @@ def main():
     parser.add_argument('--server-url', type=str, default='http://localhost:8080', 
                         help='URL of the llama server (default: http://localhost:8080)')
     
+    # Model configuration arguments
+    parser.add_argument('--temperature', type=float, default=0.01,
+                        help='Temperature parameter for text generation (default: 0.01)')
+    parser.add_argument('--top-p', type=float, default=0.9,
+                        help='Top-p sampling parameter (default: 0.9)')
+    parser.add_argument('--top-k', type=int, default=40,
+                        help='Top-k sampling parameter (default: 40)')
+    parser.add_argument('--max-tokens', type=int, default=4000,
+                        help='Maximum number of tokens to generate (default: 4000)')
+    parser.add_argument('--repeat-penalty', type=float, default=1.1,
+                        help='Penalty for repeated tokens (default: 1.1)')
+    
     try:
         args = parser.parse_args()
         repo_path = args.repo_path
@@ -58,9 +71,19 @@ def main():
         # Initialize components
         logger.info("Initializing components")
         
+        # Create model configuration from command line arguments
+        model_config = ModelConfig(
+            model_type="llama_server",
+            temperature=args.temperature,
+            top_p=args.top_p,
+            top_k=args.top_k,
+            max_tokens=args.max_tokens,
+            repeat_penalty=args.repeat_penalty
+        )
+        
         # Connect to the llama server
         logger.info(f"Connecting to llama server at: {server_url}")
-        model_tuple = ModelManager.create_server_client(server_url)
+        model_tuple = ModelManager.create_server_client(server_url, model_config)
         
         # Create conversation manager
         conversation_manager = ConversationManager()

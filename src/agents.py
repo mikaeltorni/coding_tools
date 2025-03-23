@@ -13,6 +13,10 @@ import os
 import time
 from pathlib import Path
 import json
+from typing import Dict, Any, List, Optional, Union
+
+# Import our ModelConfig class
+from src.models import ModelConfig
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +25,7 @@ class Agent:
     Base class for all agents.
     """
     
-    def __init__(self, name, model, conversation_manager):
+    def __init__(self, name: str, model: tuple, conversation_manager):
         """
         Initialize a new agent.
         
@@ -34,6 +38,14 @@ class Agent:
         self.model, self.model_config = model
         self.conversation_manager = conversation_manager
         logger.debug(f"Agent '{name}' initialized")
+        
+        # Validate that model_config is a ModelConfig object
+        if not isinstance(self.model_config, ModelConfig):
+            logger.warning(f"Expected model_config to be ModelConfig, got {type(self.model_config)}")
+            # If it's a dict, convert it to ModelConfig
+            if isinstance(self.model_config, dict):
+                self.model_config = ModelConfig.from_dict(self.model_config)
+                logger.debug("Converted model_config from dict to ModelConfig")
     
     def load_system_prompt(self, prompt_path):
         """
@@ -76,13 +88,21 @@ class Agent:
             prompt = self._format_messages_for_llamacpp(messages)
             
             # Send the message to the model
+            # Get the model configuration values
+            # Access ModelConfig attributes directly or provide defaults
+            max_tokens = getattr(self.model_config, 'max_tokens', 4000)
+            temperature = getattr(self.model_config, 'temperature', 0.01)
+            top_p = getattr(self.model_config, 'top_p', 0.9)
+            top_k = getattr(self.model_config, 'top_k', 40)
+            repeat_penalty = getattr(self.model_config, 'repeat_penalty', 1.1)
+            
             output = self.model.create_completion(
                 prompt,
-                max_tokens=self.model_config["max_tokens"],
-                temperature=self.model_config["temperature"],
-                top_p=self.model_config["top_p"],
-                top_k=self.model_config.get("top_k", 40),
-                repeat_penalty=self.model_config.get("repeat_penalty", 1.1)
+                max_tokens=max_tokens,
+                temperature=temperature,
+                top_p=top_p,
+                top_k=top_k,
+                repeat_penalty=repeat_penalty
             )
             
             # Get the response
