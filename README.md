@@ -19,7 +19,7 @@ conda activate ct
 
 ### Prerequisites
 - Install CUDA Toolkit 12.8 (or newer) from the official NVIDIA website.
-- Verify that your NVIDIA GPU (for example, an RTX 4090 with compute capability 8.9) is supported.
+- Verify that your NVIDIA GPU (for example, an RTX 4090 with compute capability 8.9 [Get the value from here, remove dot and insert it to the -DCMAKE_CUDA_ARCHITECTURES parameter](https://developer.nvidia.com/cuda-gpus)) is supported.
 
 ### Build Instructions
 1. Open a Windows Command Prompt.
