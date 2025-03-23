@@ -61,6 +61,28 @@ def send_prompt_to_server(server_url, prompt, model_args):
         logger.error(f"Error sending request to server: {e}")
         raise RuntimeError(f"Failed to communicate with LLM server: {e}")
 
+def save_diff_to_file(diff_content, output_file="output.txt"):
+    """
+    Save diff content to a file.
+    
+    Parameters:
+        diff_content (str): Diff content to save
+        output_file (str): Path to the output file, default is 'output.txt'
+        
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    logger.debug(f"Saving diff content to file: {output_file}")
+    
+    try:
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write(diff_content)
+        logger.info(f"Successfully saved diff content to {output_file}")
+        return True
+    except Exception as e:
+        logger.error(f"Error saving diff content to file: {e}")
+        return False
+
 def handle_hotkey_press(server_url, model_args):
     """
     Callback function for hotkey press event.
@@ -85,6 +107,11 @@ def handle_hotkey_press(server_url, model_args):
             # Get diff from the repository
             logger.info(f"Getting diff from repository: {repo_path}")
             diff_content = get_repo_diff(repo_path)
+            
+            # Save diff content to output.txt
+            if diff_content and diff_content != "No changes detected in the repository.":
+                save_diff_to_file(diff_content)
+                print(f"Diff content saved to output.txt")
             
             # Create a prompt with the diff content
             if diff_content:
