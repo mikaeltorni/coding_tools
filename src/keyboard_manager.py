@@ -15,7 +15,7 @@ import keyboard
 from data.model_config import (
     DEFAULT_HOTKEY
 )
-
+from src.git_manager import get_repo_diff
 # Configure logging
 logger = logging.getLogger(__name__)
 
