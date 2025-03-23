@@ -11,12 +11,13 @@ Functions:
 import logging
 import requests
 import keyboard
-import json
 
 from data.model_config import (
     DEFAULT_HOTKEY
 )
 from src.git_manager import get_repo_diff
+import json
+
 # Configure logging
 logger = logging.getLogger(__name__)
 
@@ -96,7 +97,6 @@ def handle_hotkey_press(server_url, payload, repo_path):
         if diff_content:
             payload["prompt"] = f"{diff_content}"
         else:
-            logger.info("No diff content found - skipping prompt")
             return
         
         # Send the prompt to the server
