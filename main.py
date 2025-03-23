@@ -105,7 +105,7 @@ def main():
         # key_monitor = KeyMonitor(repo_path, diff_manager, agent)
         # key_monitor.start_monitoring()
 
-        payload = {
+        payload_with_parameters = {
             "prompt": "Testing the llama server",
             "n_predict": 4096,
             "temperature": DEFAULT_TEMPERATURE,
@@ -113,7 +113,7 @@ def main():
             "top_k": DEFAULT_TOP_K,
             "repeat_penalty": DEFAULT_REPEAT_PENALTY
         }
-        response = requests.post(f"{server_url}/completion", json=payload)
+        response = requests.post(f"{server_url}/completion", json=payload_with_parameters)
         print(response.json()["content"])
         
     except KeyboardInterrupt:
