@@ -21,7 +21,7 @@ import json
 # Configure logging
 logger = logging.getLogger(__name__)
 
-def send_prompt_to_server(server_url, payload):
+def send_prompt_to_server(server_url, payload, repo_path):
     """
     Send a prompt to the LLM server and return the response.
     
@@ -35,6 +35,25 @@ def send_prompt_to_server(server_url, payload):
     """
     logger.debug(f"server_url: {server_url} | payload: {payload}")
     
+
+    system_prompt = open(os.path.join("data", "prompts", "system", "diff_analyzer.xml")).read()     
+    # Get diff from the repository
+    logger.info(f"Getting diff from repository: {repo_path}")
+    diff_content = get_repo_diff(repo_path)
+    
+    # Save diff content to output.txt
+    if diff_content and diff_content != "No changes detected in the repository.":
+        save_diff_to_file(diff_content)
+        print(f"Diff content saved to output.txt")
+    
+    # Create a prompt with the diff content
+    if diff_content:
+        payload["prompt"] = f"{diff_content}"
+    else:
+        logger.info("No diff content found - skipping prompt")
+        return
+
+
     try:       
         response = requests.post(f"{server_url}/completion", json=payload)
         response.raise_for_status()  # Raise exception for HTTP errors
@@ -83,24 +102,9 @@ def handle_hotkey_press(server_url, payload, repo_path):
     """
     logger.info("Hotkey pressed - sending prompt to LLM")
     
-    try:        
-        # Get diff from the repository
-        logger.info(f"Getting diff from repository: {repo_path}")
-        diff_content = get_repo_diff(repo_path)
-        
-        # Save diff content to output.txt
-        if diff_content and diff_content != "No changes detected in the repository.":
-            save_diff_to_file(diff_content)
-            print(f"Diff content saved to output.txt")
-        
-        # Create a prompt with the diff content
-        if diff_content:
-            payload["prompt"] = f"{diff_content}"
-        else:
-            return
-        
+    try:                
         # Send the prompt to the server
-        response = send_prompt_to_server(server_url, payload)
+        response = send_prompt_to_server(server_url, payload, repo_path)
         print("\n--- LLM Response ---")
         print(response)
         print("-------------------\n")
