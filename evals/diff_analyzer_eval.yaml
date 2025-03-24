@@ -7,7 +7,6 @@ providers:
   - id: llama
     config:
       temperature: 0
-      ctx-size: 32768
       max_tokens: 4096
       top_p: 0.9
       apiEndpoint: ${LLAMA_BASE_URL:-http://localhost:8080}
