@@ -84,10 +84,6 @@ def main():
             "generation_settings": {
                 "temperature": args.temperature,
                 "top_p": 0.95,
-                "top_k": 30,
-                "repeat_penalty": 1.4,
-                "repeat_last_n": 64,
-                "mirostat": 0,
                 "n_predict": args.max_tokens,
                 "ctx_size": args.context_length
             }

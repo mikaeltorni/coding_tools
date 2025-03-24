@@ -9,8 +9,9 @@ Functions:
     setup_keyboard_listener(server_url, model_args, hotkey): Sets up keyboard listener
 """
 import logging
-import requests
 import keyboard
+import openai
+import os
 
 from data.model_config import (
     DEFAULT_HOTKEY
@@ -27,16 +28,17 @@ def send_prompt_to_server(server_url, payload, repo_path):
     
     Parameters:
         server_url (str): URL of the LLM server
-        prompt (str): Text prompt to send to the LLM
-        model_args (dict): Model configuration parameters
+        payload (dict): Model configuration parameters and generation settings
+        repo_path (str): Path to Git repository
         
     Returns:
         str: LLM response content
     """
     logger.debug(f"server_url: {server_url} | payload: {payload}")
-    
 
+    # Get system prompt
     system_prompt = open(os.path.join("data", "prompts", "system", "diff_analyzer.xml")).read()     
+    
     # Get diff from the repository
     logger.info(f"Getting diff from repository: {repo_path}")
     diff_content = get_repo_diff(repo_path)
@@ -46,24 +48,38 @@ def send_prompt_to_server(server_url, payload, repo_path):
         save_diff_to_file(diff_content)
         print(f"Diff content saved to output.txt")
     
-    # Create a prompt with the diff content
-    if diff_content:
-        payload["prompt"] = f"{diff_content}"
-    else:
+    # Return if no diff content
+    if not diff_content:
         logger.info("No diff content found - skipping prompt")
         return
 
+    try:
+        # Set up OpenAI client
+        client = openai.OpenAI(
+            base_url=f"{server_url}/v1",
+            api_key="sk-no-key-required"
+        )   
 
-    try:       
-        response = requests.post(f"{server_url}/completion", json=payload)
-        response.raise_for_status()  # Raise exception for HTTP errors
-        
-        formatted_response = json.dumps(response.json(), indent=2)
+        # Create chat completion request
+        completion = client.chat.completions.create(
+            model="gemma-3-1b-it-Q4_K_M.gguf",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": diff_content}
+            ],
+            temperature=payload["generation_settings"]["temperature"],
+            top_p=payload["generation_settings"]["top_p"],
+            n=1,
+            max_tokens=payload["generation_settings"]["n_predict"]
+        )
+
+        response = completion.choices[0].message.content
+        formatted_response = json.dumps({"response": response}, indent=2)
         
         logger.debug(f"response received | content length: {len(formatted_response)}")
         return formatted_response
-    
-    except requests.RequestException as e:
+
+    except Exception as e:
         logger.error(f"Error sending request to server: {e}")
         raise RuntimeError(f"Failed to communicate with LLM server: {e}")
 
