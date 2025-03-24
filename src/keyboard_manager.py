@@ -69,7 +69,6 @@ def send_prompt_to_server(server_url, payload, repo_path):
             ],
             temperature=payload["generation_settings"]["temperature"],
             top_p=payload["generation_settings"]["top_p"],
-            n=1,
             max_tokens=payload["generation_settings"]["n_predict"]
         )
 
