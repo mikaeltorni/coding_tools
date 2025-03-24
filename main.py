@@ -83,7 +83,7 @@ def main():
         payload = {
             "generation_settings": {
                 "temperature": args.temperature,
-                "top_p": 0.95,
+                "top_p": 0.9,
                 "n_predict": args.max_tokens,
                 "ctx_size": args.context_length
             }
