@@ -1,3 +1,3 @@
 Make sure that:
 1. It clearly explains the diff that was provided to the LLM.
-2. The output is maximum of 10 words long, short description.
+2. The output is not longer than 10 words long. It must be a very short description.
