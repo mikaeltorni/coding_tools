@@ -61,3 +61,8 @@ EDIT THIS LATER?
   - `--stream`: Enable streaming mode
 
 ---
+
+## 5. Running the program
+```bash
+main.py [REPO FOLDER LOCATION]
+```
