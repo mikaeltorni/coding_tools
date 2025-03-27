@@ -45,5 +45,5 @@
 </generating_summary_what_changed_in_the_diff>
 
 <response_format>
-    Analyze the changed code/text and provide a summary of the changes.
+    Provider a short, maximum of 10 words, summary of the changes made in the diff.
 </response_format>
