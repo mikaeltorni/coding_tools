@@ -61,11 +61,3 @@ EDIT THIS LATER?
   - `--stream`: Enable streaming mode
 
 ---
-
-## 5. Monitoring and Verification
-
-- Open a separate Command Prompt and run `nvidia-smi -l 1` to monitor GPU usage during inference
-- Check the server logs to ensure that layers are being offloaded to the GPU as intended
-- Look for performance metrics in the server output to verify acceleration is working properly
-
----
