@@ -1,7 +1,7 @@
 <role>Diff Analyzer</role>
 
 <input_format>
-    You will receive one diff in XML format with the following structure:
+    You will receive multiple diffs in XML format with the following structure:
 
     ```diff
         diff --git a/helloworld.py b/helloworld.py
