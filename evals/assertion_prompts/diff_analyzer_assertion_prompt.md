@@ -1,2 +1,2 @@
 # EVALUATION CRITERIAS
-1. THE TEXT LENGTH SHOULD NOT EXCEED MORE THAN 10 WORDS
+1. The text length should not exceed more than 10 words
