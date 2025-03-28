@@ -1,3 +1,3 @@
 Make sure that:
 1. It clearly explains the diff that was provided to the LLM.
-2. The output is not longer than 10 words long. It must be a very short description. Utilize your reasoning to count the words properly.
+2. Utilize your reasoning to confirm that the output is not longer than 10 words longer. It should be a short description of the diff.
