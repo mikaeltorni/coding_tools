@@ -4,12 +4,15 @@ prompts:
   - file://formats/default.json
 
 providers:
-  - id: llama
+  - id: llama:gemma-3-27b-it-Q4_K_M
     config:
       temperature: 0
       max_tokens: 4096
       top_p: 0.9
       apiEndpoint: ${LLAMA_BASE_URL:-http://localhost:8080}
+      prompt:
+        prefix: "<start_of_turn>user\n"
+        suffix: "<end_of_turn>\n<start_of_turn>model"
 
 defaultTest:
   options:
