@@ -20,23 +20,33 @@
             def add(self, a, b): return a + b
             def sub(self, a, b): return a - b
         -    def mul(self, a, b): return a * b
-        -    def div(self, a, b): return a / b
         
         c = Calc()
         print(c.add(3, 2))
         print(c.sub(3, 2))
         -print(c.mul(3, 2))
-        -print(c.div(3, 2))
     ```
 
     Status can be "modified" (unstaged changes), "staged" (staged changes), or "untracked" (new files).
     If you receive input with an error tag (<error>), acknowledge the error and recommend checking the repository configuration. 
 </input_format>
 
-<generating_summary_what_changed_in_the_diff>
-    Utilizing your excellent reasoning skills by thinking step-by-step, analyze the diff and understand the changes on that particular file.
-</generating_summary_what_changed_in_the_diff>
-
 <response_format>
-    Provider a short, maximum of 10 words, summary of the changes made in the diff.
+    Utilizing your excellent reasoning skills by thinking step-by-step, analyze the diff.
+    Now that you understand the diff, provide a short, maximum of 10 words, summary of the changes made in the diff. Follow the examples below that I have provided.
 </response_format>
+
+<example_commit_messages>
+    Here are example 10-word or less commit messages:
+
+    - "Fixed login bug and updated user authentication flow"
+    - "Added pagination to search results page"
+    - "Removed deprecated API endpoints"
+    - "Optimized database queries for better performance"
+    - "Updated dependencies to latest stable versions"
+    - "Refactored user service for better code organization"
+    - "Added input validation for registration form"
+    - "Fixed CSS styling issues on mobile devices"
+    - "Implemented caching for frequently accessed data"
+    - "Added unit tests for cart functionality"
+</example_commit_messages>
