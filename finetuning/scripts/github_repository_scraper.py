@@ -316,40 +316,82 @@ def analyze_diff(diff_content, server_url, payload):
     For example: "feat: implemented user authentication with JWT tokens"
     """
 
-    try:
-        # Set up OpenAI client
-        client = openai.OpenAI(
-            base_url=f"{server_url}/v1",
-            api_key="sk-no-key-required",
-            timeout=10.0  # Add timeout to avoid hanging
-        )   
+    # Check message and file extension to help with classifying
+    commit_info = ""
+    if "Message:" in diff_content:
+        # Try to extract commit message
+        lines = diff_content.split('\n')
+        for line in lines:
+            if line.startswith("Message:"):
+                commit_info = line[len("Message:"):].strip()
+                break
+    
+    # Max retries for API calls
+    max_retries = 2
+    retry_count = 0
+    
+    while retry_count <= max_retries:
+        try:
+            # Set up OpenAI client
+            client = openai.OpenAI(
+                base_url=f"{server_url}/v1",
+                api_key="sk-no-key-required",
+                timeout=15.0  # Increased timeout to avoid hanging
+            )   
 
-        # Create chat completion request
-        completion = client.chat.completions.create(
-            model="gemma-3-27b",  # Using Gemma 3 27b model
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": diff_content}
-            ],
-            temperature=payload["generation_settings"]["temperature"],
-            top_p=payload["generation_settings"]["top_p"],
-            max_tokens=payload["generation_settings"]["n_predict"]
-        )
+            # Create chat completion request
+            completion = client.chat.completions.create(
+                model="gemma-3-27b",  # Using Gemma 3 27b model
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": diff_content}
+                ],
+                temperature=payload["generation_settings"]["temperature"],
+                top_p=payload["generation_settings"]["top_p"],
+                max_tokens=payload["generation_settings"]["n_predict"]
+            )
 
-        response = completion.choices[0].message.content.strip()
-        logger.debug(f"Response received: {response}")
-        return response
+            response = completion.choices[0].message.content.strip()
+            logger.debug(f"Response received: {response}")
+            return response
 
-    except openai.APITimeoutError:
-        logger.error("Request to LLama server timed out")
-        return "refactor: Component restructured for better maintenance"  # Fallback response
-    except openai.APIConnectionError:
-        logger.error("Connection error to LLama server")
-        # Analyze diff manually as fallback
-        return analyze_diff_manually(diff_content)
-    except Exception as e:
-        logger.error(f"Error sending request to server: {e}")
-        return analyze_diff_manually(diff_content)
+        except openai.APITimeoutError:
+            logger.error(f"Request to LLM server timed out (attempt {retry_count+1}/{max_retries+1})")
+            retry_count += 1
+            if retry_count <= max_retries:
+                logger.info(f"Retrying in 2 seconds...")
+                import time
+                time.sleep(2)
+            else:
+                logger.error("All retry attempts failed")
+                break
+        except openai.APIConnectionError:
+            logger.error(f"Connection error to LLM server (attempt {retry_count+1}/{max_retries+1})")
+            retry_count += 1
+            if retry_count <= max_retries:
+                logger.info(f"Retrying in 2 seconds...")
+                import time
+                time.sleep(2)
+            else:
+                logger.error("All retry attempts failed")
+                break
+        except Exception as e:
+            logger.error(f"Error sending request to server: {e}")
+            break
+    
+    # Get filename from diff content
+    filename = ""
+    diff_lines = diff_content.split('\n')
+    for line in diff_lines:
+        if line.startswith("diff --git"):
+            parts = line.split()
+            if len(parts) >= 3:
+                filename = parts[2][2:]  # Remove 'a/' prefix
+                break
+    
+    # Analyze diff manually with context from commit message and filename
+    logger.info(f"Falling back to manual analysis with filename: {filename}, message: {commit_info}")
+    return analyze_diff_manually(diff_content)
 
 def analyze_diff_manually(diff_content):
     """
@@ -368,9 +410,25 @@ def analyze_diff_manually(diff_content):
     added_lines = diff_content.count('\n+')
     removed_lines = diff_content.count('\n-')
     
-    # Check for documentation changes
-    if 'README' in diff_content or 'documentation' in diff_content.lower() or '.md' in diff_content:
-        return "docs: Updated documentation files or comments"
+    # Check for file renames
+    if 'similarity index' in diff_content and ('rename from' in diff_content or 'rename to' in diff_content):
+        return "chore: Renamed files or moved files between directories"
+    
+    # Check for documentation changes including README and LICENSE
+    if 'README.md' in diff_content or 'LICENSE' in diff_content or '.md' in diff_content:
+        if 'TODO' in diff_content:
+            return "docs: Added TODO items or task list"
+        if 'Added' in diff_content or 'Add' in diff_content:
+            return "docs: Added or updated documentation content"
+        return "docs: Updated documentation files"
+    
+    # Check for new files
+    if 'new file mode' in diff_content:
+        if '.md' in diff_content or 'LICENSE' in diff_content:
+            return "docs: Added new documentation files"
+        if 'test' in diff_content.lower():
+            return "test: Added new test files"
+        return "feat: Added new files or components"
     
     # Check for test changes
     if '/test/' in diff_content or 'test_' in diff_content or '_test' in diff_content:
@@ -383,6 +441,10 @@ def analyze_diff_manually(diff_content):
     # Check for CI changes
     if '.github/workflows' in diff_content or '.gitlab-ci' in diff_content or 'jenkins' in diff_content:
         return "ci: Updated CI configuration files"
+    
+    # Initial commit detection
+    if 'Initial commit' in diff_content:
+        return "chore: Initial repository setup"
     
     # Determine if this is a fix or feature based on line count
     if removed_lines > added_lines:
