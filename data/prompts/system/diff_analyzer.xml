@@ -3,7 +3,7 @@
 <input_format>
     You will receive multiple diffs in XML format with the following structure:
 
-    ```diff
+    ```
         diff --git a/helloworld.py b/helloworld.py
         deleted file mode 100644
         index bbbf60a..0000000
@@ -26,19 +26,14 @@
         print(c.sub(3, 2))
         -print(c.mul(3, 2))
     ```
-
-    Status can be "modified" (unstaged changes), "staged" (staged changes), or "untracked" (new files).
-    If you receive input with an error tag (<error>), acknowledge the error and recommend checking the repository configuration. 
 </input_format>
 
-<response_format>
-    Utilizing your excellent reasoning skills by thinking step-by-step, analyze the diff.
-    Now that you understand the diff, provide a short, maximum of 10 words, summary of the changes made in the diff. Follow the examples below that I have provided.
-</response_format>
+<output_format_instructions>
+    Analyze the diff utilizing your excellent reasoning skills by thinking step-by-step. Provide description of the changes made in the diff.
+    Follow the examples below that I have provided for you.
+</output_format_instructions>
 
-<example_commit_messages>
-    Here are example 10-word or less commit messages:
-
+<output_format_examples>
     - "Fixed login bug and updated user authentication flow"
     - "Added pagination to search results page"
     - "Removed deprecated API endpoints"
@@ -49,4 +44,4 @@
     - "Fixed CSS styling issues on mobile devices"
     - "Implemented caching for frequently accessed data"
     - "Added unit tests for cart functionality"
-</example_commit_messages>
+</output_format_examples>
