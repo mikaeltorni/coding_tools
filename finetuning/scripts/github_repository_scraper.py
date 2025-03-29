@@ -460,8 +460,8 @@ def main():
                        help=f'URL of the llama server (default: {DEFAULT_SERVER_URL})')
     parser.add_argument('--output-file', type=str, default='github_diff_dataset.json',
                        help='Output file for the Alpaca dataset (default: github_diff_dataset.json)')
-    parser.add_argument('--max-diff-size', type=int, default=10000,
-                       help='Maximum diff size in characters to process (default: 10000)')
+    parser.add_argument('--max-diff-size', type=int, default=100000,
+                       help='Maximum diff size in characters to process (default: 100000)')
     parser.add_argument('--max-commits', type=int, default=None,
                        help='Maximum number of commits to process per branch (default: all commits)')
     parser.add_argument('--after-date', type=str, default=None,
@@ -485,7 +485,7 @@ def main():
         server_url = args.server_url
         output_file = args.output_file
         max_diff_size = args.max_diff_size
-        max_commits = args.max_commits
+        max_commits = args.max_commitsdiff_
         after_date = args.after_date
         skip_branches = args.skip_branches
         process_all_branches = args.process_all_branches
