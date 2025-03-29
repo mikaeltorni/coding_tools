@@ -95,7 +95,7 @@ def run(args):
         dataset = MsDataset.load(args.dataset, split="train")
     else:
         # Load and format dataset
-        dataset = load_dataset(args.dataset, split="train")
+        dataset = load_dataset('parquet', data_files='github_diff_dataset.parquet', split="train")
     dataset = dataset.map(formatting_prompts_func, batched=True)
     print("Data is formatted and ready!")
 
