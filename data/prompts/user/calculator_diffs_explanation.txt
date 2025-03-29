@@ -1,1 +1,1 @@
-The diff shows a simple deletion of a file mode entry in the `main.py` file.  The `diff` command has been used to compare the two versions of the file.  The output clearly shows that the file mode has been removed.  The `diff` command is effectively highlighting the change.
+The diff shows a simple deletion of a file mode entry in the `main.py` file.
