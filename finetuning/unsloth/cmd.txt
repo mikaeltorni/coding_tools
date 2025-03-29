@@ -8,3 +8,5 @@ conda create --name ft \
 conda activate ft
 
 pip install unsloth
+
+python convert_hf_to_gguf.py "../coding_tools/finetuning/unsloth/data-set-partial" --outfile partial.gguf
