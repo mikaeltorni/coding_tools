@@ -313,7 +313,8 @@ def analyze_diff(diff_content, server_url, payload):
     chore: Other changes that don't modify src or test files
     
     Your response should be a short 10-15 word summary starting with the tag.
-    For example: "feat: implemented user authentication with JWT tokens"
+    For example: "feat: implemented user authentication with JWT tokens".
+    Do not by any means exceed the 15 word limit.
     """
 
     try:
