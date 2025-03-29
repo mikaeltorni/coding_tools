@@ -24,5 +24,6 @@
     - "Fixed CSS styling issues on mobile devices"
     - "Implemented caching for frequently accessed data"
     - "Added unit tests for cart functionality"
+
     See, these have maximum 10 words. Make sure to follow this format to not make the Git commit message too long.
 </output_format_examples>
