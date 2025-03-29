@@ -506,6 +506,8 @@ def main():
                        help=f'Temperature parameter for text generation (default: {DEFAULT_TEMPERATURE})')
     parser.add_argument('--max-tokens', type=int, default=DEFAULT_MAX_TOKENS,
                        help=f'Maximum number of tokens to generate (default: {DEFAULT_MAX_TOKENS})')
+    parser.add_argument('--stop-at', type=str, default=None,
+                       help='Stop processing when reaching this commit SHA (e.g., "70051a0c05d03455dd1ad77062006b95f07b8e46")')
     
     try:
         args = parser.parse_args()
@@ -519,6 +521,7 @@ def main():
         after_date = args.after_date
         skip_branches = args.skip_branches
         process_all_branches = args.process_all_branches
+        stop_at_commit = args.stop_at
         
         # Set up payload for the LLM
         payload = {
@@ -649,6 +652,12 @@ def main():
                 # Process each commit
                 branch_new_entries = 0
                 for commit in commits:
+                    # Check if we've reached the stop commit
+                    if stop_at_commit and commit.hexsha.startswith(stop_at_commit):
+                        logger.info(f"Reached stop-at commit: {commit.hexsha[:8]}, stopping processing")
+                        print(f"Reached stop-at commit: {commit.hexsha[:8]}, stopping processing")
+                        break
+                        
                     # Skip if already processed
                     if commit.hexsha in processed_commits:
                         logger.info(f"Skipping already processed commit: {commit.hexsha[:8]}")
