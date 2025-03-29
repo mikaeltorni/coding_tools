@@ -413,6 +413,32 @@ def generate_alpaca_dataset(instruction, input_text, output_text):
     
     return dataset_entry
 
+def is_conventional_commit(commit_message):
+    """
+    Check if the commit message follows the conventional commit format.
+    
+    Parameters:
+        commit_message (str): The commit message to check
+        
+    Returns:
+        bool: True if the message follows conventional format, False otherwise
+    """
+    # Get the first line of the commit message
+    first_line = commit_message.strip().split('\n')[0].strip()
+    
+    # List of conventional commit prefixes
+    conventional_prefixes = ['feat:', 'fix:', 'docs:', 'style:', 'refactor:', 
+                            'perf:', 'test:', 'build:', 'ci:', 'chore:']
+    
+    # Check if the message starts with any of the conventional prefixes
+    for prefix in conventional_prefixes:
+        if first_line.lower().startswith(prefix):
+            # Check if there's content after the prefix
+            if len(first_line) > len(prefix) + 1:
+                return True
+    
+    return False
+
 def main():
     """
     Main function that parses command line arguments and runs the repository scraper.
@@ -573,9 +599,15 @@ def main():
                         logger.warning(f"Diff content too large ({len(diff_content)} chars), truncating to {max_diff_size} chars")
                         diff_content = diff_content[:max_diff_size] + "\n... (truncated)"
                     
-                    # Analyze diff using Gemma model
-                    logger.info(f"Analyzing diff for commit: {commit.hexsha[:8]}")
-                    analysis = analyze_diff(diff_content, server_url, payload)
+                    # Check if commit message already follows conventional format
+                    if is_conventional_commit(commit.message):
+                        logger.info(f"Commit {commit.hexsha[:8]} already has conventional format, using original message")
+                        # Just use the first line of the commit message
+                        analysis = commit.message.strip().split('\n')[0].strip()
+                    else:
+                        # Analyze diff using Gemma model
+                        logger.info(f"Analyzing diff for commit: {commit.hexsha[:8]}")
+                        analysis = analyze_diff(diff_content, server_url, payload)
                     
                     # Generate dataset entry
                     instruction = "Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore"
