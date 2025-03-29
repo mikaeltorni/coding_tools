@@ -3,7 +3,7 @@
 <input_format>
     You will receive text such as:
     ```
-        **Explanation:**
+        The user has added a new function to the calculator. The function is called `mul` and it multiplies two numbers. Calculator was changed to have a new function `mul`.
         The user has added a new function to the calculator. The function is called `mul` and it multiplies two numbers.
     ```
 </input_format>
