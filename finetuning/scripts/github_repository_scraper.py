@@ -561,14 +561,33 @@ def main():
         else:
             logger.info(f"Processing all branches: {len(branches)} branches found")
         
-        # Track processed commits to avoid duplicates
+        # Track processed commits and diffs to avoid duplicates
         processed_commits = set()
+        processed_diffs = set()
+        
+        # Hash function for diffs to create a unique identifier
+        def get_diff_hash(diff):
+            import hashlib
+            # Use a consistent subset of the diff to create a hash
+            # First, normalize line endings
+            normalized_diff = diff.replace('\r\n', '\n')
+            # Create hash from the normalized content
+            return hashlib.md5(normalized_diff.encode('utf-8')).hexdigest()
+        
+        # Collect already processed content
         for entry in dataset:
+            # Track commits
             if entry.get("input") and entry["input"].startswith("Commit: "):
                 commit_hash = entry["input"].split("\n")[0].replace("Commit: ", "")
                 processed_commits.add(commit_hash)
+                
+                # Track diffs
+                diff_content = entry["input"].split("\n\n", 1)
+                if len(diff_content) > 1:
+                    diff_hash = get_diff_hash(diff_content[1])
+                    processed_diffs.add(diff_hash)
         
-        logger.info(f"Found {len(processed_commits)} already processed commits")
+        logger.info(f"Found {len(processed_commits)} already processed commits and {len(processed_diffs)} unique diffs")
         
         # Process each branch
         total_new_entries = 0
@@ -606,6 +625,15 @@ def main():
                     if diff_content.startswith("No changes detected") or diff_content.startswith("Error getting diff"):
                         logger.info(f"Skipping commit {commit.hexsha[:8]}: {diff_content}")
                         continue
+                    
+                    # Check if this diff is already in the dataset
+                    diff_hash = get_diff_hash(diff_content)
+                    if diff_hash in processed_diffs:
+                        logger.info(f"Skipping commit {commit.hexsha[:8]}: Duplicate diff already processed")
+                        continue
+                    
+                    # Track this diff
+                    processed_diffs.add(diff_hash)
                     
                     # Limit diff size to avoid overwhelming the model
                     if len(diff_content) > max_diff_size:
