@@ -10,6 +10,9 @@ providers:
       max_tokens: 4096
       top_p: 0.9
       apiEndpoint: ${LLAMA_BASE_URL:-http://localhost:8080}
+      prompt:
+        prefix: "<start_of_turn>user\n"
+        suffix: "<end_of_turn>\n<start_of_turn>model"
 
 defaultTest:
   options:
