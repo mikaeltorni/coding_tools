@@ -20,7 +20,7 @@ tests:
     vars:
       system_prompt: file://../data/prompts/system/diff_analyzer.xml
       user_prompt: file://../data/prompts/user/test_calculator_diffs.txt
-      system_assertion_prompt: file://assertion_prompts/diff_analyzer_assertion_prompt.md
+      system_assertion_prompt: file://assertion_prompts/diff_analyzer_assertion.md
     assert:
       - type: llm-rubric
         value: "{{system_assertion_prompt}}"
