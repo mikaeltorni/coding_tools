@@ -9,6 +9,8 @@ Functions:
     fetch_all_branches(repo): Fetches all available branches
     checkout_branch(repo, branch_name): Checks out a specific branch
     get_branch_diff(repo, branch_name, base_branch): Gets diff between branches
+    get_commit_diff(repo, commit): Gets diff for a specific commit
+    get_branch_commits(repo, branch_name, after_date=None): Gets all commits from a branch with optional date filtering
     analyze_diff(diff_content, server_url, payload): Analyzes diff using Gemma model
     analyze_diff_manually(diff_content): Fallback method for diff analysis when LLM server fails
     generate_alpaca_dataset(instruction, input_text, output_text): Generates dataset in Alpaca format
@@ -18,6 +20,10 @@ Command Line Usage Examples:
     python github_repository_scraper.py https://github.com/username/repo.git
     python github_repository_scraper.py https://github.com/username/repo.git --target-dir ./repos
     python github_repository_scraper.py https://github.com/username/repo.git --server-url http://localhost:8080
+    python github_repository_scraper.py https://github.com/username/repo.git --after-date 2023-01-01
+    python github_repository_scraper.py https://github.com/username/repo.git --max-commits 100
+    python github_repository_scraper.py https://github.com/username/repo.git --skip-branches "gh-pages,docs"
+    python github_repository_scraper.py https://github.com/username/repo.git --process-all-branches
 """
 import argparse
 import json
@@ -196,6 +202,82 @@ def get_branch_diff(repo, branch_name, base_branch="main"):
         logger.error(f"Error getting branch diff: {e}")
         return f"Error getting diff: {e}"
 
+def get_commit_diff(repo, commit):
+    """
+    Get the diff for a specific commit.
+    
+    Parameters:
+        repo (git.Repo): Repository object
+        commit (git.Commit): Commit object to get diff for
+        
+    Returns:
+        str: Diff content as string
+    """
+    logger.debug(f"Getting diff for commit: {commit.hexsha[:8]}")
+    
+    try:
+        # Get parent commit
+        parents = commit.parents
+        if not parents:
+            # For first commit with no parent
+            diff = repo.git.show(commit.hexsha)
+        else:
+            # Get diff between commit and its first parent
+            parent = parents[0]
+            diff = repo.git.diff(parent.hexsha, commit.hexsha)
+        
+        logger.debug(f"Successfully retrieved commit diff | length: {len(diff)}")
+        
+        # If diff is empty, return a message
+        if not diff:
+            return f"No changes detected in commit {commit.hexsha[:8]}."
+        
+        return diff
+    
+    except GitCommandError as e:
+        logger.error(f"Git command error getting commit diff: {e}")
+        return f"Error getting diff: {e}"
+    except Exception as e:
+        logger.error(f"Error getting commit diff: {e}")
+        return f"Error getting diff: {e}"
+
+def get_branch_commits(repo, branch_name, after_date=None):
+    """
+    Get all commits from a branch.
+    
+    Parameters:
+        repo (git.Repo): Repository object
+        branch_name (str): Name of the branch to get commits from
+        after_date (str): Only include commits after this date (format: YYYY-MM-DD)
+        
+    Returns:
+        list: List of git.Commit objects
+    """
+    logger.debug(f"Getting commits for branch: {branch_name} | after_date: {after_date}")
+    
+    try:
+        # Get list of commits for the branch
+        if after_date:
+            try:
+                # Use git's date format for filtering
+                commits = list(repo.iter_commits(branch_name, since=after_date))
+                logger.info(f"Filtering commits after {after_date}")
+            except ValueError as e:
+                logger.error(f"Invalid date format: {e}. Use YYYY-MM-DD format.")
+                commits = list(repo.iter_commits(branch_name))
+        else:
+            commits = list(repo.iter_commits(branch_name))
+        
+        logger.info(f"Found {len(commits)} commits in branch {branch_name}")
+        return commits
+    
+    except GitCommandError as e:
+        logger.error(f"Git command error getting commits: {e}")
+        return []
+    except Exception as e:
+        logger.error(f"Error getting commits: {e}")
+        return []
+
 def analyze_diff(diff_content, server_url, payload):
     """
     Analyze Git diff using Gemma model to classify changes.
@@ -353,6 +435,14 @@ def main():
                        help='Output file for the Alpaca dataset (default: github_diff_dataset.json)')
     parser.add_argument('--max-diff-size', type=int, default=10000,
                        help='Maximum diff size in characters to process (default: 10000)')
+    parser.add_argument('--max-commits', type=int, default=None,
+                       help='Maximum number of commits to process per branch (default: all commits)')
+    parser.add_argument('--after-date', type=str, default=None,
+                       help='Only process commits after this date (format: YYYY-MM-DD)')
+    parser.add_argument('--skip-branches', type=str, default=None,
+                       help='Comma-separated list of branches to skip (e.g., "gh-pages,docs")')
+    parser.add_argument('--process-all-branches', action='store_true',
+                       help='Process all branches instead of just the main branch (for testing)')
     
     # Model configuration arguments
     parser.add_argument('--temperature', type=float, default=DEFAULT_TEMPERATURE,
@@ -368,6 +458,10 @@ def main():
         server_url = args.server_url
         output_file = args.output_file
         max_diff_size = args.max_diff_size
+        max_commits = args.max_commits
+        after_date = args.after_date
+        skip_branches = args.skip_branches
+        process_all_branches = args.process_all_branches
         
         # Set up payload for the LLM
         payload = {
@@ -388,37 +482,78 @@ def main():
         # Fetch all branches
         branches = fetch_all_branches(repo)
         
+        # Process skip-branches parameter
+        branches_to_skip = []
+        if skip_branches:
+            branches_to_skip = [branch.strip() for branch in skip_branches.split(',')]
+            logger.info(f"Skipping branches: {branches_to_skip}")
+        
+        # For testing, only process the main branch
+        main_branch_names = ["main", "master"]
+        test_branches = [branch for branch in branches if branch in main_branch_names]
+        
+        if not process_all_branches:
+            if test_branches:
+                logger.info(f"Testing mode: only processing main branch: {test_branches[0]}")
+                branches = [test_branches[0]]
+            else:
+                logger.warning("Main branch not found in repository. Make sure the main branch is named 'main' or 'master'.")
+                if branches:
+                    logger.info(f"Using first available branch instead: {branches[0]}")
+                    branches = [branches[0]]
+        else:
+            logger.info(f"Processing all branches: {len(branches)} branches found")
+        
         # Process each branch
         for branch_name in branches:
             logger.info(f"Processing branch: {branch_name}")
             
             # Checkout branch
             if checkout_branch(repo, branch_name):
-                # Get branch diff
-                diff_content = get_branch_diff(repo, branch_name)
+                # Get all commits for the branch
+                commits = get_branch_commits(repo, branch_name, after_date)
                 
-                # Skip if no diff content
-                if diff_content.startswith("No changes detected") or diff_content.startswith("Error getting diff"):
-                    logger.info(f"Skipping branch {branch_name}: {diff_content}")
-                    continue
+                # Limit number of commits if specified
+                if max_commits is not None and len(commits) > max_commits:
+                    logger.info(f"Limiting to {max_commits} commits (out of {len(commits)})")
+                    commits = commits[:max_commits]
                 
-                # Limit diff size to avoid overwhelming the model
-                if len(diff_content) > max_diff_size:
-                    logger.warning(f"Diff content too large ({len(diff_content)} chars), truncating to {max_diff_size} chars")
-                    diff_content = diff_content[:max_diff_size] + "\n... (truncated)"
+                # Process each commit
+                for commit in commits:
+                    logger.info(f"Processing commit: {commit.hexsha[:8]} - {commit.message.splitlines()[0]}")
+                    
+                    # Get commit diff
+                    diff_content = get_commit_diff(repo, commit)
+                    
+                    # Skip if no diff content
+                    if diff_content.startswith("No changes detected") or diff_content.startswith("Error getting diff"):
+                        logger.info(f"Skipping commit {commit.hexsha[:8]}: {diff_content}")
+                        continue
+                    
+                    # Limit diff size to avoid overwhelming the model
+                    if len(diff_content) > max_diff_size:
+                        logger.warning(f"Diff content too large ({len(diff_content)} chars), truncating to {max_diff_size} chars")
+                        diff_content = diff_content[:max_diff_size] + "\n... (truncated)"
+                    
+                    # Analyze diff using Gemma model
+                    logger.info(f"Analyzing diff for commit: {commit.hexsha[:8]}")
+                    analysis = analyze_diff(diff_content, server_url, payload)
+                    
+                    # Generate dataset entry
+                    instruction = "Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore"
+                    
+                    # Include commit message in the dataset
+                    commit_info = f"Commit: {commit.hexsha}\nAuthor: {commit.author.name} <{commit.author.email}>\nDate: {commit.committed_datetime}\nMessage: {commit.message}\n\n"
+                    full_input = commit_info + diff_content
+                    
+                    dataset_entry = generate_alpaca_dataset(instruction, full_input, analysis)
+                    
+                    # Add to dataset
+                    dataset.append(dataset_entry)
+                    
+                    logger.info(f"Commit {commit.hexsha[:8]} processed: {analysis}")
                 
-                # Analyze diff using Gemma model
-                logger.info(f"Analyzing diff for branch: {branch_name}")
-                analysis = analyze_diff(diff_content, server_url, payload)
-                
-                # Generate dataset entry
-                instruction = "Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore"
-                dataset_entry = generate_alpaca_dataset(instruction, diff_content, analysis)
-                
-                # Add to dataset
-                dataset.append(dataset_entry)
-                
-                logger.info(f"Branch {branch_name} processed: {analysis}")
+                logger.info(f"Branch {branch_name} processing complete. Processed {len(commits)} commits.")
             else:
                 logger.warning(f"Failed to checkout branch: {branch_name}")
         
