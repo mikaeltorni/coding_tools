@@ -9,4 +9,6 @@ pip install unsloth
 
 python unsloth-cli.py --model_name "google/gemma-3-1b-it" --max_steps 4000 --load_in_4bit --save_model --save_path "data-set-partial" --save_method "lora"
 
+python ..\..\..\llama.cpp\convert_hf_to_gguf.py "data-set-partial-v2" --outfile partial-v2.gguf
+
 llama-cli -m partial.gguf -f prompt.txt --temp 0
