@@ -4,7 +4,6 @@
     You will receive text such as:
     ```
         The user has added a new function to the calculator. The function is called `mul` and it multiplies two numbers. Calculator was changed to have a new function `mul`.
-        The user has added a new function to the calculator. The function is called `mul` and it multiplies two numbers.
     ```
 </input_format>
 
@@ -14,16 +13,7 @@
 </output_format_instructions>
 
 <output_format_examples>
-    - "Fixed login bug and updated user authentication flow"
-    - "Added pagination to search results page"
-    - "Removed deprecated API endpoints"
-    - "Optimized database queries for better performance"
-    - "Updated dependencies to latest stable versions"
-    - "Refactored user service for better code organization"
-    - "Added input validation for registration form"
-    - "Fixed CSS styling issues on mobile devices"
-    - "Implemented caching for frequently accessed data"
-    - "Added unit tests for cart functionality"
+    The diff shows a simple deletion of a file mode entry in the `main.py` file -> "Removed file mode entry in main.py"
 
     See, these have maximum 10 words. Make sure to follow this format to not make the Git commit message too long.
 </output_format_examples>
