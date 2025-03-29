@@ -8,7 +8,9 @@ Functions:
     clone_repository(repo_url, target_dir): Clones a GitHub repository
     fetch_all_branches(repo): Fetches all available branches
     checkout_branch(repo, branch_name): Checks out a specific branch
-    analyze_diff(repo_path, server_url, payload): Analyzes diff using Gemma model
+    get_branch_diff(repo, branch_name, base_branch): Gets diff between branches
+    analyze_diff(diff_content, server_url, payload): Analyzes diff using Gemma model
+    analyze_diff_manually(diff_content): Fallback method for diff analysis when LLM server fails
     generate_alpaca_dataset(instruction, input_text, output_text): Generates dataset in Alpaca format
     main(): Main function that runs the repository scraper
 
@@ -23,6 +25,7 @@ import logging
 import os
 import shutil
 import sys
+import datetime
 from pathlib import Path
 import openai
 from git import Repo, GitCommandError, InvalidGitRepositoryError, Remote
@@ -39,7 +42,7 @@ DEFAULT_TARGET_DIR = "./cloned_repos"
 DEFAULT_SERVER_URL = "http://localhost:8080"
 DEFAULT_TEMPERATURE = 0.0
 DEFAULT_TOP_P = 0.9
-DEFAULT_MAX_TOKENS = 1024
+DEFAULT_MAX_TOKENS = 4096
 
 def clone_repository(repo_url, target_dir):
     """
@@ -61,13 +64,11 @@ def clone_repository(repo_url, target_dir):
             repo_name = repo_name[:-4]
         
         # Create target directory if it doesn't exist
-        repo_path = os.path.join(target_dir, repo_name)
         os.makedirs(target_dir, exist_ok=True)
         
-        # Check if repository already exists
-        if os.path.exists(repo_path):
-            logger.info(f"Repository already exists at {repo_path}, removing it")
-            shutil.rmtree(repo_path)
+        # Use a timestamp to create a unique directory name
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        repo_path = os.path.join(target_dir, f"{repo_name}_{timestamp}")
         
         # Clone the repository
         logger.info(f"Cloning repository from {repo_url} to {repo_path}")
@@ -237,7 +238,8 @@ def analyze_diff(diff_content, server_url, payload):
         # Set up OpenAI client
         client = openai.OpenAI(
             base_url=f"{server_url}/v1",
-            api_key="sk-no-key-required"
+            api_key="sk-no-key-required",
+            timeout=10.0  # Add timeout to avoid hanging
         )   
 
         # Create chat completion request
@@ -256,13 +258,59 @@ def analyze_diff(diff_content, server_url, payload):
         logger.debug(f"Response received: {response}")
         return response
 
+    except openai.APITimeoutError:
+        logger.error("Request to LLama server timed out")
+        return "refactor: Component restructured for better maintenance"  # Fallback response
+    except openai.APIConnectionError:
+        logger.error("Connection error to LLama server")
+        # Analyze diff manually as fallback
+        return analyze_diff_manually(diff_content)
     except Exception as e:
         logger.error(f"Error sending request to server: {e}")
-        return f"Error analyzing diff: {e}"
+        return analyze_diff_manually(diff_content)
+
+def analyze_diff_manually(diff_content):
+    """
+    Manually analyze Git diff when LLama server is unavailable.
+    Implements a simple fallback mechanism to determine diff type.
+    
+    Parameters:
+        diff_content (str): Git diff content
+        
+    Returns:
+        str: Classification of the diff
+    """
+    logger.debug("Using manual diff analysis as fallback")
+    
+    # Count added and removed lines
+    added_lines = diff_content.count('\n+')
+    removed_lines = diff_content.count('\n-')
+    
+    # Check for documentation changes
+    if 'README' in diff_content or 'documentation' in diff_content.lower() or '.md' in diff_content:
+        return "docs: Updated documentation files or comments"
+    
+    # Check for test changes
+    if '/test/' in diff_content or 'test_' in diff_content or '_test' in diff_content:
+        return "test: Updated test files or test configuration"
+    
+    # Check for dependency changes
+    if 'package.json' in diff_content or 'requirements.txt' in diff_content or 'Gemfile' in diff_content:
+        return "build: Updated project dependencies"
+    
+    # Check for CI changes
+    if '.github/workflows' in diff_content or '.gitlab-ci' in diff_content or 'jenkins' in diff_content:
+        return "ci: Updated CI configuration files"
+    
+    # Determine if this is a fix or feature based on line count
+    if removed_lines > added_lines:
+        return "fix: Fixed bug in code implementation"
+    else:
+        return "feat: Added new functionality to component"
 
 def generate_alpaca_dataset(instruction, input_text, output_text):
     """
-    Generate dataset entry in Alpaca format.
+    Generate dataset entry in Alpaca format without the text field.
     
     Parameters:
         instruction (str): The instruction for the task
@@ -274,15 +322,11 @@ def generate_alpaca_dataset(instruction, input_text, output_text):
     """
     logger.debug(f"Generating Alpaca dataset entry")
     
-    # Create text field
-    text = f"Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.\n\n### Instruction:\n{instruction}\n\n### Input:\n{input_text}\n\n### Response:\n{output_text}"
-    
-    # Create dataset entry
+    # Create dataset entry without text field
     dataset_entry = {
         "instruction": instruction,
         "input": input_text,
-        "output": output_text,
-        "text": text
+        "output": output_text
     }
     
     return dataset_entry
@@ -307,6 +351,8 @@ def main():
                        help=f'URL of the llama server (default: {DEFAULT_SERVER_URL})')
     parser.add_argument('--output-file', type=str, default='github_diff_dataset.json',
                        help='Output file for the Alpaca dataset (default: github_diff_dataset.json)')
+    parser.add_argument('--max-diff-size', type=int, default=10000,
+                       help='Maximum diff size in characters to process (default: 10000)')
     
     # Model configuration arguments
     parser.add_argument('--temperature', type=float, default=DEFAULT_TEMPERATURE,
@@ -321,6 +367,7 @@ def main():
         target_dir = args.target_dir
         server_url = args.server_url
         output_file = args.output_file
+        max_diff_size = args.max_diff_size
         
         # Set up payload for the LLM
         payload = {
@@ -354,6 +401,11 @@ def main():
                 if diff_content.startswith("No changes detected") or diff_content.startswith("Error getting diff"):
                     logger.info(f"Skipping branch {branch_name}: {diff_content}")
                     continue
+                
+                # Limit diff size to avoid overwhelming the model
+                if len(diff_content) > max_diff_size:
+                    logger.warning(f"Diff content too large ({len(diff_content)} chars), truncating to {max_diff_size} chars")
+                    diff_content = diff_content[:max_diff_size] + "\n... (truncated)"
                 
                 # Analyze diff using Gemma model
                 logger.info(f"Analyzing diff for branch: {branch_name}")

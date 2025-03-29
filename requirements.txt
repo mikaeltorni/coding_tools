@@ -1,4 +1,4 @@
-gitpython==3.1.44
+GitPython>=3.1.40
+openai>=1.0.0
 keyboard==0.13.5
 requests==2.32.3
-openai==1.68.2
