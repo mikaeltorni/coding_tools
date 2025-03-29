@@ -336,7 +336,7 @@ def analyze_diff(diff_content, server_url, payload):
             client = openai.OpenAI(
                 base_url=f"{server_url}/v1",
                 api_key="sk-no-key-required",
-                timeout=15.0  # Increased timeout to avoid hanging
+                timeout=150.0  # Increased timeout to avoid hanging
             )   
 
             # Create chat completion request
