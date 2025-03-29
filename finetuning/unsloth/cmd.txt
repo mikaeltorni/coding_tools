@@ -1,4 +1,4 @@
-python unsloth-cli.py --model_name "google/gemma-3-1b-it" --dataset "yahma/alpaca-cleaned" --max_steps 10 --load_in_4bit --save_model --save_path "gemma-test222" --save_method "lora"
+python unsloth-cli.py --model_name "google/gemma-3-1b-it" --dataset "yahma/alpaca-cleaned" --max_steps 10 --load_in_4bit --save_model --save_path "data-set-partial" --save_method "lora"
 
 conda create --name ft \
     python=3.11 \
