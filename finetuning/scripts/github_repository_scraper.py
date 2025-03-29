@@ -301,16 +301,16 @@ def analyze_diff(diff_content, server_url, payload):
     system_prompt = """
     You are an expert at analyzing Git diffs and classifying changes.
     Read the provided Git diff and classify it with one of the following tags:
-    - feat: A new feature
-    - fix: A bug fix
-    - docs: Documentation only changes
-    - style: Changes that do not affect the meaning of the code
-    - refactor: A code change that neither fixes a bug nor adds a feature
-    - perf: A code change that improves performance
-    - test: Adding missing tests or correcting existing tests
-    - build: Changes that affect the build system or external dependencies
-    - ci: Changes to CI configuration files and scripts
-    - chore: Other changes that don't modify src or test files
+    feat: A new feature
+    fix: A bug fix
+    docs: Documentation only changes
+    style: Changes that do not affect the meaning of the code
+    refactor: A code change that neither fixes a bug nor adds a feature
+    perf: A code change that improves performance
+    test: Adding missing tests or correcting existing tests
+    build: Changes that affect the build system or external dependencies
+    ci: Changes to CI configuration files and scripts
+    chore: Other changes that don't modify src or test files
     
     Your response should be a short 10-15 word summary starting with the tag.
     For example: "feat: implemented user authentication with JWT tokens"
