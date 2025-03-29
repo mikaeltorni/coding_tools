@@ -9,7 +9,7 @@
 </input_format>
 
 <output_format_instructions>
-    Write ten words summary of the changes that were made in the diff.
+    Write a VERY SHORT SUMMARY of the changes that were made in to the diff. MAXIMUM OF 10 WORDS!!!
     Follow the examples below that I have provided for you.
 </output_format_instructions>
 
@@ -24,4 +24,5 @@
     - "Fixed CSS styling issues on mobile devices"
     - "Implemented caching for frequently accessed data"
     - "Added unit tests for cart functionality"
+    See, these have maximum 10 words. Make sure to follow this format to not make the Git commit message too long.
 </output_format_examples>
