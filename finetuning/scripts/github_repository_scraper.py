@@ -295,7 +295,7 @@ def analyze_diff(diff_content, server_url, payload):
     # Skip if no diff content
     if not diff_content or diff_content.startswith("No changes detected"):
         logger.info("No diff content to analyze")
-        return "No changes to analyze"
+        return "chore: No changes to analyze"
 
     # System prompt for the Gemma model
     system_prompt = """
@@ -339,6 +339,18 @@ def analyze_diff(diff_content, server_url, payload):
 
         response = completion.choices[0].message.content.strip()
         logger.debug(f"Response received: {response}")
+        
+        # Ensure response is not empty
+        if not response:
+            logger.warning("Empty response received from model, falling back to manual analysis")
+            return analyze_diff_manually(diff_content)
+            
+        # Ensure response starts with a conventional commit tag
+        if not any(response.lower().startswith(prefix) for prefix in ['feat:', 'fix:', 'docs:', 'style:', 'refactor:', 'perf:', 'test:', 'build:', 'ci:', 'chore:']):
+            logger.warning(f"Response doesn't start with a tag: {response}")
+            # Add default tag based on diff content
+            return "chore: " + response
+            
         return response
 
     except openai.APITimeoutError:
@@ -485,7 +497,7 @@ def main():
         server_url = args.server_url
         output_file = args.output_file
         max_diff_size = args.max_diff_size
-        max_commits = args.max_commitsdiff_
+        max_commits = args.max_commits
         after_date = args.after_date
         skip_branches = args.skip_branches
         process_all_branches = args.process_all_branches
@@ -609,6 +621,11 @@ def main():
                         # Analyze diff using Gemma model
                         logger.info(f"Analyzing diff for commit: {commit.hexsha[:8]}")
                         analysis = analyze_diff(diff_content, server_url, payload)
+                    
+                    # Ensure analysis is not empty
+                    if not analysis or analysis.strip() == "":
+                        logger.warning("Empty analysis result, using fallback")
+                        analysis = "chore: Repository maintenance or minor changes"
                     
                     # Generate dataset entry
                     instruction = "Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore"
