@@ -124,3 +124,5 @@ dmypy.json
 .pyre/
 
 output.txt
+
+cloned_repos/
