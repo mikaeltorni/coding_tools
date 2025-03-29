@@ -321,12 +321,12 @@ def analyze_diff(diff_content, server_url, payload):
         client = openai.OpenAI(
             base_url=f"{server_url}/v1",
             api_key="sk-no-key-required",
-            timeout=30.0  # Add timeout to avoid hanging
+            timeout=60.0  # Add timeout to avoid hanging
         )   
 
         # Create chat completion request
         completion = client.chat.completions.create(
-            model="gemma-3-27b",  # Using Gemma 3 27b model
+            model="gemma-3-12b-it",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": diff_content}
@@ -472,12 +472,30 @@ def main():
             }
         }
         
-        # Create dataset list
+        # Check if output file exists and load existing dataset
         dataset = []
+        if os.path.exists(output_file):
+            try:
+                logger.info(f"Loading existing dataset from {output_file}")
+                with open(output_file, 'r', encoding='utf-8') as f:
+                    dataset = json.load(f)
+                logger.info(f"Loaded {len(dataset)} existing entries")
+            except json.JSONDecodeError:
+                logger.warning(f"Error loading existing dataset. Starting with empty dataset.")
+                dataset = []
+            except Exception as e:
+                logger.warning(f"Could not load existing file: {e}. Starting with empty dataset.")
+                dataset = []
         
         # Clone the repository
         repo = clone_repository(repo_url, target_dir)
         repo_path = repo.working_dir
+        
+        # Function to save dataset to file
+        def save_dataset():
+            logger.info(f"Saving dataset to {output_file}")
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(dataset, f, indent=2)
         
         # Fetch all branches
         branches = fetch_all_branches(repo)
@@ -504,8 +522,22 @@ def main():
         else:
             logger.info(f"Processing all branches: {len(branches)} branches found")
         
+        # Track processed commits to avoid duplicates
+        processed_commits = set()
+        for entry in dataset:
+            if entry.get("input") and entry["input"].startswith("Commit: "):
+                commit_hash = entry["input"].split("\n")[0].replace("Commit: ", "")
+                processed_commits.add(commit_hash)
+        
+        logger.info(f"Found {len(processed_commits)} already processed commits")
+        
         # Process each branch
+        total_new_entries = 0
         for branch_name in branches:
+            if branch_name in branches_to_skip:
+                logger.info(f"Skipping branch {branch_name} as requested")
+                continue
+                
             logger.info(f"Processing branch: {branch_name}")
             
             # Checkout branch
@@ -519,7 +551,13 @@ def main():
                     commits = commits[:max_commits]
                 
                 # Process each commit
+                branch_new_entries = 0
                 for commit in commits:
+                    # Skip if already processed
+                    if commit.hexsha in processed_commits:
+                        logger.info(f"Skipping already processed commit: {commit.hexsha[:8]}")
+                        continue
+                        
                     logger.info(f"Processing commit: {commit.hexsha[:8]} - {commit.message.splitlines()[0]}")
                     
                     # Get commit diff
@@ -550,27 +588,38 @@ def main():
                     
                     # Add to dataset
                     dataset.append(dataset_entry)
+                    processed_commits.add(commit.hexsha)
                     
+                    # Save after each commit
+                    save_dataset()
+                    
+                    branch_new_entries += 1
+                    total_new_entries += 1
                     logger.info(f"Commit {commit.hexsha[:8]} processed: {analysis}")
                 
-                logger.info(f"Branch {branch_name} processing complete. Processed {len(commits)} commits.")
+                logger.info(f"Branch {branch_name} processing complete. Processed {branch_new_entries} new commits.")
             else:
                 logger.warning(f"Failed to checkout branch: {branch_name}")
         
-        # Save dataset to file
-        logger.info(f"Saving dataset to {output_file}")
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(dataset, f, indent=2)
-        
-        logger.info(f"Repository processing complete. Dataset saved to {output_file}")
-        print(f"Repository processing complete. Dataset saved to {output_file}")
+        logger.info(f"Repository processing complete. Added {total_new_entries} new entries to dataset.")
+        print(f"Repository processing complete. Dataset saved to {output_file} with {len(dataset)} total entries.")
         
     except KeyboardInterrupt:
         logger.info("Program terminated by user")
         print("\nProgram terminated by user.")
+        # Save what we have so far
+        if 'dataset' in locals() and 'output_file' in locals():
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(dataset, f, indent=2)
+            print(f"Partial dataset saved to {output_file} with {len(dataset)} entries.")
     except Exception as e:
         logger.error(f"Error in main function: {e}")
         print(f"Error: {e}")
+        # Save what we have so far
+        if 'dataset' in locals() and 'output_file' in locals():
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(dataset, f, indent=2)
+            print(f"Partial dataset saved to {output_file} with {len(dataset)} entries despite error.")
         sys.exit(1)
 
 if __name__ == "__main__":
