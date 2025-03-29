@@ -132,3 +132,5 @@ test_repos/
 new_repos/
 
 finetuning/unsloth/outputs/
+
+finetuning/unsloth/testing/
