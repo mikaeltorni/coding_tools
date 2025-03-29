@@ -11,4 +11,5 @@ python unsloth-cli.py --model_name "google/gemma-3-1b-it" --max_steps 4000 --loa
 
 python ..\..\..\llama.cpp\convert_hf_to_gguf.py "data-set-partial-v2" --outfile partial-v2.gguf
 
-..\..\..\llama.cpp\llama-cli\build\bin\Release -m partial-v2.gguf -f ..\scripts\prompt.txt --temp 0
+..\..\..\llama.cpp\llama-cli\build\bin\Release -m partial-v2.gguf -f ..\scripts\prompt_in_dataset.txt --temp 0
+..\..\..\llama.cpp\llama-cli\build\bin\Release -m partial-v2.gguf -f ..\scripts\prompt_not_in_dataset.txt --temp 0
