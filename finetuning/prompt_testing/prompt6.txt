@@ -15,11 +15,6 @@ Your response should be a short 10-15 word summary starting with the tag.
 For example: "feat: implemented user authentication with JWT tokens".
 Do not by any means exceed the 15 word limit.
 
-Commit: f67890123456789abcdef0123456789abcdef01
-Author: eve <eve@example.com>
-Date: 2024-06-15 16:40:30+00:00
-Message: perf: optimize query performance in database layer
-
 diff --git a/db/queries.sql b/db/queries.sql
 index abcd123..dcba321 100644
 --- a/db/queries.sql

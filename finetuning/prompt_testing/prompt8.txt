@@ -15,11 +15,6 @@ Your response should be a short 10-15 word summary starting with the tag.
 For example: "feat: implemented user authentication with JWT tokens".
 Do not by any means exceed the 15 word limit.
 
-Commit: 890123456789abcdef0123456789abcdef01234
-Author: grace <grace@example.com>
-Date: 2024-06-12 13:15:22+00:00
-Message: build: adjust webpack configuration for production
-
 diff --git a/webpack.config.js b/webpack.config.js
 index 3456def..7890abc 100644
 --- a/webpack.config.js

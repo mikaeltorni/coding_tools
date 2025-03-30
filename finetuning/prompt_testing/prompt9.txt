@@ -15,11 +15,6 @@ Your response should be a short 10-15 word summary starting with the tag.
 For example: "feat: implemented user authentication with JWT tokens".
 Do not by any means exceed the 15 word limit.
 
-Commit: 90123456789abcdef0123456789abcdef012345
-Author: heidi <heidi@example.com>
-Date: 2024-06-08 07:50:00+00:00
-Message: ci: configure GitHub Actions for linting and testing
-
 diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
 index 6789abc..def0123 100644
 --- a/.github/workflows/ci.yml

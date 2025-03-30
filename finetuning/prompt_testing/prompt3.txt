@@ -15,11 +15,6 @@ Your response should be a short 10-15 word summary starting with the tag.
 For example: "feat: implemented user authentication with JWT tokens".
 Do not by any means exceed the 15 word limit.
 
-Commit: c3d4e5f67890123456789abcdef0123456789abcd
-Author: bob <bob@example.com>
-Date: 2024-06-25 09:45:12+00:00
-Message: feat: add new user authentication flow
-
 diff --git a/src/auth.js b/src/auth.js
 index 3f4a5b6..7c8d9e0 100644
 --- a/src/auth.js

@@ -15,11 +15,6 @@ Your response should be a short 10-15 word summary starting with the tag.
 For example: "feat: implemented user authentication with JWT tokens".
 Do not by any means exceed the 15 word limit.
 
-Commit: 7890123456789abcdef0123456789abcdef0123
-Author: frank <frank@example.com>
-Date: 2024-06-10 10:05:47+00:00
-Message: test: add integration tests for payment module
-
 diff --git a/tests/payment.test.js b/tests/payment.test.js
 index 1234abc..5678def 100644
 --- a/tests/payment.test.js

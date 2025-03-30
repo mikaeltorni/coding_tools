@@ -15,11 +15,6 @@ Your response should be a short 10-15 word summary starting with the tag.
 For example: "feat: implemented user authentication with JWT tokens".
 Do not by any means exceed the 15 word limit.
 
-Commit: 0123456789abcdef0123456789abcdef01234567
-Author: ivan <ivan@example.com>
-Date: 2024-06-05 12:00:00+00:00
-Message: style: reformat code to adhere to eslint rules
-
 diff --git a/src/utils.js b/src/utils.js
 index 4567def..89ab012 100644
 --- a/src/utils.js

@@ -15,11 +15,6 @@ Your response should be a short 10-15 word summary starting with the tag.
 For example: "feat: implemented user authentication with JWT tokens".
 Do not by any means exceed the 15 word limit.
 
-Commit: d4e5f67890123456789abcdef0123456789abcde
-Author: carol <carol@example.com>
-Date: 2024-06-20 14:32:10+00:00
-Message: docs: update API documentation for new endpoints
-
 diff --git a/docs/api.md b/docs/api.md
 index 8b9c0d1..2e3f4a5 100644
 --- a/docs/api.md
