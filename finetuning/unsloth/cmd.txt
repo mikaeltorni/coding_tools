@@ -1,3 +1,5 @@
+# IN WSL
+
 conda create --name ft \
     python=3.11 \
     pytorch-cuda=12.4 \
@@ -6,6 +8,9 @@ conda create --name ft \
 conda activate ft
 
 pip install unsloth
+
+# IN WINDOWS:
+cd to this directory, then:
 
 python unsloth-cli.py --model_name "google/gemma-3-1b-it" --max_steps 1200 --load_in_4bit --save_model --save_path "testing/data-set-diffchecker-1000-commits-v3" --save_method "lora"
 
