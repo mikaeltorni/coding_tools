@@ -1,0 +1,20 @@
+Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+
+Commit: 7890123456789abcdef0123456789abcdef0123
+Author: frank <frank@example.com>
+Date: 2024-06-10 10:05:47+00:00
+Message: test: add integration tests for payment module
+
+diff --git a/tests/payment.test.js b/tests/payment.test.js
+index 1234abc..5678def 100644
+--- a/tests/payment.test.js
++++ b/tests/payment.test.js
+@@ -1,5 +1,10 @@
++describe('Payment Module Integration', () => {
++  it('should process payment successfully', () => {
++    // test logic here
++  });
++});
+ test('basic payment processing', () => {
+   expect(processPayment(100)).toBe(true);
+ });

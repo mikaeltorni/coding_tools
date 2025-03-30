@@ -1,0 +1,20 @@
+Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+
+Commit: 90123456789abcdef0123456789abcdef012345
+Author: heidi <heidi@example.com>
+Date: 2024-06-08 07:50:00+00:00
+Message: ci: configure GitHub Actions for linting and testing
+
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 6789abc..def0123 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -5,7 +5,7 @@ jobs:
+   build:
+     runs-on: ubuntu-latest
+     steps:
+-      - uses: actions/checkout@v2
++      - uses: actions/checkout@v3
+       - name: Set up Node.js
+         uses: actions/setup-node@v2
+         with:

@@ -1,0 +1,19 @@
+Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+
+Commit: e5f67890123456789abcdef0123456789abcdef0
+Author: dave <dave@example.com>
+Date: 2024-06-18 08:20:55+00:00
+Message: refactor: simplify middleware chain in server
+
+diff --git a/server.js b/server.js
+index 5f6a7b8..9c0d1e2 100644
+--- a/server.js
++++ b/server.js
+@@ -30,10 +30,6 @@ app.use(loggingMiddleware);
+-app.use(authMiddleware);
+-app.use(rateLimitMiddleware);
+-app.use(cachingMiddleware);
+-app.use(errorHandler);
++app.use(authMiddleware, rateLimitMiddleware, cachingMiddleware, errorHandler);
+
+ module.exports = app;

@@ -1,0 +1,15 @@
+Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+
+Commit: d4e5f67890123456789abcdef0123456789abcde
+Author: carol <carol@example.com>
+Date: 2024-06-20 14:32:10+00:00
+Message: docs: update API documentation for new endpoints
+
+diff --git a/docs/api.md b/docs/api.md
+index 8b9c0d1..2e3f4a5 100644
+--- a/docs/api.md
++++ b/docs/api.md
+@@ -45,7 +45,7 @@ GET /users
+-Returns list of users in JSON format.
++Returns list of users with pagination and JSON format.
+ Additional details provided in sections below.

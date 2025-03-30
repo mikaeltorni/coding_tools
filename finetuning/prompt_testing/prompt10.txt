@@ -1,0 +1,15 @@
+Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+
+Commit: 0123456789abcdef0123456789abcdef01234567
+Author: ivan <ivan@example.com>
+Date: 2024-06-05 12:00:00+00:00
+Message: style: reformat code to adhere to eslint rules
+
+diff --git a/src/utils.js b/src/utils.js
+index 4567def..89ab012 100644
+--- a/src/utils.js
++++ b/src/utils.js
+@@ -1,7 +1,7 @@
+-function calculateSum(a,b){return a+b;}
++function calculateSum(a, b) { return a + b; }
+ console.log(calculateSum(2,3));

@@ -1,0 +1,15 @@
+Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+
+Commit: f67890123456789abcdef0123456789abcdef01
+Author: eve <eve@example.com>
+Date: 2024-06-15 16:40:30+00:00
+Message: perf: optimize query performance in database layer
+
+diff --git a/db/queries.sql b/db/queries.sql
+index abcd123..dcba321 100644
+--- a/db/queries.sql
++++ b/db/queries.sql
+@@ -10,7 +10,7 @@ SELECT * FROM orders
+-WHERE customer_id = $1;
++WHERE customer_id = $1 AND status = 'active';
+ ORDER BY created_at DESC;
