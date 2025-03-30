@@ -328,8 +328,9 @@ def analyze_diff(diff_content, server_url, payload):
             logger.warning("Empty response received from model, falling back to manual analysis")
             return analyze_diff_manually(diff_content)
             
-        # Ensure response starts with a conventional commit tag
-        if not any(response.lower().startswith(prefix) for prefix in ['feat:', 'fix:', 'docs:', 'style:', 'refactor:', 'perf:', 'test:', 'build:', 'ci:', 'chore:']):
+        # Ensure response starts with a conventional commit tag (with or without scope)
+        import re
+        if not re.match(r'^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)(\([a-z0-9-_]+\))?:', response.lower()):
             logger.warning(f"Response doesn't start with a tag: {response}")
             # Add default tag based on diff content
             return "chore: " + response
@@ -373,8 +374,14 @@ def analyze_diff_manually(diff_content):
         return "test: Updated test files or test configuration"
     
     # Check for dependency changes
-    if 'package.json' in diff_content or 'requirements.txt' in diff_content or 'Gemfile' in diff_content:
-        return "build: Updated project dependencies"
+    if 'package.json' in diff_content and ('version' in diff_content or 'dependency' in diff_content):
+        return "fix(deps): Updated package dependencies to newer versions"
+    elif 'requirements.txt' in diff_content or 'Gemfile' in diff_content or 'pyproject.toml' in diff_content:
+        return "fix(deps): Updated project dependencies"
+    elif any(dep in diff_content.lower() for dep in ['dependency', 'dependencies', 'npm', 'pip', 'yarn', 'composer']):
+        return "fix(deps): Updated external dependencies"
+    elif 'package-lock.json' in diff_content or 'yarn.lock' in diff_content or 'Gemfile.lock' in diff_content:
+        return "fix(deps): Updated dependency lock files"
     
     # Check for CI changes
     if '.github/workflows' in diff_content or '.gitlab-ci' in diff_content or 'jenkins' in diff_content:
@@ -439,16 +446,17 @@ def is_conventional_commit(commit_message):
     # Get the first line of the commit message
     first_line = commit_message.strip().split('\n')[0].strip()
     
-    # List of conventional commit prefixes
-    conventional_prefixes = ['feat:', 'fix:', 'docs:', 'style:', 'refactor:', 
-                            'perf:', 'test:', 'build:', 'ci:', 'chore:']
+    # List of conventional commit types
+    conventional_types = ['feat', 'fix', 'docs', 'style', 'refactor', 
+                         'perf', 'test', 'build', 'ci', 'chore']
     
-    # Check if the message starts with any of the conventional prefixes
-    for prefix in conventional_prefixes:
-        if first_line.lower().startswith(prefix):
-            # Check if there's content after the prefix
-            if len(first_line) > len(prefix) + 1:
-                return True
+    # Check if the message follows conventional format with or without scope
+    import re
+    # Pattern to match: type(scope): description or type: description
+    pattern = r'^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)(\([a-z0-9-_]+\))?:\s.+'
+    
+    if re.match(pattern, first_line.lower()):
+        return True
     
     return False
 
