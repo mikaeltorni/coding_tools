@@ -15,6 +15,8 @@ Functions:
     analyze_diff_manually(diff_content): Fallback method for diff analysis when LLM server fails
     generate_alpaca_dataset(instruction, input_text, output_text): Generates dataset in Alpaca format
     get_diff_hash(diff): Creates a hash for a diff
+    is_conventional_commit(commit_message): Checks if commit message follows conventional commit format
+    extract_commit_prefix(commit_message): Extracts the prefix from a commit message
     main(): Main function that runs the repository scraper
 
 Command Line Usage Examples:
@@ -36,6 +38,7 @@ import datetime
 from pathlib import Path
 import openai
 from git import Repo, GitCommandError, InvalidGitRepositoryError, Remote
+from collections import Counter
 
 # Configure logging
 logging.basicConfig(
@@ -52,6 +55,18 @@ DEFAULT_TOP_P = 0.9
 DEFAULT_MAX_TOKENS = 4096
 
 SYSTEM_PROMPT = "You are an expert at analyzing Git diffs and classifying changes in short, 10-15 word summaries. Read the provided Git diff and classify it with one of the following tags: feat: A new feature, fix: A bug fix, docs: Documentation only changes, style: Changes that do not affect the meaning of the code, refactor: A code change that neither fixes a bug nor adds a feature, perf: A code change that improves performance, test: Adding missing tests or correcting existing tests, build: Changes that affect the build system or external dependencies, ci: Changes to CI configuration files and scripts, chore: Other changes that don't modify src or test files. You can also use these tags with scopes in parentheses to provide more context, for example: fix(deps): Update dependency versions, feat(auth): Add new authentication method. Your response should be a short 10-15 word summary starting with the tag. For example: 'feat: implemented user authentication with JWT tokens' or 'fix(deps): updated npm dependencies to fix security vulnerabilities'. By any means, do not exceed the 15 word limit."
+
+# Conventional commit types
+CONVENTIONAL_TYPES = ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore']
+
+# Statistics tracking
+stats = {
+    'total_commits': 0,
+    'ai_generated': 0,
+    'human_written': 0,
+    'human_prefixes': Counter(),
+    'ai_prefixes': Counter()
+}
 
 def clone_repository(repo_url, target_dir):
     """
@@ -433,6 +448,31 @@ def get_diff_hash(diff):
     # Create hash from the normalized content
     return hashlib.md5(normalized_diff.encode('utf-8')).hexdigest()
 
+def extract_commit_prefix(commit_message):
+    """
+    Extract the prefix (type and scope) from a commit message.
+    
+    Parameters:
+        commit_message (str): The commit message to analyze
+        
+    Returns:
+        str: The extracted prefix or None if not a conventional commit
+    """
+    import re
+    
+    # Get the first line of the commit message
+    first_line = commit_message.strip().split('\n')[0].strip()
+    
+    # Pattern to match conventional commit format: type(scope): description
+    pattern = r'^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)(\([a-z0-9-_]+\))?:'
+    match = re.match(pattern, first_line.lower())
+    
+    if match:
+        # Return the entire prefix including type and scope
+        return first_line.lower().split(':', 1)[0]
+    
+    return None
+
 def is_conventional_commit(commit_message):
     """
     Check if the commit message follows the conventional commit format.
@@ -446,10 +486,6 @@ def is_conventional_commit(commit_message):
     # Get the first line of the commit message
     first_line = commit_message.strip().split('\n')[0].strip()
     
-    # List of conventional commit types
-    conventional_types = ['feat', 'fix', 'docs', 'style', 'refactor', 
-                         'perf', 'test', 'build', 'ci', 'chore']
-    
     # Check if the message follows conventional format with or without scope
     import re
     # Pattern to match: type(scope): description or type: description
@@ -459,6 +495,62 @@ def is_conventional_commit(commit_message):
         return True
     
     return False
+
+def print_stats_report():
+    """
+    Print a statistical report on commit message analysis.
+    
+    Parameters:
+        None
+        
+    Returns:
+        None
+    """
+    print("\n" + "="*80)
+    print("COMMIT MESSAGE STATISTICS REPORT")
+    print("="*80)
+    
+    total = stats['total_commits']
+    if total == 0:
+        print("No commits were processed.")
+        return
+        
+    # Basic statistics
+    print(f"Total commits processed: {total}")
+    print(f"Human-written conventional commits: {stats['human_written']} ({stats['human_written']/total*100:.1f}%)")
+    print(f"AI-generated commit messages: {stats['ai_generated']} ({stats['ai_generated']/total*100:.1f}%)")
+    
+    # Most common human-written prefixes
+    print("\nTop human-written commit prefixes:")
+    if stats['human_prefixes']:
+        for prefix, count in stats['human_prefixes'].most_common(10):
+            print(f"  {prefix}: {count} ({count/stats['human_written']*100:.1f}%)")
+    else:
+        print("  No human-written conventional commits found.")
+    
+    # Most common AI-generated prefixes
+    print("\nTop AI-generated commit prefixes:")
+    if stats['ai_prefixes']:
+        for prefix, count in stats['ai_prefixes'].most_common(10):
+            print(f"  {prefix}: {count} ({count/stats['ai_generated']*100:.1f}%)")
+    else:
+        print("  No AI-generated commits found.")
+    
+    print("\nFull list of human-written prefixes:")
+    if stats['human_prefixes']:
+        for prefix, count in stats['human_prefixes'].most_common():
+            print(f"  {prefix}: {count}")
+    else:
+        print("  No human-written conventional commits found.")
+    
+    print("\nFull list of AI-generated prefixes:")
+    if stats['ai_prefixes']:
+        for prefix, count in stats['ai_prefixes'].most_common():
+            print(f"  {prefix}: {count}")
+    else:
+        print("  No AI-generated commits found.")
+    
+    print("="*80)
 
 def main():
     """
@@ -645,6 +737,9 @@ def main():
                         
                     logger.info(f"Processing commit: {commit.hexsha[:8]} - {commit.message.splitlines()[0]}")
                     
+                    # Update total commit count
+                    stats['total_commits'] += 1
+                    
                     # Get commit diff
                     diff_content = get_commit_diff(repo, commit)
                     
@@ -676,10 +771,22 @@ def main():
                         logger.info(f"Commit {commit.hexsha[:8]} already has conventional format, using original message")
                         # Just use the first line of the commit message
                         analysis = commit.message.strip().split('\n')[0].strip()
+                        
+                        # Update statistics for human-written conventional commits
+                        stats['human_written'] += 1
+                        prefix = extract_commit_prefix(commit.message)
+                        if prefix:
+                            stats['human_prefixes'][prefix] += 1
                     else:
                         # Analyze diff using Gemma model
                         logger.info(f"Analyzing diff for commit: {commit.hexsha[:8]}")
                         analysis = analyze_diff(diff_content, server_url, payload)
+                        
+                        # Update statistics for AI-generated commit messages
+                        stats['ai_generated'] += 1
+                        prefix = extract_commit_prefix(analysis)
+                        if prefix:
+                            stats['ai_prefixes'][prefix] += 1
                     
                     # Ensure analysis is not empty
                     if not analysis or analysis.strip() == "":
@@ -705,6 +812,9 @@ def main():
         logger.info(f"Repository processing complete. Added {total_new_entries} new entries to dataset.")
         print(f"Repository processing complete. Dataset saved to {output_file} with {len(dataset)} total entries.")
         
+        # Print statistics report
+        print_stats_report()
+        
     except KeyboardInterrupt:
         logger.info("Program terminated by user")
         print("\nProgram terminated by user.")
@@ -713,6 +823,8 @@ def main():
             with open(output_file, 'w', encoding='utf-8') as f:
                 json.dump(dataset, f, indent=2)
             print(f"Partial dataset saved to {output_file} with {len(dataset)} entries.")
+        # Print partial statistics report
+        print_stats_report()
     except Exception as e:
         logger.error(f"Error in main function: {e}")
         print(f"Error: {e}")
@@ -721,6 +833,9 @@ def main():
             with open(output_file, 'w', encoding='utf-8') as f:
                 json.dump(dataset, f, indent=2)
             print(f"Partial dataset saved to {output_file} with {len(dataset)} entries despite error.")
+        # Print partial statistics report if stats exist
+        if 'stats' in globals():
+            print_stats_report()
         sys.exit(1)
 
 if __name__ == "__main__":
