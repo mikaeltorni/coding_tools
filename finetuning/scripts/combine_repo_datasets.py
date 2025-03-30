@@ -1,10 +1,11 @@
 """
 combine_repo_datasets.py
 
-Combines multiple JSON dataset files from repo_datasets directory into a single consolidated dataset.
+Combines multiple JSON dataset files from repo_datasets directory into a single consolidated dataset
+and optionally converts it to Parquet format.
 
 Functions:
-    combine_datasets(source_dir, output_file): Finds and combines JSON files into a single dataset
+    combine_datasets(source_dir, output_file, convert_to_parquet): Finds and combines JSON files into a single dataset
     find_json_files(directory): Finds all JSON files in the specified directory
     load_json_file(file_path): Loads a JSON file and returns its contents
     save_combined_dataset(data, output_file): Saves the combined dataset to a JSON file
@@ -12,6 +13,7 @@ Functions:
 Command Line Usage Examples:
     python combine_repo_datasets.py
     python combine_repo_datasets.py --source-dir ../repo_datasets --output-file ../combined_full_dataset.json
+    python combine_repo_datasets.py --no-parquet  # Skip converting to Parquet format
 """
 import argparse
 import json
@@ -19,6 +21,9 @@ import logging
 import os
 import sys
 from pathlib import Path
+
+# Import the JSON to Parquet conversion function
+from json_to_parquet import convert_json_to_parquet
 
 # Configure logging
 logging.basicConfig(
@@ -116,18 +121,19 @@ def save_combined_dataset(data, output_file):
         print(f"Error: Could not save combined dataset: {e}", file=sys.stderr)
         return False
 
-def combine_datasets(source_dir, output_file):
+def combine_datasets(source_dir, output_file, convert_to_parquet=True):
     """
     Find and combine JSON files from the source directory into a single dataset.
     
     Parameters:
         source_dir (str or Path): Directory containing JSON files to combine
         output_file (str or Path): Path to save the combined dataset
+        convert_to_parquet (bool): Whether to also convert the dataset to Parquet format
         
     Returns:
         bool: True if successful, False otherwise
     """
-    logger.debug(f"source_dir: {source_dir} | output_file: {output_file}")
+    logger.debug(f"source_dir: {source_dir} | output_file: {output_file} | convert_to_parquet: {convert_to_parquet}")
     
     # Find all JSON files in the source directory
     try:
@@ -170,14 +176,29 @@ def combine_datasets(source_dir, output_file):
         
         # Save the combined dataset
         if combined_data:
+            # Save to JSON
             success = save_combined_dataset(combined_data, output_file)
-            if success:
-                print(f"Successfully combined {len(json_files)} files into {output_file}")
-                print(f"Total entries: {len(combined_data)}")
-                return True
-            else:
+            
+            if not success:
                 print(f"Failed to save combined dataset to {output_file}")
                 return False
+            
+            print(f"Successfully combined {len(json_files)} files into {output_file}")
+            print(f"Total entries: {len(combined_data)}")
+            
+            # Convert to Parquet if requested
+            if convert_to_parquet:
+                parquet_path = str(Path(output_file).with_suffix('.parquet'))
+                try:
+                    logger.info(f"Converting combined dataset to Parquet format: {parquet_path}")
+                    convert_json_to_parquet(output_file, parquet_path)
+                    print(f"Successfully converted combined dataset to Parquet format: {parquet_path}")
+                except Exception as e:
+                    logger.error(f"Error converting to Parquet: {e}")
+                    print(f"Warning: Failed to convert to Parquet format: {e}", file=sys.stderr)
+                    # Don't consider this a failure of the main operation
+            
+            return True
         else:
             logger.warning("No valid entries found in any of the JSON files")
             print("Warning: No valid entries found in any of the JSON files")
@@ -199,17 +220,19 @@ def main():
         None
     """
     parser = argparse.ArgumentParser(
-        description='Combine multiple JSON dataset files into a single dataset'
+        description='Combine multiple JSON dataset files into a single dataset and convert to Parquet'
     )
     parser.add_argument('--source-dir', type=str, default='../repo_datasets',
                        help='Directory containing JSON files to combine (default: ../repo_datasets)')
     parser.add_argument('--output-file', type=str, default='../combined_full_dataset.json',
                        help='Path to save the combined dataset (default: ../combined_full_dataset.json)')
+    parser.add_argument('--no-parquet', action='store_true',
+                        help='Skip converting the combined dataset to Parquet format')
     
     args = parser.parse_args()
     
     # Combine the datasets
-    success = combine_datasets(args.source_dir, args.output_file)
+    success = combine_datasets(args.source_dir, args.output_file, not args.no_parquet)
     
     # Exit with appropriate code
     sys.exit(0 if success else 1)
