@@ -19,7 +19,7 @@ python github_repository_scraper.py https://github.com/vuejs/core --process-all-
 --stats-only can be added to analyze repos to modify the script to be more efficient
 --no-llm-scan to go FAST (might just be the optimal way to add commits to the dataset)
 
-[ADD THE INSTRUCTIONS HERE TO INSTALL REQUIREMENTS FOR CONVERTING TO PARQUET]
+[ADD THE INSTRUCTIONS HERE TO INSTALL REQUIREMENTS FOR RUNNING THE SCRIPTS]
 
 python ..\scripts\json_to_parquet.py --input ..\scripts\github_diff_dataset.json
 
