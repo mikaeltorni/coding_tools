@@ -7,9 +7,9 @@ conda activate ft
 
 pip install unsloth
 
-python unsloth-cli.py --model_name "google/gemma-3-1b-it" --max_steps 200 --load_in_4bit --save_model --save_path "testing/data-set-partial-v2" --save_method "lora"
+python unsloth-cli.py --model_name "google\gemma-3-1b-it" --max_steps 200 --load_in_4bit --save_model --save_path "testing\data-set-partial-v2" --save_method "lora"
 
-python ..\..\..\llama.cpp\convert_hf_to_gguf.py "../../../coding_tools/finetuning/unsloth/testing/data-set-partial-v2" --outfile ../../../coding_tools/finetuning/unsloth/testing/partial-v2.gguf
+python ..\..\..\llama.cpp\convert_hf_to_gguf.py "..\..\..\coding_tools\finetuning\unsloth\testing\data-set-partial-v2" --outfile ..\..\..\coding_tools\finetuning\unsloth\testing\partial-v2.gguf
 
-..\..\..\llama.cpp\build\bin\Release\llama-cli -m ../../../coding_tools/finetuning/unsloth/testing/partial-v2.gguf -f ..\scripts\prompt_in_dataset.txt --temp 0
-..\..\..\llama.cpp\build\bin\Release\llama-cli -m ../../../coding_tools/finetuning/unsloth/testing/partial-v2.gguf -f ..\scripts\prompt_not_in_dataset.txt --temp 0
+..\..\..\llama.cpp\build\bin\Release\llama-cli -m ..\..\..\coding_tools\finetuning\unsloth\testing\partial-v2.gguf -f ..\scripts\prompt_in_dataset.txt --temp 0
+..\..\..\llama.cpp\build\bin\Release\llama-cli -m ..\..\..\coding_tools\finetuning\unsloth\testing\partial-v2.gguf -f ..\scripts\prompt_not_in_dataset.txt --temp 0
