@@ -328,7 +328,7 @@ def analyze_diff(diff_content, server_url, payload):
 
         # Create chat completion request
         completion = client.chat.completions.create(
-            model="gemma-3-12b-it",
+            model="gemma-3-4b-it",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": diff_content}
