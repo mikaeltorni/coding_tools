@@ -30,6 +30,7 @@ Command Line Usage Examples:
     python github_repository_scraper.py https://github.com/username/repo.git --skip-branches "gh-pages,docs"
     python github_repository_scraper.py https://github.com/username/repo.git --process-all-branches
     python github_repository_scraper.py https://github.com/username/repo.git --stats-only
+    python github_repository_scraper.py https://github.com/username/repo.git --no-llm-scan
 """
 import argparse
 import json
@@ -542,6 +543,7 @@ def print_stats_report():
     print(f"Total commits processed: {total}")
     conventional = stats['conventional_commits']
     non_conventional = stats['non_conventional_commits']
+    
     print(f"Conventional commits: {conventional} ({conventional/total*100:.1f}%)")
     print(f"Non-conventional commits: {non_conventional} ({non_conventional/total*100:.1f}%)")
     
@@ -615,6 +617,8 @@ def main():
                        help='Process all branches instead of just the main branch (for testing)')
     parser.add_argument('--stats-only', action='store_true',
                        help='Run in statistics-only mode: analyze commit messages without using LLM or writing dataset')
+    parser.add_argument('--no-llm-scan', action='store_true',
+                       help='Skip LLM processing and only include conventional commits in the dataset')
     
     # Model configuration arguments
     parser.add_argument('--temperature', type=float, default=DEFAULT_TEMPERATURE,
@@ -638,6 +642,7 @@ def main():
         process_all_branches = args.process_all_branches
         stop_at_commit = args.stop_at
         stats_only = args.stats_only
+        no_llm_scan = args.no_llm_scan
         
         # Set up payload for the LLM (not used in stats-only mode)
         payload = {
@@ -753,6 +758,9 @@ def main():
         if stats_only:
             logger.info("Running in statistics-only mode: no LLM usage or dataset writing")
             print("Running in statistics-only mode: analyzing commit patterns without LLM or dataset operations")
+        if no_llm_scan:
+            logger.info("Running in no-llm-scan mode: only conventional commits will be added to dataset")
+            print("Running in no-llm-scan mode: only conventional commits will be added to dataset (skipping LLM analysis)")
         
         # Process each branch
         total_new_entries = 0
@@ -819,16 +827,27 @@ def main():
                         processed_commits.add(commit.hexsha)
                         continue
                     
-                    # The following section only runs when not in stats-only mode
+                    # Check if commit message follows conventional format
+                    is_conventional = is_conventional_commit(commit_message)
                     
-                    # Get commit diff
+                    # If in no-llm-scan mode and commit is not conventional, skip processing it for dataset
+                    if no_llm_scan and not is_conventional:
+                        stats['non_conventional_commits'] += 1
+                        message = analyze_non_conventional_commit(commit_message)
+                        if message:
+                            stats['non_conventional_messages'][message] += 1
+                        logger.info(f"Skipping non-conventional commit {commit.hexsha[:8]} in no-llm-scan mode")
+                        processed_commits.add(commit.hexsha)
+                        continue
+                    
+                    # Get commit diff for dataset generation
                     diff_content = get_commit_diff(repo, commit)
                     
                     # Skip if no diff content, but still count the commit in our statistics
                     if diff_content.startswith("No changes detected") or diff_content.startswith("Error getting diff"):
                         logger.info(f"Skipping commit {commit.hexsha[:8]}: {diff_content}")
                         # We still need to count this commit in one of our categories
-                        if is_conventional_commit(commit_message):
+                        if is_conventional:
                             stats['conventional_commits'] += 1
                             prefix = extract_commit_prefix(commit_message)
                             if prefix:
@@ -848,7 +867,7 @@ def main():
                         # Mark this commit as processed to avoid future attempts
                         processed_commits.add(commit.hexsha)
                         # Still need to count this commit in our statistics
-                        if is_conventional_commit(commit_message):
+                        if is_conventional:
                             stats['conventional_commits'] += 1
                             prefix = extract_commit_prefix(commit_message)
                             if prefix:
@@ -865,19 +884,25 @@ def main():
                         logger.warning(f"Diff content too large ({len(diff_content)} chars), truncating to {max_diff_size} chars")
                         diff_content = diff_content[:max_diff_size] + "\n... (truncated)"
                     
-                    # Check if commit message already follows conventional format
-                    if is_conventional_commit(commit_message):
-                        logger.info(f"Commit {commit.hexsha[:8]} already has conventional format")
+                    # Process based on whether this is a conventional commit or not
+                    if is_conventional:
+                        logger.info(f"Commit {commit.hexsha[:8]} has conventional format")
                         # Just use the first line of the commit message
                         analysis = commit_message.split('\n')[0].strip()
                         
-                        # Update statistics for human-written conventional commits
+                        # Update statistics for conventional commits
                         stats['conventional_commits'] += 1
                         prefix = extract_commit_prefix(commit_message)
                         if prefix:
                             stats['conventional_prefixes'][prefix] += 1
                     else:
-                        # Analyze diff using Gemma model
+                        # In no-llm-scan mode, we shouldn't get here, but let's add a safety check
+                        if no_llm_scan:
+                            logger.warning(f"Unexpected non-conventional commit in no-llm-scan mode: {commit.hexsha[:8]}")
+                            processed_commits.add(commit.hexsha)
+                            continue
+                            
+                        # Only for normal mode: Analyze diff using Gemma model
                         logger.info(f"Analyzing diff for commit: {commit.hexsha[:8]}")
                         analysis = analyze_diff(diff_content, server_url, payload)
                         
@@ -899,8 +924,7 @@ def main():
                         logger.warning("Empty analysis result, using fallback")
                         analysis = "chore: Repository maintenance or minor changes"
                     
-                    # Only include the diff content without commit metadata
-                    # No need to store commit metadata in the dataset to avoid cleanup later
+                    # Generate dataset entry
                     dataset_entry = generate_alpaca_dataset(SYSTEM_PROMPT, diff_content, analysis)
                     
                     # Add to dataset and save immediately
@@ -918,6 +942,8 @@ def main():
         if not stats_only:
             logger.info(f"Repository processing complete. Added {total_new_entries} new entries to dataset.")
             print(f"Repository processing complete. Dataset saved to {output_file} with {len(dataset)} total entries.")
+            if no_llm_scan:
+                print(f"Dataset contains only conventional commits (skipped {stats['non_conventional_commits']} non-conventional commits)")
         else:
             logger.info(f"Repository statistics extraction complete. Analyzed {stats['total_commits_processed']} commits.")
             print(f"Repository statistics extraction complete. Analyzed {stats['total_commits_processed']} commits.")
