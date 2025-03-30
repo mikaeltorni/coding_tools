@@ -58,7 +58,7 @@ The script generates a JSON file in Alpaca dataset format with the following str
 ```json
 [
   {
-    "instruction": "Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore",
+    "instruction": "You are an expert at analyzing Git diffs and classifying changes in short, 10-15 word summaries. Read the provided Git diff and classify it with one of the following tags: feat: A new feature, fix: A bug fix, docs: Documentation only changes, style: Changes that do not affect the meaning of the code, refactor: A code change that neither fixes a bug nor adds a feature, perf: A code change that improves performance, test: Adding missing tests or correcting existing tests, build: Changes that affect the build system or external dependencies, ci: Changes to CI configuration files and scripts, chore: Other changes that don't modify src or test files. Your response should be a short 10-15 word summary starting with the tag. For example: "feat: implemented user authentication with JWT tokens". By any means, do not exceed the 15 word limit.",
     "input": "<git diff content>",
     "output": "<model classification>",
     "text": "<formatted instruction, input, and output>"
