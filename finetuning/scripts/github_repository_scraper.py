@@ -534,7 +534,6 @@ def main():
         
         # Check if output file exists and load existing dataset
         dataset = []
-        existing_entries_by_hash = {}  # Track existing entries by commit hash
         existing_entries_by_diff = {}  # Track existing entries by diff hash
         
         if os.path.exists(output_file):
@@ -546,18 +545,23 @@ def main():
                 
                 # Index existing entries for quick lookup
                 for i, entry in enumerate(dataset):
-                    if entry.get("input") and entry["input"].startswith("Commit: "):
-                        # Get commit hash
-                        commit_hash = entry["input"].split("\n")[0].replace("Commit: ", "")
-                        existing_entries_by_hash[commit_hash] = i
+                    if entry.get("input"):
+                        # Get diff hash directly from the input content
+                        # This handles both old format (with metadata) and new format (diff only)
+                        input_content = entry["input"]
+                        diff_start = input_content.find("diff --git")
                         
-                        # Get diff hash
-                        diff_content = entry["input"].split("\n\n", 1)
-                        if len(diff_content) > 1:
-                            diff_hash = get_diff_hash(diff_content[1])
+                        if diff_start != -1:
+                            # If it contains "diff --git", use that part for hashing
+                            diff_content = input_content[diff_start:]
+                            diff_hash = get_diff_hash(diff_content)
+                            existing_entries_by_diff[diff_hash] = i
+                        else:
+                            # If it's already in the new format (just diff), use entire input
+                            diff_hash = get_diff_hash(input_content)
                             existing_entries_by_diff[diff_hash] = i
                 
-                logger.info(f"Indexed {len(existing_entries_by_hash)} entries by commit hash and {len(existing_entries_by_diff)} by diff hash")
+                logger.info(f"Indexed {len(existing_entries_by_diff)} entries by diff hash")
                 
             except json.JSONDecodeError:
                 logger.warning(f"Error loading existing dataset. Starting with empty dataset.")
@@ -573,26 +577,17 @@ def main():
         # Function to save dataset to file
         def save_dataset(new_entry=None):
             if new_entry is not None:
-                # Only append if not already in dataset
-                commit_hash = new_entry["input"].split("\n")[0].replace("Commit: ", "")
-                diff_content = new_entry["input"].split("\n\n", 1)
-                diff_hash = None
-                if len(diff_content) > 1:
-                    diff_hash = get_diff_hash(diff_content[1])
+                # Get diff hash for duplicate checking
+                diff_hash = get_diff_hash(diff_content)
                 
-                # Check if already exists - either by commit hash or diff hash
-                if commit_hash in existing_entries_by_hash:
-                    logger.info(f"Entry for commit {commit_hash[:8]} already exists in dataset, skipping")
-                    return False
-                elif diff_hash and diff_hash in existing_entries_by_diff:
-                    logger.info(f"Entry with identical diff already exists in dataset, skipping commit {commit_hash[:8]}")
+                # Check if already exists by diff hash
+                if diff_hash in processed_diffs:
+                    logger.info(f"Entry with identical diff already exists in dataset, skipping commit {commit.hexsha[:8]}")
                     return False
                 else:
                     # Add to dataset and update indexes
                     dataset.append(new_entry)
-                    existing_entries_by_hash[commit_hash] = len(dataset) - 1
-                    if diff_hash:
-                        existing_entries_by_diff[diff_hash] = len(dataset) - 1
+                    processed_diffs.add(diff_hash)
                         
             logger.info(f"Saving dataset with {len(dataset)} entries to {output_file}")
             with open(output_file, 'w', encoding='utf-8') as f:
@@ -624,11 +619,11 @@ def main():
         else:
             logger.info(f"Processing all branches: {len(branches)} branches found")
         
-        # Use the indexed data to track processed commits
-        processed_commits = set(existing_entries_by_hash.keys())
+        # Track processed diffs to avoid duplicates
         processed_diffs = set(existing_entries_by_diff.keys())
+        processed_commits = set()  # Still track processed commits for this run
         
-        logger.info(f"Found {len(processed_commits)} already processed commits and {len(processed_diffs)} unique diffs")
+        logger.info(f"Found {len(processed_diffs)} already processed unique diffs")
         
         # Process each branch
         total_new_entries = 0
@@ -658,11 +653,6 @@ def main():
                         print(f"Reached stop-at commit: {commit.hexsha[:8]}, stopping processing")
                         break
                         
-                    # Skip if already processed
-                    if commit.hexsha in processed_commits:
-                        logger.info(f"Skipping already processed commit: {commit.hexsha[:8]}")
-                        continue
-                        
                     logger.info(f"Processing commit: {commit.hexsha[:8]} - {commit.message.splitlines()[0]}")
                     
                     # Get commit diff
@@ -679,6 +669,11 @@ def main():
                         logger.info(f"Skipping commit {commit.hexsha[:8]}: Duplicate diff already processed")
                         # Mark this commit as processed to avoid future attempts
                         processed_commits.add(commit.hexsha)
+                        continue
+                    
+                    # Skip if we've already processed this commit in this run
+                    if commit.hexsha in processed_commits:
+                        logger.info(f"Skipping already processed commit: {commit.hexsha[:8]}")
                         continue
                     
                     # Limit diff size to avoid overwhelming the model
@@ -704,17 +699,14 @@ def main():
                     # Generate dataset entry
                     instruction = "Read the Git diff and make a short, 10-15 word summary with one of the following tags: feat, fix, docs, style, refactor, perf, test, build, ci, chore"
                     
-                    # Include commit message in the dataset
-                    commit_info = f"Commit: {commit.hexsha}\nAuthor: {commit.author.name} <{commit.author.email}>\nDate: {commit.committed_datetime}\nMessage: {commit.message}\n\n"
-                    full_input = commit_info + diff_content
-                    
-                    dataset_entry = generate_alpaca_dataset(instruction, full_input, analysis)
+                    # Only include the diff content without commit metadata
+                    # No need to store commit metadata in the dataset to avoid cleanup later
+                    dataset_entry = generate_alpaca_dataset(instruction, diff_content, analysis)
                     
                     # Add to dataset and save immediately
                     if save_dataset(dataset_entry):
                         # Only increment counters if the entry was actually added
                         processed_commits.add(commit.hexsha)
-                        processed_diffs.add(diff_hash)
                         branch_new_entries += 1
                         total_new_entries += 1
                         logger.info(f"Commit {commit.hexsha[:8]} processed: {analysis}")
