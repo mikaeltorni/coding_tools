@@ -14,6 +14,9 @@ cd to this directory, then:
 
 python github_repository_scraper.py https://github.com/sadmann7/shadcn-table --process-all-branches --stop-at=70051a0c05d03455dd1ad77062006b95f07b8e46
 
+python github_repository_scraper.py https://github.com/vuejs/core --process-all-branches --stop-at=
+34989ef7fe846df3d0504d2719149bf42103644c --output-file vue_dataset.json
+
 [ADD THE INSTRUCTIONS HERE TO INSTALL REQUIREMENTS FOR CONVERTING TO PARQUET]
 
 python ../scripts/json_to_parquet.py --input ../scripts/github_diff_dataset.json
