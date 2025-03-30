@@ -51,6 +51,8 @@ DEFAULT_TEMPERATURE = 0.0
 DEFAULT_TOP_P = 0.9
 DEFAULT_MAX_TOKENS = 4096
 
+SYSTEM_PROMPT = "You are an expert at analyzing Git diffs and classifying changes in short, 10-15 word summaries. Read the provided Git diff and classify it with one of the following tags: feat: A new feature, fix: A bug fix, docs: Documentation only changes, style: Changes that do not affect the meaning of the code, refactor: A code change that neither fixes a bug nor adds a feature, perf: A code change that improves performance, test: Adding missing tests or correcting existing tests, build: Changes that affect the build system or external dependencies, ci: Changes to CI configuration files and scripts, chore: Other changes that don't modify src or test files. Your response should be a short 10-15 word summary starting with the tag. For example: 'feat: implemented user authentication with JWT tokens'. By any means, do not exceed the 15 word limit."
+
 def clone_repository(repo_url, target_dir):
     """
     Clone a GitHub repository to a local directory.
@@ -298,26 +300,6 @@ def analyze_diff(diff_content, server_url, payload):
         logger.info("No diff content to analyze")
         return "chore: No changes to analyze"
 
-    # System prompt for the Gemma model
-    system_prompt = """
-    You are an expert at analyzing Git diffs and classifying changes.
-    Read the provided Git diff and classify it with one of the following tags:
-    feat: A new feature
-    fix: A bug fix
-    docs: Documentation only changes
-    style: Changes that do not affect the meaning of the code
-    refactor: A code change that neither fixes a bug nor adds a feature
-    perf: A code change that improves performance
-    test: Adding missing tests or correcting existing tests
-    build: Changes that affect the build system or external dependencies
-    ci: Changes to CI configuration files and scripts
-    chore: Other changes that don't modify src or test files
-    
-    Your response should be a short 10-15 word summary starting with the tag.
-    For example: 'feat: implemented user authentication with JWT tokens'.
-    Do not by any means exceed the 15 word limit.
-    """
-
     try:
         # Set up OpenAI client
         client = openai.OpenAI(
@@ -330,7 +312,7 @@ def analyze_diff(diff_content, server_url, payload):
         completion = client.chat.completions.create(
             model="gemma-3-4b-it",
             messages=[
-                {"role": "system", "content": system_prompt},
+                {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": diff_content}
             ],
             temperature=payload["generation_settings"]["temperature"],
@@ -696,12 +678,9 @@ def main():
                         logger.warning("Empty analysis result, using fallback")
                         analysis = "chore: Repository maintenance or minor changes"
                     
-                    # Generate dataset entry
-                    instruction = "You are an expert at analyzing Git diffs and classifying changes in short, 10-15 word summaries. Read the provided Git diff and classify it with one of the following tags: feat: A new feature, fix: A bug fix, docs: Documentation only changes, style: Changes that do not affect the meaning of the code, refactor: A code change that neither fixes a bug nor adds a feature, perf: A code change that improves performance, test: Adding missing tests or correcting existing tests, build: Changes that affect the build system or external dependencies, ci: Changes to CI configuration files and scripts, chore: Other changes that don't modify src or test files. Your response should be a short 10-15 word summary starting with the tag. For example: 'feat: implemented user authentication with JWT tokens'. By any means, do not exceed the 15 word limit."
-                    
                     # Only include the diff content without commit metadata
                     # No need to store commit metadata in the dataset to avoid cleanup later
-                    dataset_entry = generate_alpaca_dataset(instruction, diff_content, analysis)
+                    dataset_entry = generate_alpaca_dataset(SYSTEM_PROMPT, diff_content, analysis)
                     
                     # Add to dataset and save immediately
                     if save_dataset(dataset_entry):
