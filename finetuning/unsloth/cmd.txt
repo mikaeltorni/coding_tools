@@ -12,9 +12,9 @@ pip install unsloth
 # IN WINDOWS:
 cd to this directory, then:
 
-python github_repository_scraper.py https://github.com/sadmann7/shadcn-table --process-all-branches --output-file ..\datasets\shadcn-table_dataset.json --stop-at=70051a0c05d03455dd1ad77062006b95f07b8e46 
+python github_repository_scraper.py https://github.com/sadmann7/shadcn-table --process-all-branches --output-file ..\repo_datasets\shadcn-table_dataset.json --stop-at=70051a0c05d03455dd1ad77062006b95f07b8e46 
 
-python github_repository_scraper.py https://github.com/vuejs/core --process-all-branches --stop-at=34989ef7fe846df3d0504d2719149bf42103644c --output-file ..\datasets\vue_dataset.json --no-llm-scan
+python github_repository_scraper.py https://github.com/vuejs/core --process-all-branches --stop-at=34989ef7fe846df3d0504d2719149bf42103644c --output-file ..\repo_datasets\vue_dataset.json --no-llm-scan
 
 --stats-only can be added to analyze repos to modify the script to be more efficient
 --no-llm-scan to go FAST (might just be the optimal way to add commits to the dataset)
