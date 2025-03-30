@@ -27,6 +27,7 @@ Command Line Usage Examples:
     python github_repository_scraper.py https://github.com/username/repo.git --max-commits 100
     python github_repository_scraper.py https://github.com/username/repo.git --skip-branches "gh-pages,docs"
     python github_repository_scraper.py https://github.com/username/repo.git --process-all-branches
+    python github_repository_scraper.py https://github.com/username/repo.git --stats-only
 """
 import argparse
 import json
@@ -582,6 +583,8 @@ def main():
                        help='Comma-separated list of branches to skip (e.g., "gh-pages,docs")')
     parser.add_argument('--process-all-branches', action='store_true',
                        help='Process all branches instead of just the main branch (for testing)')
+    parser.add_argument('--stats-only', action='store_true',
+                       help='Run in statistics-only mode: analyze commit messages without using LLM or writing dataset')
     
     # Model configuration arguments
     parser.add_argument('--temperature', type=float, default=DEFAULT_TEMPERATURE,
@@ -604,8 +607,9 @@ def main():
         skip_branches = args.skip_branches
         process_all_branches = args.process_all_branches
         stop_at_commit = args.stop_at
+        stats_only = args.stats_only
         
-        # Set up payload for the LLM
+        # Set up payload for the LLM (not used in stats-only mode)
         payload = {
             "generation_settings": {
                 "temperature": args.temperature,
@@ -614,50 +618,56 @@ def main():
             }
         }
         
-        # Check if output file exists and load existing dataset
+        # In stats-only mode, we don't need to load or write to the dataset
         dataset = []
-        existing_entries_by_diff = {}  # Track existing entries by diff hash
-        
-        if os.path.exists(output_file):
-            try:
-                logger.info(f"Loading existing dataset from {output_file}")
-                with open(output_file, 'r', encoding='utf-8') as f:
-                    dataset = json.load(f)
-                logger.info(f"Loaded {len(dataset)} existing entries")
-                
-                # Index existing entries for quick lookup
-                for i, entry in enumerate(dataset):
-                    if entry.get("input"):
-                        # Get diff hash directly from the input content
-                        # This handles both old format (with metadata) and new format (diff only)
-                        input_content = entry["input"]
-                        diff_start = input_content.find("diff --git")
-                        
-                        if diff_start != -1:
-                            # If it contains "diff --git", use that part for hashing
-                            diff_content = input_content[diff_start:]
-                            diff_hash = get_diff_hash(diff_content)
-                            existing_entries_by_diff[diff_hash] = i
-                        else:
-                            # If it's already in the new format (just diff), use entire input
-                            diff_hash = get_diff_hash(input_content)
-                            existing_entries_by_diff[diff_hash] = i
-                
-                logger.info(f"Indexed {len(existing_entries_by_diff)} entries by diff hash")
-                
-            except json.JSONDecodeError:
-                logger.warning(f"Error loading existing dataset. Starting with empty dataset.")
-                dataset = []
-            except Exception as e:
-                logger.warning(f"Could not load existing file: {e}. Starting with empty dataset.")
-                dataset = []
+        if not stats_only:
+            # Check if output file exists and load existing dataset
+            existing_entries_by_diff = {}  # Track existing entries by diff hash
+            
+            if os.path.exists(output_file):
+                try:
+                    logger.info(f"Loading existing dataset from {output_file}")
+                    with open(output_file, 'r', encoding='utf-8') as f:
+                        dataset = json.load(f)
+                    logger.info(f"Loaded {len(dataset)} existing entries")
+                    
+                    # Index existing entries for quick lookup
+                    for i, entry in enumerate(dataset):
+                        if entry.get("input"):
+                            # Get diff hash directly from the input content
+                            # This handles both old format (with metadata) and new format (diff only)
+                            input_content = entry["input"]
+                            diff_start = input_content.find("diff --git")
+                            
+                            if diff_start != -1:
+                                # If it contains "diff --git", use that part for hashing
+                                diff_content = input_content[diff_start:]
+                                diff_hash = get_diff_hash(diff_content)
+                                existing_entries_by_diff[diff_hash] = i
+                            else:
+                                # If it's already in the new format (just diff), use entire input
+                                diff_hash = get_diff_hash(input_content)
+                                existing_entries_by_diff[diff_hash] = i
+                    
+                    logger.info(f"Indexed {len(existing_entries_by_diff)} entries by diff hash")
+                    
+                except json.JSONDecodeError:
+                    logger.warning(f"Error loading existing dataset. Starting with empty dataset.")
+                    dataset = []
+                except Exception as e:
+                    logger.warning(f"Could not load existing file: {e}. Starting with empty dataset.")
+                    dataset = []
         
         # Clone the repository
         repo = clone_repository(repo_url, target_dir)
         repo_path = repo.working_dir
         
-        # Function to save dataset to file
+        # Function to save dataset to file (only used when not in stats-only mode)
         def save_dataset(new_entry=None):
+            if stats_only:
+                # Skip dataset operations in stats-only mode
+                return True
+                
             if new_entry is not None:
                 # Get diff hash for duplicate checking
                 diff_hash = get_diff_hash(diff_content)
@@ -701,11 +711,18 @@ def main():
         else:
             logger.info(f"Processing all branches: {len(branches)} branches found")
         
-        # Track processed diffs to avoid duplicates
-        processed_diffs = set(existing_entries_by_diff.keys())
+        # Track processed diffs to avoid duplicates (not needed in stats-only mode)
+        processed_diffs = set()
+        if not stats_only:
+            processed_diffs = set(existing_entries_by_diff.keys())
+            logger.info(f"Found {len(processed_diffs)} already processed unique diffs")
+            
         processed_commits = set()  # Still track processed commits for this run
         
-        logger.info(f"Found {len(processed_diffs)} already processed unique diffs")
+        # Log the mode we're running in
+        if stats_only:
+            logger.info("Running in statistics-only mode: no LLM usage or dataset writing")
+            print("Running in statistics-only mode: analyzing commit patterns without LLM or dataset operations")
         
         # Process each branch
         total_new_entries = 0
@@ -740,6 +757,31 @@ def main():
                     # Update total commit count
                     stats['total_commits'] += 1
                     
+                    # Skip if we've already processed this commit in this run
+                    if commit.hexsha in processed_commits:
+                        logger.info(f"Skipping already processed commit: {commit.hexsha[:8]}")
+                        continue
+                    
+                    # In stats-only mode, we just need to analyze the commit message format
+                    if stats_only:
+                        # Just classify the commit message for statistics
+                        if is_conventional_commit(commit.message):
+                            stats['human_written'] += 1
+                            prefix = extract_commit_prefix(commit.message)
+                            if prefix:
+                                stats['human_prefixes'][prefix] += 1
+                            logger.info(f"Commit {commit.hexsha[:8]} has conventional format: {prefix}")
+                        else:
+                            # This would normally be AI-generated, but in stats-only mode, we're just counting
+                            stats['ai_generated'] += 1
+                            logger.info(f"Commit {commit.hexsha[:8]} does not have conventional format")
+                        
+                        # Mark as processed and continue to next commit
+                        processed_commits.add(commit.hexsha)
+                        continue
+                    
+                    # The following section only runs when not in stats-only mode
+                    
                     # Get commit diff
                     diff_content = get_commit_diff(repo, commit)
                     
@@ -754,11 +796,6 @@ def main():
                         logger.info(f"Skipping commit {commit.hexsha[:8]}: Duplicate diff already processed")
                         # Mark this commit as processed to avoid future attempts
                         processed_commits.add(commit.hexsha)
-                        continue
-                    
-                    # Skip if we've already processed this commit in this run
-                    if commit.hexsha in processed_commits:
-                        logger.info(f"Skipping already processed commit: {commit.hexsha[:8]}")
                         continue
                     
                     # Limit diff size to avoid overwhelming the model
@@ -809,8 +846,12 @@ def main():
             else:
                 logger.warning(f"Failed to checkout branch: {branch_name}")
         
-        logger.info(f"Repository processing complete. Added {total_new_entries} new entries to dataset.")
-        print(f"Repository processing complete. Dataset saved to {output_file} with {len(dataset)} total entries.")
+        if not stats_only:
+            logger.info(f"Repository processing complete. Added {total_new_entries} new entries to dataset.")
+            print(f"Repository processing complete. Dataset saved to {output_file} with {len(dataset)} total entries.")
+        else:
+            logger.info(f"Repository statistics extraction complete. Analyzed {stats['total_commits']} commits.")
+            print(f"Repository statistics extraction complete. Analyzed {stats['total_commits']} commits.")
         
         # Print statistics report
         print_stats_report()
@@ -818,8 +859,8 @@ def main():
     except KeyboardInterrupt:
         logger.info("Program terminated by user")
         print("\nProgram terminated by user.")
-        # Final save at exit
-        if 'dataset' in locals() and 'output_file' in locals():
+        # Final save at exit (only if not in stats-only mode)
+        if not stats_only and 'dataset' in locals() and 'output_file' in locals():
             with open(output_file, 'w', encoding='utf-8') as f:
                 json.dump(dataset, f, indent=2)
             print(f"Partial dataset saved to {output_file} with {len(dataset)} entries.")
@@ -828,8 +869,8 @@ def main():
     except Exception as e:
         logger.error(f"Error in main function: {e}")
         print(f"Error: {e}")
-        # Final save at exit
-        if 'dataset' in locals() and 'output_file' in locals():
+        # Final save at exit (only if not in stats-only mode)
+        if not stats_only and 'dataset' in locals() and 'output_file' in locals():
             with open(output_file, 'w', encoding='utf-8') as f:
                 json.dump(dataset, f, indent=2)
             print(f"Partial dataset saved to {output_file} with {len(dataset)} entries despite error.")
