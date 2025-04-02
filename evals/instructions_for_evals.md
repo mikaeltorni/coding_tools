@@ -1,7 +1,7 @@
 Setup the Llama server and run it (in main readme)
 
 ```bash
-npx promptfoo@latest eval -c diff_analyzer_eval.yaml --max-concurrency 1 --repeat 20
+npx promptfoo@latest eval -c diff_analyzer_eval_generated.yaml --max-concurrency 1 --repeat 1
 
 npx promptfoo@latest eval -c diff_summary_eval.yaml --max-concurrency 1 --repeat 20
 ```
