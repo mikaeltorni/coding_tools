@@ -6,14 +6,13 @@ This script loops through JSON files in the repo_datasets folder and generates
 evaluation entries for each item in the datasets.
 
 Functions:
-    create_assertion_prompt(): Creates the assertion prompt for diff analyzer evaluations
     load_json_datasets(directory): Loads all JSON datasets from a directory
     create_eval_yaml(datasets, output_path): Creates evaluation YAML file from datasets
     main(): Main function that orchestrates the evaluation set creation process
 
 Command Line Usage Examples:
     python create_eval_set_from_repo_datasets.py
-    python create_eval_set_from_repo_datasets.py --datasets-dir ../finetuning/repo_datasets
+    python create_eval_set_from_repo_datasets.py --datasets-dir ../../finetuning/repo_datasets
     python create_eval_set_from_repo_datasets.py --output-file diff_analyzer_eval_generated.yaml
 """
 import os
@@ -30,28 +29,6 @@ logging.basicConfig(
     format='%(levelname)s:%(funcName)s: %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-def create_assertion_prompt():
-    """
-    Creates the assertion prompt for diff analyzer evaluations.
-    
-    Parameters:
-        None
-        
-    Returns:
-        str: The assertion prompt content
-    """
-    logger.debug("Creating assertion prompt")
-    
-    # Create a more detailed assertion prompt based on the existing one
-    assertion_prompt = """# EVALUATION CRITERIA
-1. The output has clear explanation what was changed
-2. The output uses a conventional commit format (e.g., feat:, fix:, docs:, etc.)
-3. The description is concise but informative
-4. The changes are accurately described
-5. The commit message is relevant to the actual code changes in the diff
-"""
-    return assertion_prompt
 
 def load_json_datasets(directory):
     """
@@ -140,18 +117,14 @@ def create_eval_yaml(datasets, output_path, max_entries=None):
             "tests": []
         }
         
-        # Create assertion prompt file
-        assertion_dir = Path(output_path).parent / "assertion_prompts"
-        assertion_file = assertion_dir / "diff_analyzer_assertion_generated.md"
+        # Check if assertion prompt file exists
+        assertion_file = Path(output_path).parent / "assertion_prompts" / "diff_analyzer_assertion.md"
         
-        # Ensure directory exists
-        assertion_dir.mkdir(exist_ok=True)
+        if not assertion_file.exists():
+            logger.error(f"Assertion prompt file not found at {assertion_file}")
+            raise FileNotFoundError(f"Assertion prompt file not found at {assertion_file}")
         
-        # Write assertion prompt to file
-        assertion_content = create_assertion_prompt()
-        with open(assertion_file, 'w', encoding='utf-8') as f:
-            f.write(assertion_content)
-        logger.info(f"Created assertion prompt at {assertion_file}")
+        logger.info(f"Using existing assertion prompt at {assertion_file}")
         
         # Counter for test entries
         total_entries = 0
@@ -186,7 +159,7 @@ def create_eval_yaml(datasets, output_path, max_entries=None):
                     "vars": {
                         "system_prompt": "file://../data/prompts/system/diff_analyzer.txt",
                         "user_prompt": diff_content,
-                        "system_assertion_prompt": "file://assertion_prompts/diff_analyzer_assertion_generated.md"
+                        "system_assertion_prompt": "file://assertion_prompts/diff_analyzer_assertion.md"
                     },
                     "assert": [
                         {
