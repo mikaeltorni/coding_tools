@@ -191,7 +191,7 @@ def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None
                     "vars": {
                         "system_prompt": "file://../../data/prompts/system/diff_analyzer.txt",
                         "user_prompt": diff_content,
-                        "system_assertion_prompt": "file://assertion_prompts/diff_analyzer_assertion.md"
+                        "system_assertion_prompt": "file://../assertion_prompts/diff_analyzer_assertion.md"
                     },
                     "assert": [
                         {
