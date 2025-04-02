@@ -13,7 +13,8 @@ Functions:
 Command Line Usage Examples:
     python create_eval_set_from_repo_datasets.py
     python create_eval_set_from_repo_datasets.py --datasets-dir ../../finetuning/repo_datasets
-    python create_eval_set_from_repo_datasets.py --output-file diff_analyzer_eval_generated.yaml
+    python create_eval_set_from_repo_datasets.py --output-file ../eval_configs/diff_analyzer_eval_generated.yaml
+    python create_eval_set_from_repo_datasets.py --max-entries 50 --max-diff-size 50000
 """
 import os
 import json
@@ -25,7 +26,7 @@ from datetime import datetime
 
 # Configure logging
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,  # Default to INFO level
     format='%(levelname)s:%(funcName)s: %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -62,11 +63,27 @@ def load_json_datasets(directory):
             try:
                 with open(json_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
-                    datasets.append({
-                        "file_name": json_file.name,
-                        "data": data
-                    })
+                    
+                # Validate it's a list
+                if not isinstance(data, list):
+                    logger.error(f"Dataset {json_file} is not a list, skipping")
+                    continue
+                    
+                logger.info(f"Loaded {len(data)} entries from {json_file.name}")
+                
+                # Check if any entries are missing "input" or "output" fields
+                valid_entries = [e for e in data if "input" in e and "output" in e]
+                if len(valid_entries) != len(data):
+                    logger.warning(f"Found {len(data) - len(valid_entries)} entries missing input or output in {json_file.name}")
+                    
+                datasets.append({
+                    "file_name": json_file.name,
+                    "data": data
+                })
                 logger.info(f"Successfully loaded {len(data)} entries from {json_file.name}")
+            except json.JSONDecodeError as e:
+                logger.error(f"Invalid JSON in {json_file}: {e}")
+                continue
             except Exception as e:
                 logger.error(f"Error loading {json_file}: {e}")
                 continue
@@ -77,7 +94,7 @@ def load_json_datasets(directory):
         logger.error(f"Error loading datasets: {e}")
         raise
 
-def create_eval_yaml(datasets, output_path, max_entries=None):
+def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None):
     """
     Creates evaluation YAML file from datasets.
     
@@ -85,13 +102,18 @@ def create_eval_yaml(datasets, output_path, max_entries=None):
         datasets (list): List of datasets loaded from JSON files
         output_path (str): Path to output the YAML file
         max_entries (int, optional): Maximum number of entries to include per dataset
+        max_diff_size (int, optional): Maximum size of diff content in characters
         
     Returns:
         bool: True if successful, False otherwise
     """
-    logger.debug(f"output_path: {output_path} | max_entries: {max_entries}")
+    logger.debug(f"output_path: {output_path} | max_entries: {max_entries} | max_diff_size: {max_diff_size}")
     
     try:
+        # Create output directory if it doesn't exist
+        output_dir = Path(output_path).parent
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
         # Create base YAML structure
         yaml_structure = {
             "description": "Diff Analyzer Agent Evals - Auto-generated from repository datasets",
@@ -126,8 +148,10 @@ def create_eval_yaml(datasets, output_path, max_entries=None):
         
         logger.info(f"Using existing assertion prompt at {assertion_file}")
         
-        # Counter for test entries
+        # Track statistics
+        stats = {}
         total_entries = 0
+        skipped_entries = 0
         
         # Process each dataset
         for dataset_info in datasets:
@@ -135,10 +159,11 @@ def create_eval_yaml(datasets, output_path, max_entries=None):
             data = dataset_info["data"]
             
             logger.info(f"Processing dataset {filename} with {len(data)} entries")
+            stats[filename] = {"total": len(data), "processed": 0, "skipped": 0}
             
             # Limit entries if specified
             entries_to_process = data
-            if max_entries is not None and max_entries > 0:
+            if max_entries is not None and max_entries > 0 and len(data) > max_entries:
                 entries_to_process = data[:max_entries]
                 logger.info(f"Limiting to {len(entries_to_process)} entries from {filename}")
             
@@ -147,11 +172,18 @@ def create_eval_yaml(datasets, output_path, max_entries=None):
                 # Extract input and output from dataset entry
                 if "input" not in entry or "output" not in entry:
                     logger.warning(f"Skipping entry {i} in {filename}: missing input or output")
+                    stats[filename]["skipped"] += 1
+                    skipped_entries += 1
                     continue
                 
                 # Get input (diff) and output (commit message)
                 diff_content = entry["input"]
                 commit_message = entry["output"]
+                
+                # Truncate diff if it's too large
+                if max_diff_size and len(diff_content) > max_diff_size:
+                    logger.debug(f"Truncating diff from {len(diff_content)} to {max_diff_size} characters")
+                    diff_content = diff_content[:max_diff_size] + "\n... (truncated)"
                 
                 # Create test entry
                 test_entry = {
@@ -172,14 +204,27 @@ def create_eval_yaml(datasets, output_path, max_entries=None):
                 # Add test entry to YAML structure
                 yaml_structure["tests"].append(test_entry)
                 total_entries += 1
+                stats[filename]["processed"] += 1
                 
                 # Log progress every 10 entries
-                if i % 10 == 0:
-                    logger.info(f"Processed {i} entries from {filename}")
+                if (i + 1) % 10 == 0:
+                    logger.info(f"Processed {i + 1}/{len(entries_to_process)} entries from {filename}")
         
         # Write YAML file
         with open(output_path, 'w', encoding='utf-8') as f:
             yaml.dump(yaml_structure, f, default_flow_style=False, sort_keys=False)
+        
+        # Print summary
+        logger.info(f"\nProcessing Summary:")
+        logger.info(f"{'=' * 40}")
+        for filename, file_stats in stats.items():
+            logger.info(f"{filename}:")
+            logger.info(f"  - Total entries: {file_stats['total']}")
+            logger.info(f"  - Processed: {file_stats['processed']}")
+            logger.info(f"  - Skipped: {file_stats['skipped']}")
+        logger.info(f"{'=' * 40}")
+        logger.info(f"Total tests generated: {total_entries}")
+        logger.info(f"Total entries skipped: {skipped_entries}")
         
         logger.info(f"Successfully created evaluation YAML with {total_entries} tests at {output_path}")
         return True
@@ -206,10 +251,19 @@ def main():
                        help='Directory containing JSON datasets')
     parser.add_argument('--output-file', type=str, default='../eval_configs/diff_analyzer_eval_generated.yaml',
                        help='Output YAML file path')
-    parser.add_argument('--max-entries', type=int, default=10,
-                       help='Maximum entries to include per dataset (default: 10)')
+    parser.add_argument('--max-entries', type=int, default=None,
+                       help='Maximum entries to include per dataset (default: all entries)')
+    parser.add_argument('--max-diff-size', type=int, default=100000,
+                       help='Maximum size of diff content in characters (default: 100000)')
+    parser.add_argument('--verbose', '-v', action='store_true',
+                       help='Enable verbose logging')
     
     args = parser.parse_args()
+    
+    # Set logging level based on verbosity
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Verbose logging enabled")
     
     try:
         # Get script directory
@@ -224,9 +278,12 @@ def main():
         if not os.path.isabs(output_file):
             output_file = script_dir / output_file
         
-        logger.info(f"Starting evaluation set creation")
-        logger.info(f"Datasets directory: {datasets_dir}")
-        logger.info(f"Output file: {output_file}")
+        # Print configuration
+        logger.info(f"Starting evaluation set creation with configuration:")
+        logger.info(f"  - Datasets directory: {datasets_dir}")
+        logger.info(f"  - Output file: {output_file}")
+        logger.info(f"  - Max entries per dataset: {args.max_entries if args.max_entries else 'All'}")
+        logger.info(f"  - Max diff size: {args.max_diff_size} characters")
         
         # Load datasets
         datasets = load_json_datasets(datasets_dir)
@@ -236,7 +293,7 @@ def main():
             return
         
         # Create evaluation YAML
-        result = create_eval_yaml(datasets, output_file, args.max_entries)
+        result = create_eval_yaml(datasets, output_file, args.max_entries, args.max_diff_size)
         
         if result:
             logger.info("Evaluation set creation completed successfully")

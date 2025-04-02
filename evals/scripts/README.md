@@ -23,17 +23,22 @@ python create_eval_set_from_repo_datasets.py [OPTIONS]
 #### Options
 
 - `--datasets-dir PATH`: Directory containing JSON datasets (default: ../../finetuning/repo_datasets)
-- `--output-file PATH`: Output YAML file path (default: diff_analyzer_eval_generated.yaml)
-- `--max-entries N`: Maximum entries to include per dataset (default: 10)
+- `--output-file PATH`: Output YAML file path (default: ../eval_configs/diff_analyzer_eval_generated.yaml)
+- `--max-entries N`: Maximum entries to include per dataset (default: all entries)
+- `--max-diff-size N`: Maximum size of diff content in characters (default: 100000)
+- `--verbose`, `-v`: Enable verbose logging for debugging
 
 ### Example
 
 ```bash
-# Generate evaluation set with default settings
+# Generate evaluation set with default settings (process all entries)
 python create_eval_set_from_repo_datasets.py
 
 # Generate evaluation set with custom path and entry limit
 python create_eval_set_from_repo_datasets.py --datasets-dir /path/to/datasets --max-entries 20
+
+# Generate evaluation set with smaller diff size limit
+python create_eval_set_from_repo_datasets.py --max-diff-size 50000 --verbose
 ```
 
 ### Output
@@ -43,6 +48,13 @@ The script will:
 1. Read all JSON files in the specified datasets directory
 2. Use the existing assertion prompt from `assertion_prompts/diff_analyzer_assertion.md`
 3. Generate a YAML file containing evaluation tests for each dataset entry
-4. Output status messages with information about the process
+4. Output status messages and a summary of processed entries
+
+#### Summary Report
+
+After processing, the script will generate a summary report showing:
+- How many entries were processed from each dataset file
+- How many entries were skipped (due to missing input/output fields)
+- Total number of tests generated
 
 The script expects the assertion prompt file to exist at the path `assertion_prompts/diff_analyzer_assertion.md`. The generated YAML can be used with the evaluation framework to test the Diff Analyzer model's performance. 
