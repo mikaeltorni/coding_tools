@@ -118,7 +118,7 @@ def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None
         yaml_structure = {
             "description": "Diff Analyzer Agent Evals - Auto-generated from repository datasets",
             "prompts": [
-                "file://formats/default.json"
+                "file://../formats/default.json"
             ],
             "providers": [
                 {
