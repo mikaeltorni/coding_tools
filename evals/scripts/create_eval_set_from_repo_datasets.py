@@ -118,7 +118,7 @@ def create_eval_yaml(datasets, output_path, max_entries=None):
         }
         
         # Check if assertion prompt file exists
-        assertion_file = Path(output_path).parent / "assertion_prompts" / "diff_analyzer_assertion.md"
+        assertion_file = Path(output_path).parent / ".." / "assertion_prompts" / "diff_analyzer_assertion.md"
         
         if not assertion_file.exists():
             logger.error(f"Assertion prompt file not found at {assertion_file}")
