@@ -204,7 +204,7 @@ def main():
     )
     parser.add_argument('--datasets-dir', type=str, default='../../finetuning/repo_datasets',
                        help='Directory containing JSON datasets')
-    parser.add_argument('--output-file', type=str, default='diff_analyzer_eval_generated.yaml',
+    parser.add_argument('--output-file', type=str, default='../eval_configs/diff_analyzer_eval_generated.yaml',
                        help='Output YAML file path')
     parser.add_argument('--max-entries', type=int, default=10,
                        help='Maximum entries to include per dataset (default: 10)')
