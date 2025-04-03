@@ -239,7 +239,7 @@ def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None
                     system_prompt_content = "You are an expert Git Diff Analyzer. Analyze the diff and respond with a conventional commit message in the format 'type: description'."
                 
                 # Create combined message with system prompt and diff content
-                combined_message = f"{system_prompt_content}\n\nHere's the diff to analyze:\n\n{diff_content}\n\nProvide a conventional commit message in the format 'type: description' that summarizes the changes in this diff."
+                combined_message = f"{system_prompt_content}\n\n{diff_content}"
                 
                 # Create test entry with combined message
                 test_entry = {
