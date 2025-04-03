@@ -1,0 +1,9 @@
+diff --git a/src/utils.js b/src/utils.js
+index 4567def..89ab012 100644
+--- a/src/utils.js
++++ b/src/utils.js
+@@ -1,7 +1,7 @@
+-function calculateSum(a,b){return a+b;}
++function calculateSum(a, b) { return a + b; }
+ console.log(calculateSum(2,3));
+

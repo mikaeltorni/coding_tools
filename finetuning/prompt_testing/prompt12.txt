@@ -1,0 +1,9 @@
+diff --git a/README.md b/README.md
+index d4e5f6a..789abc1 100644
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-Recieve user input from terminal.
++Receive user input from terminal.
+ Additional instructions provided in this document.
+

@@ -1,0 +1,14 @@
+diff --git a/tests/payment.test.js b/tests/payment.test.js
+index 1234abc..5678def 100644
+--- a/tests/payment.test.js
++++ b/tests/payment.test.js
+@@ -1,5 +1,10 @@
++describe('Payment Module Integration', () => {
++  it('should process payment successfully', () => {
++    // test logic here
++  });
++});
+ test('basic payment processing', () => {
+   expect(processPayment(100)).toBe(true);
+ });
+

@@ -1,0 +1,13 @@
+diff --git a/server.js b/server.js
+index 5f6a7b8..9c0d1e2 100644
+--- a/server.js
++++ b/server.js
+@@ -30,10 +30,6 @@ app.use(loggingMiddleware);
+-app.use(authMiddleware);
+-app.use(rateLimitMiddleware);
+-app.use(cachingMiddleware);
+-app.use(errorHandler);
++app.use(authMiddleware, rateLimitMiddleware, cachingMiddleware, errorHandler);
+
+ module.exports = app;
+

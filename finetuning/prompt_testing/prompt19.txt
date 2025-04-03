@@ -1,0 +1,14 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 6789abc..def0123 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -5,7 +5,7 @@ jobs:
+   build:
+     runs-on: ubuntu-latest
+     steps:
+-      - uses: actions/checkout@v2
++      - uses: actions/checkout@v3
+       - name: Set up Node.js
+         uses: actions/setup-node@v2
+         with:
+

@@ -1,0 +1,15 @@
+diff --git a/src/auth.js b/src/auth.js
+index 3f4a5b6..7c8d9e0 100644
+--- a/src/auth.js
++++ b/src/auth.js
+@@ -20,6 +20,12 @@ function login(user) {
+   // existing login logic
+ }
++
++function register(newUser) {
++  // new registration logic added
++  return createUser(newUser);
++}
++
+ module.exports = { login, register };
+

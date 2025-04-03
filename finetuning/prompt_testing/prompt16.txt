@@ -1,0 +1,9 @@
+diff --git a/db/queries.sql b/db/queries.sql
+index abcd123..dcba321 100644
+--- a/db/queries.sql
++++ b/db/queries.sql
+@@ -10,7 +10,7 @@ SELECT * FROM orders
+-WHERE customer_id = $1;
++WHERE customer_id = $1 AND status = 'active';
+ ORDER BY created_at DESC;
+
