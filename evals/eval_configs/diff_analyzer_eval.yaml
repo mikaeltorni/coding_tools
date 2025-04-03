@@ -1,7 +1,7 @@
 description: 'Diff Analyzer Agent Evals'
 
 prompts:
-  - file://formats/default.json
+  - file://../formats/default.json
 
 providers:
   - id: llama:gemma-3-1b-it-Q4_K_M
