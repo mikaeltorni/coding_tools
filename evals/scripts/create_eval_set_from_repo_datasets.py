@@ -220,8 +220,28 @@ tests:
                     
                     # Truncate diff if it's too large
                     if max_diff_size and len(diff_content) > max_diff_size:
-                        logger.debug(f"Truncating diff from {len(diff_content)} to {max_diff_size} characters")
-                        diff_content = diff_content[:max_diff_size] + "\n... (truncated)"
+                        logger.debug(f"Diff exceeds size limit: {len(diff_content)} > {max_diff_size} characters")
+                        
+                        # Split the diff into files (each starting with "diff --git")
+                        diff_files = diff_content.split("diff --git ")
+                        header = diff_files[0]  # Preserve any header content
+                        diff_files = ["diff --git " + f for f in diff_files[1:]]  # Add the prefix back
+                        
+                        # Start with the header
+                        truncated_diff = header
+                        current_size = len(header)
+                        
+                        # Add files one by one until we approach max size
+                        for i, file_diff in enumerate(diff_files):
+                            if current_size + len(file_diff) > max_diff_size:
+                                logger.debug(f"Included {i} out of {len(diff_files)} files in truncated diff")
+                                truncated_diff += f"\n\n... (truncated: {len(diff_files) - i} more files not shown)"
+                                break
+                            
+                            truncated_diff += file_diff
+                            current_size += len(file_diff)
+                        
+                        diff_content = truncated_diff
                     
                     # Generate hash for diff content to create unique filename
                     diff_hash = generate_hash(diff_content)

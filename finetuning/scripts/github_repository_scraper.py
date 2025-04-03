@@ -881,7 +881,27 @@ def main():
                     # Limit diff size to avoid overwhelming the model
                     if len(diff_content) > max_diff_size:
                         logger.warning(f"Diff content too large ({len(diff_content)} chars), truncating to {max_diff_size} chars")
-                        diff_content = diff_content[:max_diff_size] + "\n... (truncated)"
+                        
+                        # Split the diff into files (each starting with "diff --git")
+                        diff_files = diff_content.split("diff --git ")
+                        header = diff_files[0]  # Preserve any header content
+                        diff_files = ["diff --git " + f for f in diff_files[1:]]  # Add the prefix back
+                        
+                        # Start with the header
+                        truncated_diff = header
+                        current_size = len(header)
+                        
+                        # Add files one by one until we approach max size
+                        for i, file_diff in enumerate(diff_files):
+                            if current_size + len(file_diff) > max_diff_size:
+                                logger.warning(f"Included {i} out of {len(diff_files)} files in truncated diff")
+                                truncated_diff += f"\n\n... (truncated: {len(diff_files) - i} more files not shown)"
+                                break
+                            
+                            truncated_diff += file_diff
+                            current_size += len(file_diff)
+                        
+                        diff_content = truncated_diff
                     
                     # Process based on whether this is a conventional commit or not
                     if is_conventional:
