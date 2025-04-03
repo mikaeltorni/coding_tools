@@ -573,7 +573,9 @@ def print_stats_report():
     
     # Expected additions - conventional commits minus skipped ones
     if no_llm_scan_mode:
-        expected_additions = conventional - stats['skipped_token_limit'] - stats['skipped_duplicate'] - stats['skipped_no_diff']
+        # Calculate expected additions: conventional commits minus those skipped for reasons other than excluded types
+        skipped_for_other_reasons = min(conventional, stats['skipped_token_limit'] + stats['skipped_duplicate'] + stats['skipped_no_diff'])
+        expected_additions = conventional - skipped_for_other_reasons
         print(f"  Expected additions (non-excluded conventional - skipped): {expected_additions}")
         if expected_additions != stats['added_to_dataset']:
             print(f"  WARNING: Addition mismatch! expected = {expected_additions}, actual = {stats['added_to_dataset']}")
@@ -875,11 +877,17 @@ def main():
                     if stats_only:
                         # Just classify the commit message for statistics
                         if is_conventional_commit(commit_message):
-                            stats['conventional_commits'] += 1
                             prefix = extract_commit_prefix(commit_message)
-                            if prefix:
-                                stats['conventional_prefixes'][prefix] += 1
-                            logger.debug(f"Commit {commit.hexsha[:8]} has conventional format: {prefix}")
+                            commit_type = prefix.split('(')[0] if prefix else ''
+                            
+                            if commit_type in excluded_types:
+                                stats['excluded_conventional_commits'] += 1
+                                if prefix:
+                                    stats['excluded_prefixes'][prefix] += 1
+                            else:
+                                stats['conventional_commits'] += 1
+                                if prefix:
+                                    stats['conventional_prefixes'][prefix] += 1
                         else:
                             # This is a non-conventional commit
                             stats['non_conventional_commits'] += 1
@@ -999,19 +1007,18 @@ def main():
                         # Just use the first line of the commit message
                         analysis = commit_message.split('\n')[0].strip()
                         
-                        # Update statistics for conventional commits
-                        stats['conventional_commits'] += 1
+                        # Get the prefix/type info
                         prefix = extract_commit_prefix(commit_message)
                         commit_type = prefix.split('(')[0] if prefix else ''
                         
                         # Check if this commit should be excluded
                         if commit_type in excluded_types:
                             logger.info(f"Skipping {commit.hexsha[:8]}: Excluded commit type: {commit_type}")
-                            processed_commits.add(commit.hexsha)
-                            stats['skipped_excluded_type'] += 1
                             stats['excluded_conventional_commits'] += 1
                             if prefix:
                                 stats['excluded_prefixes'][prefix] += 1
+                            processed_commits.add(commit.hexsha)
+                            stats['skipped_excluded_type'] += 1
                             continue
                         
                         # Only count non-excluded types in regular stats
