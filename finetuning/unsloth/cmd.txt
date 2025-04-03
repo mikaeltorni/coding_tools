@@ -27,7 +27,7 @@ python github_repository_scraper.py https://github.com/vuejs/core --process-all-
 python combine_repo_datasets.py
 
 run in WSL/linux:
-python unsloth-cli.py --model_name "google/gemma-3-1b-it" --max_steps 800 --per_device_train_batch_size 2 --load_in_4bit --save_model --save_path "testing/data-set-diffchecker-3.8k-max-1028tok-commits-v6" --save_method "lora" --max_seq_length 2048
+python unsloth-cli.py --model_name "google/gemma-3-1b-it" --max_steps 1600 --per_device_train_batch_size 2 --load_in_4bit --save_model --save_path "testing/data-set-diffchecker-3.8k-max-1028tok-commits-v6" --save_method "lora" --max_seq_length 2048
 
 back to windows (if you are on it):
 python ../../../llama.cpp/convert_hf_to_gguf.py "../../../coding_tools/finetuning/unsloth/testing/data-set-diffchecker-3.8k-max-1028tok-commits-v6" --outfile ../../../models/diffchecker-3.8k-max-1028tok-commits-v6.gguf
