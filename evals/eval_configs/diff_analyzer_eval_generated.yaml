@@ -5,7 +5,7 @@ providers:
 - id: llama:gemma-3-1b-it-Q4_K_M
   config:
     temperature: 0
-    max_new_tokens: 125000
+    max_new_tokens: 1024
     top_p: 0.9
     prompt:
       prefix: "<start_of_turn>user\n"
@@ -15,51 +15,3936 @@ defaultTest:
   options:
     provider: openai:gpt-4o-mini-2024-07-18
 tests:
-- description: 'feat: update registry (#962)'
+- description: 'feat: update registry (#951)'
   vars:
-    message: 'file://diffs/diff_db377b129687a90ae6baa553588fbc5e.txt'
+    message: 'file://diffs/diff_bca04b0c250fc38e56826df4680d24b4.txt'
     system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
   assert:
   - type: llm-rubric
     value: '{{system_assertion_prompt}}'
-- description: 'feat: optimize slider (#961)'
+- description: 'feat: update registry (#950)'
   vars:
-    message: 'file://diffs/diff_d3efce889926f06ae5c5506490199b21.txt'
+    message: 'file://diffs/diff_ece7d5a1285ed99320116a1bf9b34d34.txt'
     system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
   assert:
   - type: llm-rubric
     value: '{{system_assertion_prompt}}'
-- description: 'feat: update slider-filter (#959)'
+- description: 'fix(deps): update dependency lucide-react to ^0.484.0 (#947)'
   vars:
-    message: 'file://diffs/diff_8698005eb259fbd00bb3b0fe7cee0784.txt'
+    message: 'file://diffs/diff_d5fb5a00e9162c4f3764ab7173a81710.txt'
     system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
   assert:
   - type: llm-rubric
     value: '{{system_assertion_prompt}}'
-- description: 'feat: update number input (#958)'
+- description: 'chore(deps): update dependency @types/node to v22.13.13 (#944)'
   vars:
-    message: 'file://diffs/diff_d5e5588ed084237ee6e345e6ec635d1a.txt'
+    message: 'file://diffs/diff_cd3ebe465f9dc6615e4e1334faa695dc.txt'
     system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
   assert:
   - type: llm-rubric
     value: '{{system_assertion_prompt}}'
-- description: 'feat: sync registry (#957)'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.41.0 (#942)'
   vars:
-    message: 'file://diffs/diff_1b1bbed5256ae05e4170a7c8759dd6d6.txt'
+    message: 'file://diffs/diff_a6fe9129a00210f6d40df27f016c24a7.txt'
     system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
   assert:
   - type: llm-rubric
     value: '{{system_assertion_prompt}}'
-- description: 'chore: add fallback (#956)'
+- description: 'chore(deps): update dependency @types/node to v22.13.11 (#941)'
   vars:
-    message: 'file://diffs/diff_1f59ea61c25079b83bc245631aaac651.txt'
+    message: 'file://diffs/diff_ca0e098fd500e276c1d10d00751c02b9.txt'
     system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
   assert:
   - type: llm-rubric
     value: '{{system_assertion_prompt}}'
-- description: 'chore: update imports (#955)'
+- description: 'fix(deps): update dependency nanoid to v5.1.5 (#938)'
   vars:
-    message: 'file://diffs/diff_2394fca1373a5eb9efd9139ba88e22a2.txt'
+    message: 'file://diffs/diff_4ec87edfa92e59b59d72abfb31d16cbf.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.483.0 (#937)'
+  vars:
+    message: 'file://diffs/diff_8a3199c2e2b34d8bba218ce18f75554b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.40.1 (#934)'
+  vars:
+    message: 'file://diffs/diff_1e19a1eb02cc8041af83742f4cc9c25e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency pg to v8.14.1 (#933)'
+  vars:
+    message: 'file://diffs/diff_a5a38d5689fdeba534c2a6cf00b2aaf5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nanoid to v5.1.4 (#931)'
+  vars:
+    message: 'file://diffs/diff_46dee054a990e41cefc29939be485b9c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.482.0 (#930)'
+  vars:
+    message: 'file://diffs/diff_6cbb8126b57325804c5a435d258a3fdb.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency pg to v8.14.0 (#926)'
+  vars:
+    message: 'file://diffs/diff_f60a00983f759e3e8602c8531732473a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency next-themes to v0.4.6 (#927)'
+  vars:
+    message: 'file://diffs/diff_a66e764bbf7d82bfd8a7a99297ca75cd.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update postgres docker tag to v17 (#923)'
+  vars:
+    message: 'file://diffs/diff_dfdf05099ce58eba2a465c8ab752803a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update postgres docker tag to v16.8 (#922)'
+  vars:
+    message: 'file://diffs/diff_24a1c1c3dccefa46655b2290fbb7a562.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: optionally add docker-compose for running database locally (#837)'
+  vars:
+    message: 'file://diffs/diff_607752ccd9fc000287ecbde371981702.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency next-themes to v0.4.5 (#921)'
+  vars:
+    message: 'file://diffs/diff_5bde146f7cd4da36af6d5cbe178870ca.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.479.0 (#917)'
+  vars:
+    message: 'file://diffs/diff_b6888a7d704e3a009175f62b5716bea1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @faker-js/faker to v9.6.0 (#916)'
+  vars:
+    message: 'file://diffs/diff_bcba731624e3921ad3ccfc37026b0492.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.4.1 (#914)'
+  vars:
+    message: 'file://diffs/diff_e325849b177c56380a5157c72e4a88e3.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.13.10 (#920)'
+  vars:
+    message: 'file://diffs/diff_078b9d0cd67ba51fe6bacfe79cdf1630.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nanoid to v5.1.3 (#915)'
+  vars:
+    message: 'file://diffs/diff_dfb4803d811b238059e6f47adbd51e54.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: add analytics (#919)'
+  vars:
+    message: 'file://diffs/diff_28c09781a8face23cef86cedc4105caa.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v4.1.3 (#910)'
+  vars:
+    message: 'file://diffs/diff_cd60b31508cb5886741038a291beb74c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.13.9 (#911)'
+  vars:
+    message: 'file://diffs/diff_984ff5ab1b130e0cff59a908e74cbfd2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: sync'
+  vars:
+    message: 'file://diffs/diff_104113bc07c710aac5bf8551f15ff532.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.13.8 (#908)'
+  vars:
+    message: 'file://diffs/diff_02df665f579e1931257edc6e78f553a6.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.13.7 (#907)'
+  vars:
+    message: 'file://diffs/diff_b8ac2861932a4793ea79d619892f7754.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.477.0 (#906)'
+  vars:
+    message: 'file://diffs/diff_5939c7f8d2623e52fb3516c201e6c561.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @faker-js/faker to v9.5.1 (#904)'
+  vars:
+    message: 'file://diffs/diff_abe0c5a385f23c100d86dfd976422f0e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.40.0 (#901)'
+  vars:
+    message: 'file://diffs/diff_22654b800145a5468deb66792f4574f2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.476.0 (#899)'
+  vars:
+    message: 'file://diffs/diff_10b6dc46a483e18a34a953a4ce0c3f8a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v4.1.2 (#898)'
+  vars:
+    message: 'file://diffs/diff_983eb78897ce9853ed6f1243d8e9a4ec.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nanoid to v5.1.2 (#897)'
+  vars:
+    message: 'file://diffs/diff_a49b7847003645d525380ba440950d15.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v3.0.2 (#896)'
+  vars:
+    message: 'file://diffs/diff_eb791277a3887406e8144a2c9ecdd90b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v4.1.1 (#895)'
+  vars:
+    message: 'file://diffs/diff_388a6a0ef205c35fca5cd6db7007397c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.13.5 (#894)'
+  vars:
+    message: 'file://diffs/diff_1cc89956c71d8ce591ece0ae424ee225.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v2.0.1 (#892)'
+  vars:
+    message: 'file://diffs/diff_b7e67e76a4d1c298a6bd49119b9641b4.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency postcss to v8.5.3 (#891)'
+  vars:
+    message: 'file://diffs/diff_98930e25689f1aa23752ba39ad7a0ff3.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v2 (#890)'
+  vars:
+    message: 'file://diffs/diff_0586b2c2ba89c9e78b3a799976c48994.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.4.0 (#888)'
+  vars:
+    message: 'file://diffs/diff_77c6ee6dacbff7840550e84e2630d15b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v4.1.0 (#885)'
+  vars:
+    message: 'file://diffs/diff_39b905d84b490758a219333e72a1cb5c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nanoid to v5.1.0 (#884)'
+  vars:
+    message: 'file://diffs/diff_332f3d47993bc0d665739e085700bdcc.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.13.4 (#883)'
+  vars:
+    message: 'file://diffs/diff_eec309346e86aaac6c85d04cc5e3e791.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.13.2 (#882)'
+  vars:
+    message: 'file://diffs/diff_c815a651c9d03d7080d02108d48604e1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency pg to v8.13.3 (#881)'
+  vars:
+    message: 'file://diffs/diff_ec654dfba2395e442b5b52f942138e79.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @faker-js/faker to v9.5.0 (#880)'
+  vars:
+    message: 'file://diffs/diff_b64cc90a934347cb193f7a14a9ec94a2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.21.2 (#879)'
+  vars:
+    message: 'file://diffs/diff_8525e9da09f72771ed23d517eeec8185.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency zod to v3.24.2 (#878)'
+  vars:
+    message: 'file://diffs/diff_72a77adcbe3a8e884a48f391135a8281.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency pg to v8.13.2 (#877)'
+  vars:
+    message: 'file://diffs/diff_45936d87afe8ee47a009cb4a73f30acd.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.39.3 (#875)'
+  vars:
+    message: 'file://diffs/diff_91de3d2eed67487773cf5f86afb954ed.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency postcss to v8.5.2 (#874)'
+  vars:
+    message: 'file://diffs/diff_5e1c28b89cc281783258087859d878fb.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v4 (#873)'
+  vars:
+    message: 'file://diffs/diff_09685ffbe406910afea5741bd81a2cdb.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.475.0 (#872)'
+  vars:
+    message: 'file://diffs/diff_c676d03fdec10464d58601ddfb17b1bf.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.39.2 (#870)'
+  vars:
+    message: 'file://diffs/diff_30ce8b2714a163fbb5fd0e83ac24ab78.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.13.1 (#868)'
+  vars:
+    message: 'file://diffs/diff_a220c2cde00e277941628796d3ac8f15.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.3.2 (#864)'
+  vars:
+    message: 'file://diffs/diff_5f0fbbafea62162612428332d0ae1dca.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.13.0 (#863)'
+  vars:
+    message: 'file://diffs/diff_86b0c355a3b9b84aa5b234a120564d8e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.7.4 (#862)'
+  vars:
+    message: 'file://diffs/diff_16c155a38b2567faea08299ad1ba8246.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update sortable'
+  vars:
+    message: 'file://diffs/diff_4a13229864513bba9dc268b8c4f4d3d8.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: update actions'
+  vars:
+    message: 'file://diffs/diff_754eac57a71e8bb306c20dfe6756fcd1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v3 (#861)'
+  vars:
+    message: 'file://diffs/diff_eb569146f0f59faf9d17bbfafb26c81a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.39.1 (#859)'
+  vars:
+    message: 'file://diffs/diff_9e66566e65bc0b621c69d26bf755b661.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.30.4 (#858)'
+  vars:
+    message: 'file://diffs/diff_9294bd6e15de9aea205ce0c9485c9198.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.7.3 (#857)'
+  vars:
+    message: 'file://diffs/diff_8cb313f841f888c04cce24b8826f3374.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.12.0 (#856)'
+  vars:
+    message: 'file://diffs/diff_63e92db1c37d74a340909c3085676929.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.39.0 (#855)'
+  vars:
+    message: 'file://diffs/diff_7dabc6cf6eb23d1404ff0fd2c61359da.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.30.3 (#853)'
+  vars:
+    message: 'file://diffs/diff_c8e621cf116b119b18d5a39bcd5d8dd2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier-plugin-tailwindcss to v0.6.11 (#850)'
+  vars:
+    message: 'file://diffs/diff_da87c726fdd730a4fbe0093583e7b704.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.10.10 (#849)'
+  vars:
+    message: 'file://diffs/diff_66c782eb9a9dc6b8a51ca9c37c5b1b41.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.474.0 (#848)'
+  vars:
+    message: 'file://diffs/diff_7ff66d372993a7fa4bda36bd7bb0ff2d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.10.9 (#846)'
+  vars:
+    message: 'file://diffs/diff_257413d2712773e6c722a8516d2036a5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.473.0 (#835)'
+  vars:
+    message: 'file://diffs/diff_c2b9f8f25e611b2d7bc4264f6f9a9287.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-tailwindcss to v3.18.0 (#834)'
+  vars:
+    message: 'file://diffs/diff_5779e671e3b71de0445e6a4e44953c26.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.38.4 (#831)'
+  vars:
+    message: 'file://diffs/diff_b3a73d0bf40754076f2d5cb18c7c96d7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.30.2 (#830)'
+  vars:
+    message: 'file://diffs/diff_7e28f3683cd5693492fd0e489b1354da.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.10.7 (#829)'
+  vars:
+    message: 'file://diffs/diff_6cbc6a3851349c8608355e34d06c35ee.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @faker-js/faker to v9.4.0 (#828)'
+  vars:
+    message: 'file://diffs/diff_f9ce944786f6200bcf24c854ac765a04.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier-plugin-tailwindcss to v0.6.10 (#827)'
+  vars:
+    message: 'file://diffs/diff_d22a4ed09b77f51b211885730b0a22b9.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.7.2 (#826)'
+  vars:
+    message: 'file://diffs/diff_0dde296db4c92d2dfdfc3d746a5e1f30.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.3.1 (#824)'
+  vars:
+    message: 'file://diffs/diff_b07934d713538802756c8931c71cb0c3.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.15.4 (#818)'
+  vars:
+    message: 'file://diffs/diff_05e5126e2c18ea9a00bbd62f3d19296e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.10.6 (#817)'
+  vars:
+    message: 'file://diffs/diff_4d48f4e89a3aa707bb61074ed763c4ce.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to v0.471.1 (#814)'
+  vars:
+    message: 'file://diffs/diff_a101189fe8e8fc7a5e65ff1cbaf50391.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.471.0 (#810)'
+  vars:
+    message: 'file://diffs/diff_3358fe7ab22d35e9d1146fd1e748bce6.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.3.0 (#807)'
+  vars:
+    message: 'file://diffs/diff_933dfb1669d54e9da74d375c42d50c5b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v3.10.0 (#806)'
+  vars:
+    message: 'file://diffs/diff_94c1197b72c2e90560f4afa9a975ffc9.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.15.3 (#803)'
+  vars:
+    message: 'file://diffs/diff_8450070625bfe6a3d299db2112f418db.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.10.5 (#801)'
+  vars:
+    message: 'file://diffs/diff_9ef484dfb43e6ed8765ccaf0183bb923.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.15.2 (#799)'
+  vars:
+    message: 'file://diffs/diff_a2e0c521a0275b6c806f7586fe896860.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.38.3 (#797)'
+  vars:
+    message: 'file://diffs/diff_fc75236d672a9ba69d4515e78fc27279.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v2.6.0 (#796)'
+  vars:
+    message: 'file://diffs/diff_47442d9f4e8b31d2182685d4c50c51e1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.54.2 (#793)'
+  vars:
+    message: 'file://diffs/diff_b82c04b1d8343ecb964939cd6e76db11.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency dotenv-cli to v8 (#792)'
+  vars:
+    message: 'file://diffs/diff_4413ae0bb3aa835f0d711c51078deee1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.469.0 (#791)'
+  vars:
+    message: 'file://diffs/diff_4b8e3f070a644de69c84e6236ce224df.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.15.1 (#790)'
+  vars:
+    message: 'file://diffs/diff_cf63269842b87bc3300da7d4b5b977d2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency vaul to v1.1.2 (#780)'
+  vars:
+    message: 'file://diffs/diff_b3e5bfc394882b8a2c41d3dbdae1b1a7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.38.2 (#779)'
+  vars:
+    message: 'file://diffs/diff_a74bc529e5071ca903a47da9e3dbff22.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.20.6 (#778)'
+  vars:
+    message: 'file://diffs/diff_884cdad36927a153a84735e93825850f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.30.1 (#777)'
+  vars:
+    message: 'file://diffs/diff_6c424036924462f920d00d5320c53f98.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.54.1 (#775)'
+  vars:
+    message: 'file://diffs/diff_20673c0a9b938823434010455276b72b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.38.1 (#774)'
+  vars:
+    message: 'file://diffs/diff_c725e5d4f8a46e7a1d4043228a5479ab.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.10.2 (#773)'
+  vars:
+    message: 'file://diffs/diff_5d0e3f316f84814701721cb9ce892277.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency zod to v3.24.0 (#770)'
+  vars:
+    message: 'file://diffs/diff_63efa7f7e2ac8fcf65966cfe032528da.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.38.0 (#767)'
+  vars:
+    message: 'file://diffs/diff_9af9d0cab84b9a578adfb93808ea8870.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to ^0.30.0 (#766)'
+  vars:
+    message: 'file://diffs/diff_c50b38a4ca084f35991524b3589ba359.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.7.1 (#765)'
+  vars:
+    message: 'file://diffs/diff_5d598d976374586ff50756dceb8623e7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix: multiple rerender'
+  vars:
+    message: 'file://diffs/diff_6d647b8d1ea2744240083dced158415f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.54.0 (#763)'
+  vars:
+    message: 'file://diffs/diff_423d9beab268ab27ada1b91960226842.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.15.0 (#762)'
+  vars:
+    message: 'file://diffs/diff_820f24d15393c0109d1c9cecc888cf4e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.468.0 (#754)'
+  vars:
+    message: 'file://diffs/diff_021d8f60069839f06f09cb5109441bd2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency next-themes to v0.4.4 (#759)'
+  vars:
+    message: 'file://diffs/diff_55b76714c3675dccf2acaf789e022571.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @dnd-kit/core to v6.3.1 (#756)'
+  vars:
+    message: 'file://diffs/diff_e0ea314178aa11d2e46d954f505cbb13.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dnd-kit monorepo (#753)'
+  vars:
+    message: 'file://diffs/diff_09e0132924a29682821dcd425b74c72c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @dnd-kit/core to v6.3.0 (#752)'
+  vars:
+    message: 'file://diffs/diff_a96debb63caed18e500e6981d2d3e50b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.465.0 (#750)'
+  vars:
+    message: 'file://diffs/diff_ac37e7481dfe120cd88ee16aef0f849d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.29.1 (#749)'
+  vars:
+    message: 'file://diffs/diff_532d0d7339b331d5f5774518155c912f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier to v3.4.2 (#748)'
+  vars:
+    message: 'file://diffs/diff_7d1be95f67651363248ce7543876a690.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.464.0 (#744)'
+  vars:
+    message: 'file://diffs/diff_8aa0a80ec2e8da1f1ec2ef3da571a498.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.37.0 (#746)'
+  vars:
+    message: 'file://diffs/diff_c7a602b3895da88caa36fb025d6d4250.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to ^0.29.0 (#745)'
+  vars:
+    message: 'file://diffs/diff_5f452fe60644eb910f73b9fd957be08b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @faker-js/faker to v9.3.0 (#743)'
+  vars:
+    message: 'file://diffs/diff_a51a2356399772dca22e0593f6450618.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.14.4 (#741)'
+  vars:
+    message: 'file://diffs/diff_6e3f892d33266230d781d2e1f1c7d733.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.14.3 (#739)'
+  vars:
+    message: 'file://diffs/diff_e1f50a89d5e271043e4c8a84de9e59c5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.10.1 (#738)'
+  vars:
+    message: 'file://diffs/diff_803d26dabb2236869a4fd8807d638e10.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.462.0 (#737)'
+  vars:
+    message: 'file://diffs/diff_cb6ea5b416b2f5799d9c20d6bcf4c516.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nanoid to v5.0.9 (#736)'
+  vars:
+    message: 'file://diffs/diff_4e968bf05f40fbf05f6017682c1d9a56.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier to v3.4.1 (#735)'
+  vars:
+    message: 'file://diffs/diff_9fa1638c8daa5de54b3706dee05bb90b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency class-variance-authority to v0.7.1 (#734)'
+  vars:
+    message: 'file://diffs/diff_7eb366680723ffcfaebfd5519cd29fce.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier to v3.4.0 (#733)'
+  vars:
+    message: 'file://diffs/diff_2e5fd19f69b960b7aff7bb8e7105c248.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.10.0 (#732)'
+  vars:
+    message: 'file://diffs/diff_287f31c2af92aed8eb3450461da15779.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.461.0 (#731)'
+  vars:
+    message: 'file://diffs/diff_c875e276fe4d8ca121a7c27995c5c028.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.9.4 (#730)'
+  vars:
+    message: 'file://diffs/diff_664b1af759dcfa296e88476cc5538000.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v2.5.5 (#728)'
+  vars:
+    message: 'file://diffs/diff_db3118bdf60a1c1826b3094073765d9c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dnd-kit monorepo (#727)'
+  vars:
+    message: 'file://diffs/diff_2b10fea73e3219431ac01b3e3afae5b8.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.2.3 (#725)'
+  vars:
+    message: 'file://diffs/diff_a0d6357bae8129276a60411dc850ec42.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.9.3 (#724)'
+  vars:
+    message: 'file://diffs/diff_248f089e03de793a61e67d60c5fe8b2a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.9.2 (#723)'
+  vars:
+    message: 'file://diffs/diff_389be937b2df8e8b94fc4a0d9818ee4a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.36.4 (#721)'
+  vars:
+    message: 'file://diffs/diff_7777e16520a1976612fe95164e0bc7bd.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency dotenv-cli to v7.4.4 (#720)'
+  vars:
+    message: 'file://diffs/diff_da73b74d1b5cb97baa92927f7db4faff.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: revert (#719)'
+  vars:
+    message: 'file://diffs/diff_697105e98d053b4007f4400d2b831d66.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.2.2 (#718)'
+  vars:
+    message: 'file://diffs/diff_46a7acb324b5619b8b6b32727c533f7d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.14.2 (#717)'
+  vars:
+    message: 'file://diffs/diff_c10d887362078d1d989c23114bb9581f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.14.1 (#716)'
+  vars:
+    message: 'file://diffs/diff_8714516c8010392be75c51baece81c32.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.9.1 (#715)'
+  vars:
+    message: 'file://diffs/diff_5565d5fe498c7262aa7f36476fd78a62.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier-plugin-tailwindcss to v0.6.9 (#714)'
+  vars:
+    message: 'file://diffs/diff_f0e3d8643ddcdcc7345c4e96ac1a1187.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency dotenv-cli to v7.4.3 (#713)'
+  vars:
+    message: 'file://diffs/diff_cec6887a764928efc76e0f00f347f4a6.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.460.0 (#709)'
+  vars:
+    message: 'file://diffs/diff_0e57522cb7cababbe6acacf8d0b23a64.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.2.1 (#711)'
+  vars:
+    message: 'file://diffs/diff_efbe045cb01bcdb01b8ab9f9b48e2be7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.36.3 (#710)'
+  vars:
+    message: 'file://diffs/diff_78185a060f97ace08e58c52a23d5a2e7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.13.2 (#708)'
+  vars:
+    message: 'file://diffs/diff_252e67cc0a69192c141cd1016a56c039.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update update-fucntions'
+  vars:
+    message: 'file://diffs/diff_ae6eb0b4fad15a286cc4e6f5a079b854.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update function'
+  vars:
+    message: 'file://diffs/diff_490ba8df92e6449c33ba6994cdac0529.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.13.1 (#707)'
+  vars:
+    message: 'file://diffs/diff_f4f8a7d8286761bb1c3a3985b19c4300.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tailwindcss to v3.4.15 (#706)'
+  vars:
+    message: 'file://diffs/diff_22319e22c8ca4b5afe997452b80bbf3c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.2.0 (#705)'
+  vars:
+    message: 'file://diffs/diff_51a1d234e174e4a935a9ae3570c7d09b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.36.2 (#704)'
+  vars:
+    message: 'file://diffs/diff_6a49ba2951e13da7db78e5a1d9109012.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.28.1 (#703)'
+  vars:
+    message: 'file://diffs/diff_5af4f221d01e65919c867a45a0454589.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.13.0 (#702)'
+  vars:
+    message: 'file://diffs/diff_6f8c494fa4d9450d6c1f88154f0c1a03.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @radix-ui/react-tooltip to v1.1.4 (#701)'
+  vars:
+    message: 'file://diffs/diff_27f12e800d9d8530d91a6a6042bc4530.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.1.2 (#700)'
+  vars:
+    message: 'file://diffs/diff_3e36d66237184df534fadbe391a721b4.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: responsive lists'
+  vars:
+    message: 'file://diffs/diff_9563f32fc29bc09e5181aedd44d4872f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: update dropdown-menu'
+  vars:
+    message: 'file://diffs/diff_f4e1357fd2a7d56df73e5cee9a1e8de1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: sync select'
+  vars:
+    message: 'file://diffs/diff_61d95e26160e5d7899fb94d49849635b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: bump next-themes'
+  vars:
+    message: 'file://diffs/diff_1e17983efd986ce200fc4e9032dc7cb3.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.53.2 (#696)'
+  vars:
+    message: 'file://diffs/diff_9a95f51b79a3c3e3a6c4750c9af7d06c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.456.0 (#695)'
+  vars:
+    message: 'file://diffs/diff_a24307acb6c3e4667a12133d91605413.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency lucide-react to ^0.455.0 (#694)'
+  vars:
+    message: 'file://diffs/diff_90bb2472bbb980eb1d04d74a033ceba1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to ^0.28.0'
+  vars:
+    message: 'file://diffs/diff_3cfabe6cf1c2838f57f3c0be504f7aa0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.36.1'
+  vars:
+    message: 'file://diffs/diff_4dce816e34ca6471884c19f83e6243ce.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.27.2'
+  vars:
+    message: 'file://diffs/diff_212bb4fb6bed0948a74f3a1c22e441b7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: update icons'
+  vars:
+    message: 'file://diffs/diff_40984ff65d30386fadc68ad9c5d2e69c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.9.0'
+  vars:
+    message: 'file://diffs/diff_b2f56ff1337ed26ca99e844b36cfb6d4.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: remove analytics'
+  vars:
+    message: 'file://diffs/diff_c5e79d853ca5586310ab61411bf4c301.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency cmdk to v1.0.4'
+  vars:
+    message: 'file://diffs/diff_413b77f4d26bc44a826b15e5166c42da.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @faker-js/faker to v9.2.0'
+  vars:
+    message: 'file://diffs/diff_ffa2b0bca2624f54502b9f2647b02753.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.7.0'
+  vars:
+    message: 'file://diffs/diff_58f8e81b1e5a988478dd39fe57840d24.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: add analytics'
+  vars:
+    message: 'file://diffs/diff_c47470c326a1a72be4119438feefdbf0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: select -> multi-select'
+  vars:
+    message: 'file://diffs/diff_a80df517529b499dd58d395f04a16954.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.8.7'
+  vars:
+    message: 'file://diffs/diff_bb30e3d5caf8e24c13d045e03f41c5a3.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.6.1'
+  vars:
+    message: 'file://diffs/diff_163a9f318912cde16af7ae299226e7b5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.27.1'
+  vars:
+    message: 'file://diffs/diff_9b84a65842f2bba7ccecbfc3b1b9186e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency cmdk to v1.0.3'
+  vars:
+    message: 'file://diffs/diff_ff68edb8276ad002986765623f89b232.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.8.6'
+  vars:
+    message: 'file://diffs/diff_abcaab13d0d795adeb437acc817877ae.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.1.1'
+  vars:
+    message: 'file://diffs/diff_30ef06d787e61977745d78bc4e2cff9d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.8.5'
+  vars:
+    message: 'file://diffs/diff_47f73e459a1ba5ff0cbe80eac90d8076.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.1.0'
+  vars:
+    message: 'file://diffs/diff_ec9e0689fb8806d719dd859f10c64b41.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @radix-ui/react-icons to v1.3.1'
+  vars:
+    message: 'file://diffs/diff_f585c2fb2b22dc4cc202764cac19aefc.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.36.0'
+  vars:
+    message: 'file://diffs/diff_d5edf47c78299511fd1a06c671ce3612.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to ^0.27.0'
+  vars:
+    message: 'file://diffs/diff_d893ddc72d40358229f646ee1dbb9888.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.8.4'
+  vars:
+    message: 'file://diffs/diff_9ab8c9f8c268e7750d07d11a52db5174.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency vaul to v1.1.1'
+  vars:
+    message: 'file://diffs/diff_a6d5d8c9a9cbebac2d14d21bea906a1c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v3.9.1'
+  vars:
+    message: 'file://diffs/diff_a5e98f078ad902a142b37cf7a1503837.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.8.2'
+  vars:
+    message: 'file://diffs/diff_f8a1fb02455016524327d73533eac5ec.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nanoid to v5.0.8'
+  vars:
+    message: 'file://diffs/diff_09abc98dc18ce83ac6ba31ee6e456744.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.12.3'
+  vars:
+    message: 'file://diffs/diff_4509e6a77f147a02564248669c4bed46.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.19.2'
+  vars:
+    message: 'file://diffs/diff_eee4e088909cb8fdd46430d7d9365e75.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @faker-js/faker to v9.1.0'
+  vars:
+    message: 'file://diffs/diff_d0a41dec4c7282e30731c475f1c0fba0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.8.1'
+  vars:
+    message: 'file://diffs/diff_6ac061e13911a4552a4fe2734ab3d658.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.8.0'
+  vars:
+    message: 'file://diffs/diff_2b4db4517b99e416107dcc25c83850cc.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency postgres to v3.4.5'
+  vars:
+    message: 'file://diffs/diff_ca71c92fee18adb3e8dded4529a65129.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update parsers'
+  vars:
+    message: 'file://diffs/diff_a38aec6872a2b1f64229444c527ed5a7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix: isBetween date filter'
+  vars:
+    message: 'file://diffs/diff_b31af01059f177d88a34285e987a6233.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.0.4'
+  vars:
+    message: 'file://diffs/diff_704148d85085414615296aeef7a7e7c1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency pg to v8.13.1'
+  vars:
+    message: 'file://diffs/diff_77af5cf0310356e94ea5b05e8701f4d5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: cleanup'
+  vars:
+    message: 'file://diffs/diff_2272443f25030a53df2dd16ac2dc8745.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: update FUNDING.yml'
+  vars:
+    message: 'file://diffs/diff_518567e817223321dffac9aa9f47b0e1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: add FUNDING.yml'
+  vars:
+    message: 'file://diffs/diff_d7a20351b93fe3293ffe00ae5dd0e66d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: fix formatting'
+  vars:
+    message: 'file://diffs/diff_6dc871f3ab5e515cb4dd208a384f8e43.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix: data table filter style overflow (#649)'
+  vars:
+    message: 'file://diffs/diff_e758715817a31e86be9a04fe50ea81a5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.0.3'
+  vars:
+    message: 'file://diffs/diff_7177385e80bd26c80610ae8876cda03f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: origin-aware popover'
+  vars:
+    message: 'file://diffs/diff_08e7eaab0ce3a37d9cb1702733364140.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update empty fields'
+  vars:
+    message: 'file://diffs/diff_8f076e62aa78755ef9c11a3a9791d097.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update filter again'
+  vars:
+    message: 'file://diffs/diff_ef928ec9ba202d8d26a1e6ea0f403793.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.7.9'
+  vars:
+    message: 'file://diffs/diff_5e4042b0258dde26edf09272faf559fe.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v2.0.1'
+  vars:
+    message: 'file://diffs/diff_8e9926c68da77b295e161119cc155944.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix: deployment crash (#636)'
+  vars:
+    message: 'file://diffs/diff_1152a177d5569933be47d4ff690ed443.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.7.8'
+  vars:
+    message: 'file://diffs/diff_220faf8203c89e3b2fdefde3cc0ec6a7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.35.3'
+  vars:
+    message: 'file://diffs/diff_08c7556460eb64c18704e3d9a5d2b746.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.7.7'
+  vars:
+    message: 'file://diffs/diff_5b45aa079aec39f702559e2724865df0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.53.1'
+  vars:
+    message: 'file://diffs/diff_7f629d819b18034ed5892705209f4821.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.35.2'
+  vars:
+    message: 'file://diffs/diff_6364b3aa82cbaa7cddbaf55e09abdfc4.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: sync'
+  vars:
+    message: 'file://diffs/diff_a095cc9d3076d402bdd49cf0a529234a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.7.6'
+  vars:
+    message: 'file://diffs/diff_75a235a09765d2d905e2381275485cc3.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.35.1'
+  vars:
+    message: 'file://diffs/diff_0f007ec60eaaa0b709b481b11bb39e8c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.26.2'
+  vars:
+    message: 'file://diffs/diff_1b33ca16332006779baa897b4e6ad6f8.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.35.0'
+  vars:
+    message: 'file://diffs/diff_b778c159cdf94280e350ee70352de67c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to ^0.26.0'
+  vars:
+    message: 'file://diffs/diff_43bc7f57730e9a202a1751dac97066d1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tailwindcss to v3.4.14'
+  vars:
+    message: 'file://diffs/diff_d505f1b465009f997d0498f3320bc2db.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v2.5.4'
+  vars:
+    message: 'file://diffs/diff_55baf29ae86e5f5e53be089eb4a648c2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency vaul to v1.1.0'
+  vars:
+    message: 'file://diffs/diff_031b14df9096816346a5094424844fd1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-tailwindcss to v3.17.5'
+  vars:
+    message: 'file://diffs/diff_ed4c6387baa4910d717071bda712ade2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nuqs to v1.20.0'
+  vars:
+    message: 'file://diffs/diff_52d7a8804f8b9b462ae634ef91d7b37a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v22.7.5'
+  vars:
+    message: 'file://diffs/diff_72b7d6c9b423d6826778ac942fb2a854.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.34.0'
+  vars:
+    message: 'file://diffs/diff_a6b2bd0a1cc383a7fae0cb0afee560c4.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to ^0.25.0'
+  vars:
+    message: 'file://diffs/diff_4ca7caa1cbda72a2ee8de84be33a8d2b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update filters'
+  vars:
+    message: 'file://diffs/diff_055c91b92ad24251b1c2dc17e43c9896.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v2.5.3'
+  vars:
+    message: 'file://diffs/diff_570b94b8083d2dd4fc0a5063835bb59a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: add nuqs'
+  vars:
+    message: 'file://diffs/diff_c705c3b2b7935fb34106ed44a355fc67.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: update hooks'
+  vars:
+    message: 'file://diffs/diff_4e7175d43a72c66cc959e99e079354ce.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.16.10'
+  vars:
+    message: 'file://diffs/diff_c6511b0e7f8d193a97103cb4cbc6aefe.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @faker-js/faker to v9.0.3'
+  vars:
+    message: 'file://diffs/diff_087a4ed07a5c001ca4feaa929b9b94d0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency vaul to v1'
+  vars:
+    message: 'file://diffs/diff_d3f3a421d74b16d773c765b1184eafe1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency vaul to v0.9.7'
+  vars:
+    message: 'file://diffs/diff_0833717120f2d120e715d62d43e601d1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.16.8'
+  vars:
+    message: 'file://diffs/diff_7569c774f882e5db08a3af00a5d12dc0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.16.7'
+  vars:
+    message: 'file://diffs/diff_56fe6ecec8f22f547f8712f03f871fe7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier-plugin-tailwindcss to v0.6.8'
+  vars:
+    message: 'file://diffs/diff_d171f37be987f4797d69f4d8179a18c7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency vaul to v0.9.6'
+  vars:
+    message: 'file://diffs/diff_cd57851b1fbaa07553f80cc4976a655d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.16.6'
+  vars:
+    message: 'file://diffs/diff_236639376a802998fcf8c51f9d7f1c65.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @faker-js/faker to v9.0.2'
+  vars:
+    message: 'file://diffs/diff_89902be968fba0e1a4914b17f463eca7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tailwindcss to v3.4.13'
+  vars:
+    message: 'file://diffs/diff_9f3fd5890c8e22f2271a0f726fc7c9e0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-config-next to v14.2.13'
+  vars:
+    message: 'file://diffs/diff_0ea744216c6035bdc2c71c08e252fc1a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency vaul to v0.9.4'
+  vars:
+    message: 'file://diffs/diff_c996c3ced0bfb81a0c8b4479f63c30ad.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tailwindcss to v3.4.12'
+  vars:
+    message: 'file://diffs/diff_3daab9e95ad96745b9c1d7163a993b6d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency date-fns to v4.1.0'
+  vars:
+    message: 'file://diffs/diff_3e9c7a38eedd5518f12a8de6ed8b03b2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency date-fns to v4'
+  vars:
+    message: 'file://diffs/diff_18243e601ca286946fa3309e957027e9.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @faker-js/faker to v9.0.1'
+  vars:
+    message: 'file://diffs/diff_888cbbcd2524d8eb0b7c5f8dba659f31.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency vaul to v0.9.3'
+  vars:
+    message: 'file://diffs/diff_4978273e4df1c2b50b45ffd5194727b4.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.19.1'
+  vars:
+    message: 'file://diffs/diff_729e3c4fa109a935a3307a9a2dd01b9c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @faker-js/faker to v9'
+  vars:
+    message: 'file://diffs/diff_7c5e04bbf917a894380a5ebfb0f6e524.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency vaul to v0.9.2'
+  vars:
+    message: 'file://diffs/diff_937ff569e18e7b6231af96cec61fe821.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.16.5'
+  vars:
+    message: 'file://diffs/diff_126e4808de0581b7b3ea9a16644b8ecb.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.16.4'
+  vars:
+    message: 'file://diffs/diff_c80c27e14f5a8cb3aefe8dda8c6fbf8a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'docs: update shadcn CLI script (#562)'
+  vars:
+    message: 'file://diffs/diff_4cf2e7383a99718828d19f5a86bab556.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @total-typescript/ts-reset to v0.6.1'
+  vars:
+    message: 'file://diffs/diff_319039617965a88793ba2e2a5dc1a12c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.16.3'
+  vars:
+    message: 'file://diffs/diff_eff92c694badbd766ff77fbc0399e30c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency export-to-csv to v1.4.0'
+  vars:
+    message: 'file://diffs/diff_fd54c309ecf2798e931828936e663c8e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.16.2'
+  vars:
+    message: 'file://diffs/diff_bb23d9bb0c68d323e9ba8b1c48438671.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.19.0'
+  vars:
+    message: 'file://diffs/diff_85fc57daa4e36c95466afa807ce347de.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.24.2'
+  vars:
+    message: 'file://diffs/diff_91abcee668aaaeb9f2b5f54bf4e27cd0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/eslint to v8.56.12'
+  vars:
+    message: 'file://diffs/diff_ca0723df859adb58702a347a769638a3.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @t3-oss/env-nextjs to v0.11.1'
+  vars:
+    message: 'file://diffs/diff_2701839366e63b2d574f14af80df9775.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.20.5'
+  vars:
+    message: 'file://diffs/diff_6f9148729a90f43b2d2408a574895342.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @total-typescript/ts-reset to ^0.6.0'
+  vars:
+    message: 'file://diffs/diff_66efde5dae249e3d5d22dd5e79df54ae.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.53.0'
+  vars:
+    message: 'file://diffs/diff_e14af46f4e0ced21cb5400820eee6df5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.24.1'
+  vars:
+    message: 'file://diffs/diff_cd72e3f5c25135aee3f4d39b843e30f2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.16.1'
+  vars:
+    message: 'file://diffs/diff_505f46ed3cca7ae3117c9efd23728feb.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.16.0'
+  vars:
+    message: 'file://diffs/diff_ada9582b5e16be64b2ed14aae25f096b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update'
+  vars:
+    message: 'file://diffs/diff_557ae47c6d1f6e01b9a042d25f334efc.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tailwindcss to v3.4.10'
+  vars:
+    message: 'file://diffs/diff_61b0916086b0d24fffdc62dc1e83eabd.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v2.5.2'
+  vars:
+    message: 'file://diffs/diff_5253d57a76abd1d379c1d00dea100302.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v2.5.1'
+  vars:
+    message: 'file://diffs/diff_1bdfcfac7e36c8a0ffc311c4a544c469.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v2.5.0'
+  vars:
+    message: 'file://diffs/diff_37dc7ae291e13215497e32516b45355e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.15'
+  vars:
+    message: 'file://diffs/diff_26e65daa29ed8603eff11a91a9be92b6.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier-plugin-tailwindcss to v0.6.6'
+  vars:
+    message: 'file://diffs/diff_300b6daa894fc8a9f24743aa9ba2e3bb.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.33.0'
+  vars:
+    message: 'file://diffs/diff_51cb6b404a8308187db8202b17d8000c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to ^0.24.0'
+  vars:
+    message: 'file://diffs/diff_44a5af5162932a9d3938d7cf8ffc522b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tailwindcss to v3.4.9'
+  vars:
+    message: 'file://diffs/diff_445020db0bd48b435ce65a3b8136c3d4.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tailwindcss to v3.4.8'
+  vars:
+    message: 'file://diffs/diff_84b74e52fb973778943fe8de4f04df0b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.32.2'
+  vars:
+    message: 'file://diffs/diff_83ca582374c244521f645102ae0f17f1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.23.2'
+  vars:
+    message: 'file://diffs/diff_22157d365db0717787f33ec466364444.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.20.1'
+  vars:
+    message: 'file://diffs/diff_95061b992b35e00f90fbdfad4220e9bf.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: use initialState'
+  vars:
+    message: 'file://diffs/diff_12bb7a4a9a35e4321481825236c964a5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: reduce pagesize'
+  vars:
+    message: 'file://diffs/diff_f7a4b8671ae1e94dc367dfee574345ae.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: presist state'
+  vars:
+    message: 'file://diffs/diff_6a44e879137043bf0353f8a613893b41.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: better use-data-table hook'
+  vars:
+    message: 'file://diffs/diff_29514aa5f53893678c24cf29eaefbf63.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.52.2'
+  vars:
+    message: 'file://diffs/diff_53b7d5f73d6ba66ad962f3654c087586.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.14'
+  vars:
+    message: 'file://diffs/diff_81e20570201614967fdea9779e3885e2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.16.5'
+  vars:
+    message: 'file://diffs/diff_b1580b6db063c969aeaff14777e28307.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.16.4'
+  vars:
+    message: 'file://diffs/diff_0e469012b748629903f7982269c9e117.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.16.3'
+  vars:
+    message: 'file://diffs/diff_d2d9f1efca638d9fc09e11c78864709d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.23.1'
+  vars:
+    message: 'file://diffs/diff_fcd6b9af29fe59bad7db3fcb3f09eb88.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.13'
+  vars:
+    message: 'file://diffs/diff_25a36307ea942706f13b01af470dacb2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix: table border overflow'
+  vars:
+    message: 'file://diffs/diff_9683c8cdbc10663496f915a5f336fd29.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: update config'
+  vars:
+    message: 'file://diffs/diff_8c7f7b0c8b0421a62226f14593c76c54.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-react-compiler to v0.0.0-experimental-9ed098e-20240725'
+  vars:
+    message: 'file://diffs/diff_e7efb90b924445d9d7ffd1dfa6c59f0b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-react-compiler to v0.0.0-experimental-47e15aa-20240725'
+  vars:
+    message: 'file://diffs/diff_0058f78a43be9ce7431cfb0c4c8b1f02.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.12'
+  vars:
+    message: 'file://diffs/diff_b327f203d6f51cd797e01efbda227b6f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.32.1'
+  vars:
+    message: 'file://diffs/diff_95d24fc31df54b0b05e4a2ed33f87d48.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/eslint to v8.56.11'
+  vars:
+    message: 'file://diffs/diff_1666f1528fe618248c26faf3b53d89d4.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @t3-oss/env-nextjs to ^0.11.0'
+  vars:
+    message: 'file://diffs/diff_28d8f0b3d0dfe59c8594926b7feb8853.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v8.15.9'
+  vars:
+    message: 'file://diffs/diff_b7d0333b4cec707931f71a1e24f24de3.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.11'
+  vars:
+    message: 'file://diffs/diff_b2cdb336f5851303b18aa47a18a0d8c2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tailwindcss to v3.4.6'
+  vars:
+    message: 'file://diffs/diff_d33522454569ac1c17940808bd15a5f8.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tailwindcss to v3.4.5'
+  vars:
+    message: 'file://diffs/diff_ac60c997f297fd0798d1970b3f6f8523.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.19.3'
+  vars:
+    message: 'file://diffs/diff_686a2acf4ccdc1c290cdd45aa28a11ee.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier to v3.3.3'
+  vars:
+    message: 'file://diffs/diff_3fc3ec8314bc9c63616235780d1386d5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @ianvs/prettier-plugin-sort-imports to v4.3.1'
+  vars:
+    message: 'file://diffs/diff_8b49c3209156f56906aa0d9706d94def.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: add og'
+  vars:
+    message: 'file://diffs/diff_b0b181bd0694c9c60b704fcddc00140d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.32.0'
+  vars:
+    message: 'file://diffs/diff_718cb43e0eff7c9847d8a897bafc5c74.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency rimraf to v6.0.1'
+  vars:
+    message: 'file://diffs/diff_b8f8268c9c647a60b2aa50994633b5b6.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to ^0.23.0'
+  vars:
+    message: 'file://diffs/diff_c1223ecd0be059391e72d6a8178659a3.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency geist to v1.3.1'
+  vars:
+    message: 'file://diffs/diff_3a0a12a3146884916878e19516fadc8d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.31.4'
+  vars:
+    message: 'file://diffs/diff_8bde732b60014278443d0204be587f48.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v2.4.0'
+  vars:
+    message: 'file://diffs/diff_87e7ec8f08c1aefe3a9962afc9f53e1c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency rimraf to v5.0.8'
+  vars:
+    message: 'file://diffs/diff_5f09617a8cb1db06253fad3d4b47ba25.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v3.9.0'
+  vars:
+    message: 'file://diffs/diff_ad2bcb28525c193ad55c24a1c2aad227.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.52.1'
+  vars:
+    message: 'file://diffs/diff_56aad0d4176a1f740628bd9aebc4502a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.10'
+  vars:
+    message: 'file://diffs/diff_9a5ac8d5db5d8efe9feb3a4c7dfee2fc.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.16.2'
+  vars:
+    message: 'file://diffs/diff_c230f7f09b66e57ccb8afbae7c061541.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.19.2'
+  vars:
+    message: 'file://diffs/diff_c0ebce25965ffc60d66598aa88e9c861.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.19.1'
+  vars:
+    message: 'file://diffs/diff_7fde3b242c0df62e4f610f7d717e76e4.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.22.8'
+  vars:
+    message: 'file://diffs/diff_25ea84677e2cbf2e24d22acfde7e2483.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.16.0'
+  vars:
+    message: 'file://diffs/diff_5fa2d789e9fcdcd8a4b0a44d54ad0390.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.15.9'
+  vars:
+    message: 'file://diffs/diff_7e8e214bff1a61f0ea404f8f4343fcc6.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.15.8'
+  vars:
+    message: 'file://diffs/diff_6018d5acd549069c96b7fdd6ee36b28a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @ianvs/prettier-plugin-sort-imports to v4.3.0'
+  vars:
+    message: 'file://diffs/diff_2fbea76bd61f8fc30e9c04dee09a265a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.9'
+  vars:
+    message: 'file://diffs/diff_f321f867d536e122251c6e5531bfcab8.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.8'
+  vars:
+    message: 'file://diffs/diff_7402c4c5b21a9fc853df78416c897c8d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @radix-ui/react-select to v2.1.1'
+  vars:
+    message: 'file://diffs/diff_ffe8ecdb64a7316c81ffd6e3de54c391.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @radix-ui/react-popover to v1.1.1'
+  vars:
+    message: 'file://diffs/diff_e02be775af2c36798eec462258094ccd.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @radix-ui/react-dropdown-menu to v2.1.1'
+  vars:
+    message: 'file://diffs/diff_492ca6e1ea2004a9050a1d0d2e60d369.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @radix-ui/react-dialog to v1.1.1'
+  vars:
+    message: 'file://diffs/diff_82c1242dc873c52ee4dc5418d49b347f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-tailwindcss to v3.17.4'
+  vars:
+    message: 'file://diffs/diff_287f61f25f7096d152cf2860fe3a0e6d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.15.7'
+  vars:
+    message: 'file://diffs/diff_d603f03431b21cb83f61c72680c94377.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @radix-ui/react-toggle to v1.1.0'
+  vars:
+    message: 'file://diffs/diff_346d08bf3b1b1cfe0fec6a849fb5442a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @radix-ui/react-slot to v1.1.0'
+  vars:
+    message: 'file://diffs/diff_0d540ee2de1885a655b0ce3a756192cb.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.7'
+  vars:
+    message: 'file://diffs/diff_3ad27cc3496328a9ba006a0d19482df5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @radix-ui/react-separator to v1.1.0'
+  vars:
+    message: 'file://diffs/diff_a713639170d888b272fba2301a93b42a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @radix-ui/react-label to v2.1.0'
+  vars:
+    message: 'file://diffs/diff_5924671ac57e1487dd0169883480f879.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.6'
+  vars:
+    message: 'file://diffs/diff_903d666a2efc0b37079f2f0c7dab3f21.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.5'
+  vars:
+    message: 'file://diffs/diff_b1d2d76aae83d8378e7d66169c919ee5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.4'
+  vars:
+    message: 'file://diffs/diff_14a0f8b26c95bd3074f9ad689cc61f91.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier-plugin-tailwindcss to v0.6.5'
+  vars:
+    message: 'file://diffs/diff_5d4dd0f4c9553bfd21e7b8103839ba48.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.3'
+  vars:
+    message: 'file://diffs/diff_5c6c2d53cf089808ef5b7465ea54c755.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.15.6'
+  vars:
+    message: 'file://diffs/diff_b156f43f1867c6428232d1f40e265b45.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.52.0'
+  vars:
+    message: 'file://diffs/diff_198981fc3be2f2ed59cc192d1b45140f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.15.5'
+  vars:
+    message: 'file://diffs/diff_5fb0cab9347142566654e62fe19105e5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.15.4'
+  vars:
+    message: 'file://diffs/diff_e378c7641c809abc4e8d4f90673a9724.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier-plugin-tailwindcss to v0.6.4'
+  vars:
+    message: 'file://diffs/diff_ee5f892b6d605ebd1277deb5ae68b197.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.15.3'
+  vars:
+    message: 'file://diffs/diff_9b98e84fef769658f393d8cb28b03fa8.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier to v3.3.2'
+  vars:
+    message: 'file://diffs/diff_1418331fbff2830b35dab03ed429d6ab.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.22.7'
+  vars:
+    message: 'file://diffs/diff_1bd20240d5ae2f526b83a6b090937249.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: sync'
+  vars:
+    message: 'file://diffs/diff_b1fc178047100cb9249651301dd38db7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.15.1'
+  vars:
+    message: 'file://diffs/diff_d74d77f9e9d367837fda4ed9853ecb32.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.14.1'
+  vars:
+    message: 'file://diffs/diff_9c63eb6675c004c6dd2c50a4d1b57c7c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.14.0'
+  vars:
+    message: 'file://diffs/diff_314faee6fc10853ccacecc248a599c9e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.22.6'
+  vars:
+    message: 'file://diffs/diff_ac4611e52178f8380fb0fd152313af34.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.5.0'
+  vars:
+    message: 'file://diffs/diff_09f0173adb734631a3ad021264b8fc76.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.13.3'
+  vars:
+    message: 'file://diffs/diff_56340c85588f2c49c533465a98305c05.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.31.2'
+  vars:
+    message: 'file://diffs/diff_aaee763c2a8ee4f218a174fcc4511075.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier-plugin-tailwindcss to v0.6.2'
+  vars:
+    message: 'file://diffs/diff_643b2c4f15aac0ea6347244c7882b661.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.22.5'
+  vars:
+    message: 'file://diffs/diff_1ae51ba6f9a47d0f35e94a4e3c13b6b2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.13.1'
+  vars:
+    message: 'file://diffs/diff_5b526b47a5c68dadb086028d92138986.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.13.0'
+  vars:
+    message: 'file://diffs/diff_e11e1625ce2dbcb0f105746ca2a9aba2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.22.3'
+  vars:
+    message: 'file://diffs/diff_2a04d77ccea483d68341050e4d99790b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-tailwindcss to v3.17.2'
+  vars:
+    message: 'file://diffs/diff_d2a7c7b4c58ad3730e0d1769639e6fc9.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.12.0'
+  vars:
+    message: 'file://diffs/diff_1c99754ecef85c651b7c6ced17ac8387.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v3.6.0'
+  vars:
+    message: 'file://diffs/diff_0a183d7968373cdc12fa79f68393f9d7.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier to v3.3.1'
+  vars:
+    message: 'file://diffs/diff_13f7c079b11711ce7baa95b20c1c6b64.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-tailwindcss to v3.17.1'
+  vars:
+    message: 'file://diffs/diff_aee0424a9e44f000c618cd69aafaeeaa.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.2'
+  vars:
+    message: 'file://diffs/diff_94d076dc77e5bf2f7f02741c377e3b90.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v3.5.0'
+  vars:
+    message: 'file://diffs/diff_a18678db443130b031af07bfeb817f93.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency pg to v8.12.0'
+  vars:
+    message: 'file://diffs/diff_9047740129bc4eb4807acf5a34641f78.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.31.1'
+  vars:
+    message: 'file://diffs/diff_21023b476221b58109b6628b596999fb.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.22.2'
+  vars:
+    message: 'file://diffs/diff_6af8183f55246b842ba44a1f5d720103.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.1'
+  vars:
+    message: 'file://diffs/diff_2e4f4ec42ef27f6e27c17f7f9df1e8d5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.11.1'
+  vars:
+    message: 'file://diffs/diff_0285c36f185c2d4de20bf08d8ebaeaac.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.14.0'
+  vars:
+    message: 'file://diffs/diff_7582db2b93c2ea897e048b9443357ba4.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(ci): disable typechecking and linting during building'
+  vars:
+    message: 'file://diffs/diff_5b9b6efb5abb6eb47253abd195ae42e8.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier to v3.3.0'
+  vars:
+    message: 'file://diffs/diff_1004f32a7bac1c8c59f2a0eaa0e64227.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.14'
+  vars:
+    message: 'file://diffs/diff_080fc76acc0eb590190b9261187b5305.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.22.1'
+  vars:
+    message: 'file://diffs/diff_7d7287d6083bc2f65c8ec90d75acfb8b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.31.0'
+  vars:
+    message: 'file://diffs/diff_aab5d4abf7989dcd94be597026139c08.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.13'
+  vars:
+    message: 'file://diffs/diff_cc1e16a8daf3062aa0ddb6a434ca599f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: new db'
+  vars:
+    message: 'file://diffs/diff_e2f563d03c4b9aeac0753eb59fb8a5e0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-tailwindcss to v3.17.0'
+  vars:
+    message: 'file://diffs/diff_98767e40f70fbcb7fbcc9a7a7eae3212.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.11.0'
+  vars:
+    message: 'file://diffs/diff_c0a240767c69f4815e71d9395038b74e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.21.4'
+  vars:
+    message: 'file://diffs/diff_9ecbfc03823974ef8c9c28aff81801d0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.21.3'
+  vars:
+    message: 'file://diffs/diff_31c58f6c65aae977d0ffcb3cb914da97.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-tailwindcss to v3.16.0'
+  vars:
+    message: 'file://diffs/diff_00b225e5bbc84e0547cdc6181b66d0c5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.51.5'
+  vars:
+    message: 'file://diffs/diff_3d3de093f643206b6bb9dce08d509ed2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v3.4.2'
+  vars:
+    message: 'file://diffs/diff_67a5b81788ca37d9ec6f21cc79299ca2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.10.5'
+  vars:
+    message: 'file://diffs/diff_feda6c8af0acde01db84a11c21c080b2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.10.4'
+  vars:
+    message: 'file://diffs/diff_9e54d4412c581d925c94bc337a5bab5a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-tailwindcss to v3.15.2'
+  vars:
+    message: 'file://diffs/diff_323499d739357b7b6aa3d511ce14b6ff.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @hookform/resolvers to v3.4.0'
+  vars:
+    message: 'file://diffs/diff_5c072857d7862be792d90c9bd5786636.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.21.2'
+  vars:
+    message: 'file://diffs/diff_9affac93c8b493a6b0e3353dd32be352.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.17.3'
+  vars:
+    message: 'file://diffs/diff_caea67a45bc9469065e71dfe91506f53.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.12'
+  vars:
+    message: 'file://diffs/diff_6acb5c6d07f111a00d80ddb8eb9a785f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.10.2'
+  vars:
+    message: 'file://diffs/diff_0eba5397fc6a7bb88b6795b4a93ebf18.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.17.0'
+  vars:
+    message: 'file://diffs/diff_72d0d1d023f7c3bfb6db843573b0ca80.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.10.1'
+  vars:
+    message: 'file://diffs/diff_d687af7d938b028789774c96953631c5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency rimraf to v5.0.7'
+  vars:
+    message: 'file://diffs/diff_554469ce21dab2d571d0d31dc8b2c89a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.10.0'
+  vars:
+    message: 'file://diffs/diff_d37e2720fdbc96440e5f144fd2a616c6.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.9.4'
+  vars:
+    message: 'file://diffs/diff_307b59be7f1ecfa7c6504f053839a938.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: pass toolbar as children'
+  vars:
+    message: 'file://diffs/diff_5009f9b2d78f762b84f21e7fabb40113.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency zod to v3.23.8'
+  vars:
+    message: 'file://diffs/diff_b6bcad064b1feb16010c6de7a021451c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.11'
+  vars:
+    message: 'file://diffs/diff_cbf5c65b2c6ff02c2f2e29fa62078856.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency zod to v3.23.7'
+  vars:
+    message: 'file://diffs/diff_cf294ef01135d6db21ae422a031fbc8e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency dotenv-cli to v7.4.2'
+  vars:
+    message: 'file://diffs/diff_c89f530ca2ee3e3c29325d974b84fa03.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.9'
+  vars:
+    message: 'file://diffs/diff_57292c1f200d0450c692b3423e41a4a1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.9.2'
+  vars:
+    message: 'file://diffs/diff_f549906654a223e19f36512b5b9f6a0b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.9.1'
+  vars:
+    message: 'file://diffs/diff_8be49f9795496febe8fbb86b23cefd3b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.51.4'
+  vars:
+    message: 'file://diffs/diff_a0cbc9b78e78943ca3239ad1dcc93885.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.9.0'
+  vars:
+    message: 'file://diffs/diff_16120ccc3f367999f37a7d9037c1f36f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency zod to v3.23.6'
+  vars:
+    message: 'file://diffs/diff_956ff89276e484a0ed874d81469a79a4.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.8'
+  vars:
+    message: 'file://diffs/diff_d13d9cdf75b751106a0d78a00029e3a0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.30.10'
+  vars:
+    message: 'file://diffs/diff_f43839e794b9d9e68ed97f4831f87a26.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.8.1'
+  vars:
+    message: 'file://diffs/diff_2194d319aad93e0096a98fadee440754.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v8.15.8'
+  vars:
+    message: 'file://diffs/diff_684a1684f26b018eacf72e6acdd16294.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency zod to v3.23.5'
+  vars:
+    message: 'file://diffs/diff_3e76b34536d236369a822e314b4c4a96.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update floating-bar'
+  vars:
+    message: 'file://diffs/diff_36ec4f3104ed2db311598422f9d53cce.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.7.3'
+  vars:
+    message: 'file://diffs/diff_7688431107e22288d9c05cffbc0fafdf.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-config-next to v14.2.3'
+  vars:
+    message: 'file://diffs/diff_f470e05c0e8353113fceaf811aaaed02.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: Update .env.example (#263)'
+  vars:
+    message: 'file://diffs/diff_465577f6db2c98a0dd28ac1e72008722.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency zod to v3.23.4'
+  vars:
+    message: 'file://diffs/diff_e1921bbe149dc9cd156d3de5b3c2f33d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency clsx to v2.1.1'
+  vars:
+    message: 'file://diffs/diff_0b3052422334d130d2a85d8267f2658f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @t3-oss/env-nextjs to v0.10.1'
+  vars:
+    message: 'file://diffs/diff_f889498ca257569ef9e08aab3c7dd0ec.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'refactor: mutations -> client-actions'
+  vars:
+    message: 'file://diffs/diff_249169326bf69cc61c7f48f260596b9c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: provide defaultSort option'
+  vars:
+    message: 'file://diffs/diff_f1876a685336db09813d9388be3bf92b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency zod to v3.23.3'
+  vars:
+    message: 'file://diffs/diff_a5327fa2819632511528797dac7b5297.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency zod to v3.23.0'
+  vars:
+    message: 'file://diffs/diff_16f1258593ea521d0b68b4cd78bdb5dc.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @t3-oss/env-nextjs to ^0.10.0'
+  vars:
+    message: 'file://diffs/diff_c9d5aef7b1331d8e98f5aaba1f0aae0f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.30.9'
+  vars:
+    message: 'file://diffs/diff_cddafe83cf211440f998ea75b9c51787.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update kbd'
+  vars:
+    message: 'file://diffs/diff_02685105d2f271000f327861f2d6dc32.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.20.17'
+  vars:
+    message: 'file://diffs/diff_ed376e34481b84936893b9381400a3ec.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update table again'
+  vars:
+    message: 'file://diffs/diff_fda90f976c4c30d07b22ac13030cabb2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update table'
+  vars:
+    message: 'file://diffs/diff_85c2ce47e80f5c167dd8dc9d7b7a1d3c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.20.16'
+  vars:
+    message: 'file://diffs/diff_43b845649402e43198ccc3ee5a787121.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v2.3.0'
+  vars:
+    message: 'file://diffs/diff_781613f925f994e84b642af69f9af710.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency drizzle-kit to v0.20.15'
+  vars:
+    message: 'file://diffs/diff_675a3f1639588311a1993f51ab0f63ca.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update use-data-table agin'
+  vars:
+    message: 'file://diffs/diff_1a9dfa5b66c4afda9c72ab7a7953d4fb.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: add defaultPerPage and defaultSort props for useDataTable'
+  vars:
+    message: 'file://diffs/diff_45117234ad1110f264e4d97cbfdede9e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.0.4'
+  vars:
+    message: 'file://diffs/diff_b5265ec00f86f8e891bd19e9924ddb2c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/eslint to v8.56.10'
+  vars:
+    message: 'file://diffs/diff_5e8a978f5b42a5f602f065ae701b63c2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.0.2'
+  vars:
+    message: 'file://diffs/diff_71c0c22e905908efb2ef1fc3a97c7bf2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v9.0.1'
+  vars:
+    message: 'file://diffs/diff_d71cf1ee06ec67750fa744522dd7abd0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-day-picker to v8.10.1'
+  vars:
+    message: 'file://diffs/diff_1c823657e9909032310b14674f5fcc03.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier-plugin-tailwindcss to v0.5.14'
+  vars:
+    message: 'file://diffs/diff_230a8bc1968c744519af5cccad189e6c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update github issues'
+  vars:
+    message: 'file://diffs/diff_ec2d03535b068b21e3ef519e20b39862.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v8.15.7'
+  vars:
+    message: 'file://diffs/diff_3968d3377089c039a461946c15ae0ee6.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.16.0'
+  vars:
+    message: 'file://diffs/diff_f8e086b11207ba4216dbe957df814c07.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency react-hook-form to v7.51.3'
+  vars:
+    message: 'file://diffs/diff_723977c9e8e228909a1cc87569ec3e90.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.30.8'
+  vars:
+    message: 'file://diffs/diff_37553c121a2445da9a9862095d1760af.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/eslint to v8.56.9'
+  vars:
+    message: 'file://diffs/diff_7ab0e5858feceba2b46acf8ed2b6d64b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.7'
+  vars:
+    message: 'file://diffs/diff_71c4cb69523be8c99ef183bf74a8f386.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.6'
+  vars:
+    message: 'file://diffs/diff_da8e66802f3d9255669cdab9e276fedd.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: add ts-reset'
+  vars:
+    message: 'file://diffs/diff_2ebb6fc83157eb3f6ee7a27892106b53.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nanoid to v5.0.7'
+  vars:
+    message: 'file://diffs/diff_b1bd049cb2526994e11704232cf75e3a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.5'
+  vars:
+    message: 'file://diffs/diff_af9599ce89731fde8564abaf48a22344.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: add better comments'
+  vars:
+    message: 'file://diffs/diff_3cd3d31b2aff86450de31e0bdc6d8e50.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update get-tasks query'
+  vars:
+    message: 'file://diffs/diff_967245f92ea5aed8559c3e73d20e3dc1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency tsx to v4.7.2'
+  vars:
+    message: 'file://diffs/diff_0acae01fbe06f45070524b659a92b04f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.4'
+  vars:
+    message: 'file://diffs/diff_225d54e282fdad5a57755c27a5570f65.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix: advanced-filter options'
+  vars:
+    message: 'file://diffs/diff_6e8439c5103f723a1fa0a1be9fd6bd28.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.30.7'
+  vars:
+    message: 'file://diffs/diff_f20282e3e94647ae7b037701da1d5e8c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'feat: update tasks-table'
+  vars:
+    message: 'file://diffs/diff_1452f8a221e6c12c39a85000d44211d5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency pg to v8.11.5'
+  vars:
+    message: 'file://diffs/diff_3525e30b747cf7e55adc764726175e0c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.3'
+  vars:
+    message: 'file://diffs/diff_00177a1b90446219c61f5316b287abfc.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v8.15.6'
+  vars:
+    message: 'file://diffs/diff_03fd0fe62ddd7402eeb60e5e1e01ef1a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/eslint to v8.56.7'
+  vars:
+    message: 'file://diffs/diff_618bc2dfd02b5a688fbfe5697da0e53a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.12.2'
+  vars:
+    message: 'file://diffs/diff_3f9294ed7ffb63cd141867549089d104.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix: remove flag'
+  vars:
+    message: 'file://diffs/diff_3d1e22efda7612d85c0b43d6b99ac457.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix: cleanup filters'
+  vars:
+    message: 'file://diffs/diff_9210b6699d13a67d334b6ef4e50749c9.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.15.3'
+  vars:
+    message: 'file://diffs/diff_9c0a9c1c742758a0c68d7fec9690d956.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.30.6'
+  vars:
+    message: 'file://diffs/diff_c9f9799f503da545c6f68bc2fc6b1d92.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.15.2'
+  vars:
+    message: 'file://diffs/diff_d6ae15382b4c46169731c379ff79d054.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: update issue templates, and add contributing.md'
+  vars:
+    message: 'file://diffs/diff_f7646d43aa44a39c968d744d6f67cc33.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: add feature request'
+  vars:
+    message: 'file://diffs/diff_c240f2ed8a8de6606a075c9e8874ff87.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier-plugin-tailwindcss to v0.5.13'
+  vars:
+    message: 'file://diffs/diff_e42b808614d88c4742909201c1c2f997.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.30.5'
+  vars:
+    message: 'file://diffs/diff_0627f825331b39ef988d9dda60dfa6e6.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency geist to v1.3.0'
+  vars:
+    message: 'file://diffs/diff_2ae9d838999448ca85c92fc9ae902a21.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.15.0'
+  vars:
+    message: 'file://diffs/diff_3ec0b9fcaf75529d5955e49186b61869.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency postgres to v3.4.4'
+  vars:
+    message: 'file://diffs/diff_66909fc5ae33e866a0cba7fb687b8761.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.4.41'
+  vars:
+    message: 'file://diffs/diff_3fe23d18692deda75a6eaa002557b21b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency autoprefixer to v10.4.19'
+  vars:
+    message: 'file://diffs/diff_54c832f27c1ec48b45a25827dd4e1cfc.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.4.32'
+  vars:
+    message: 'file://diffs/diff_5ce827581d4e7e4ffeb7eaae87b9998e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.14.0'
+  vars:
+    message: 'file://diffs/diff_76c6300ba9b9586e0052270461397520.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.30.4'
+  vars:
+    message: 'file://diffs/diff_7cff0fed9126e609649ee3f95d15affa.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.11.30'
+  vars:
+    message: 'file://diffs/diff_90a4871e1de7b63d418d375f4b8cc46f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/eslint to v8.56.6'
+  vars:
+    message: 'file://diffs/diff_90d6ae3df537a71d4c273ab4d4c12acf.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.30.3'
+  vars:
+    message: 'file://diffs/diff_d46cf24d2bb5abace64eb7ce154d28f2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.11.29'
+  vars:
+    message: 'file://diffs/diff_3cae13f3bc547311877f6d4dfa63446b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v8.15.5'
+  vars:
+    message: 'file://diffs/diff_a8e236be8b738ba1f164e1274e72c3e3.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency tailwind-merge to v2.2.2'
+  vars:
+    message: 'file://diffs/diff_d4f8b6a08a85fb3014de642456f6e26a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @ianvs/prettier-plugin-sort-imports to v4.2.1'
+  vars:
+    message: 'file://diffs/diff_0b229cf12d99ce320db7aa987f401753.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.11.28'
+  vars:
+    message: 'file://diffs/diff_6e40f24888cfebe752efcd58d5258fbc.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix: typeerror'
+  vars:
+    message: 'file://diffs/diff_6efc0d105c8c5b8763b0aef12b1521cb.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix: overflow issue'
+  vars:
+    message: 'file://diffs/diff_6608d0f80f9fa1bc1682ca429d929d9d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: sync'
+  vars:
+    message: 'file://diffs/diff_adb931de1d1538b2b1c0af557bce4b7f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: add server-only'
+  vars:
+    message: 'file://diffs/diff_8e6dea4e3008c6415386c0b85fca59b0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @ianvs/prettier-plugin-sort-imports to v4.2.0'
+  vars:
+    message: 'file://diffs/diff_85aed0fa601c5daedb249deb31d6cf77.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.11.27'
+  vars:
+    message: 'file://diffs/diff_4ec6461c93ad6a85ee220ecea48c2246.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency next-themes to ^0.3.0'
+  vars:
+    message: 'file://diffs/diff_930f4803e57c586d84ec42dcbee0907d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-tailwindcss to v3.15.1'
+  vars:
+    message: 'file://diffs/diff_5395c1c0f54c3f79f752d35269052214.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.11.26'
+  vars:
+    message: 'file://diffs/diff_9c7e1f8bbe920267225b10c01761a61f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-tailwindcss to v3.15.0'
+  vars:
+    message: 'file://diffs/diff_b7d83979ed4d117aacc04fc8daa5f4c9.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'docs: updade neon link (#101)'
+  vars:
+    message: 'file://diffs/diff_c212ed4f7d15f10ca2022d70feab0728.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency dotenv-cli to v7.4.1'
+  vars:
+    message: 'file://diffs/diff_014a3798cafc286550525b741138aa4b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency million to v3.0.6'
+  vars:
+    message: 'file://diffs/diff_b9e5df1fdf77364ff6499ad9f81fafd0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.30.1'
+  vars:
+    message: 'file://diffs/diff_08cc28f1d21c19a135540b77600a506f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'refactor: stuffs'
+  vars:
+    message: 'file://diffs/diff_b0ff8a2b8989f6106113fbe0e805eff2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to ^0.30.0'
+  vars:
+    message: 'file://diffs/diff_5d29f970e3a16dc1c10562180345974e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency dotenv-cli to v7.4.0'
+  vars:
+    message: 'file://diffs/diff_293dff5af6c25ece1bd184097d6245bb.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: rename'
+  vars:
+    message: 'file://diffs/diff_2ad6c0f9cbac318181f726a71194fa90.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.29.5'
+  vars:
+    message: 'file://diffs/diff_783a0cad1ea19137260ec111a9b33b44.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency prettier-plugin-tailwindcss to v0.5.12'
+  vars:
+    message: 'file://diffs/diff_d757ccd20fafe85f851dab387ab64767.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.11.25'
+  vars:
+    message: 'file://diffs/diff_d7de164351f41dc8f3f41ac1c17098e5.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency million to v3.0.5'
+  vars:
+    message: 'file://diffs/diff_84ecc293c73d48245ea810a0673a959b.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(data-table): typo'
+  vars:
+    message: 'file://diffs/diff_db912e7d9b9069ee94bd0bf17049d998.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: unique code'
+  vars:
+    message: 'file://diffs/diff_7e1ffe77696145f124d2a2ea8151a772.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: sync'
+  vars:
+    message: 'file://diffs/diff_0c840f32ecafc73b1ab24f6eae940bc0.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: remove extra useEffect in the useDataTable hook'
+  vars:
+    message: 'file://diffs/diff_82ac8602edea6a72bf5fa929bb753f67.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency autoprefixer to v10.4.18'
+  vars:
+    message: 'file://diffs/diff_d67649e3257c65fa1033331d924f162a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.4.3'
+  vars:
+    message: 'file://diffs/diff_d9e2431d2a6a335e7b73abc8ab04ebb3.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.11.23'
+  vars:
+    message: 'file://diffs/diff_4c1779967fb9f549abb579f7c4a61ed1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/eslint to v8.56.5'
+  vars:
+    message: 'file://diffs/diff_ad01af64a84818a9257aab9d70f16fcd.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.13.2'
+  vars:
+    message: 'file://diffs/diff_9fc244d6d1efbe771a4f2f8621ff7062.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.11.22'
+  vars:
+    message: 'file://diffs/diff_9ee8f658b7b2d086e071db346d891d0e.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency @tanstack/react-table to v8.13.0'
+  vars:
+    message: 'file://diffs/diff_f21b57ea0a7f662bc82743fe8db745ba.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.11.21'
+  vars:
+    message: 'file://diffs/diff_dc6f944d60b2ec19fcfc5497959da5f2.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/eslint to v8.56.4'
+  vars:
+    message: 'file://diffs/diff_b0cfb25ee3f4886ac1bca15bd70de525.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.4.2'
+  vars:
+    message: 'file://diffs/diff_828b76b93a2934a2b2b7dcf58a64390c.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency mysql2 to v3.9.2'
+  vars:
+    message: 'file://diffs/diff_3310ccb9ef8ebe9a738e270b7203be51.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency sonner to v1.4.1'
+  vars:
+    message: 'file://diffs/diff_33575ef9964274139362073b0c69e480.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency nanoid to v5.0.6'
+  vars:
+    message: 'file://diffs/diff_fbebee2d722c9b74de56a38f0ebab050.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix(deps): update dependency drizzle-orm to v0.29.4'
+  vars:
+    message: 'file://diffs/diff_024a75330655819e7f162195b04800cd.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency eslint-plugin-tailwindcss to v3.14.3'
+  vars:
+    message: 'file://diffs/diff_6f56bba0dec579f4042a1e4dc6f8ba29.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update dependency @types/node to v20.11.20'
+  vars:
+    message: 'file://diffs/diff_6022c3b18ac68fdb554dd13ae543180f.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'fix: prevent resetting the page on initial render'
+  vars:
+    message: 'file://diffs/diff_329c626e0818a71469365e9a9d9f04e8.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v8.15.4'
+  vars:
+    message: 'file://diffs/diff_ecef5c87f71eba1ed7bc97435637e19a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm/action-setup action to v3'
+  vars:
+    message: 'file://diffs/diff_d473c1b84689dad9d3c297ee992ed9b1.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update actions/setup-node action to v4'
+  vars:
+    message: 'file://diffs/diff_756fdc4d948eb496178c37665b80709a.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update actions/checkout action to v4'
+  vars:
+    message: 'file://diffs/diff_ccf8dacbfffd7c784982446b534504ed.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update actions/cache action to v4'
+  vars:
+    message: 'file://diffs/diff_db292e9c6e649fe9f29c78e7c1ed6386.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: update renovate.json'
+  vars:
+    message: 'file://diffs/diff_e6f0a74426a4a4bee571f67195ec9771.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: remove renovate'
+  vars:
+    message: 'file://diffs/diff_f674fe915d6587742ff647994a734e37.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm/action-setup action to v2.4.0'
+  vars:
+    message: 'file://diffs/diff_961654d2519c6b149dee45d340f040cc.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore(deps): update pnpm to v8.15.3'
+  vars:
+    message: 'file://diffs/diff_a8f08ae26d1e73728155dacf1586e63d.txt'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{system_assertion_prompt}}'
+- description: 'chore: add renovate'
+  vars:
+    message: 'file://diffs/diff_1f95fcbccb41a5f2ea97fcbb3b6e9fe3.txt'
     system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
   assert:
   - type: llm-rubric
