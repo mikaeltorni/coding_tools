@@ -1007,6 +1007,11 @@ def main():
                         # Just use the first line of the commit message
                         analysis = commit_message.split('\n')[0].strip()
                         
+                        # Ensure commit message prefixes are lowercase
+                        if ':' in analysis:
+                            prefix_part, message_part = analysis.split(':', 1)
+                            analysis = prefix_part.lower() + ':' + message_part
+                        
                         # Get the prefix/type info
                         prefix = extract_commit_prefix(commit_message)
                         commit_type = prefix.split('(')[0] if prefix else ''
@@ -1035,6 +1040,11 @@ def main():
                         # Only for normal mode: Analyze diff using Gemma model
                         logger.info(f"Analyzing diff for commit: {commit.hexsha[:8]}")
                         analysis = analyze_diff(diff_content, server_url, payload)
+                        
+                        # Ensure AI-generated commit message prefixes are lowercase
+                        if ':' in analysis:
+                            prefix_part, message_part = analysis.split(':', 1)
+                            analysis = prefix_part.lower() + ':' + message_part
                         
                         # Update statistics
                         stats['non_conventional_commits'] += 1
