@@ -177,13 +177,7 @@ def handle_commit_hotkey(repo_path, server_url=None, payload=None):
                     system_prompt = open(system_prompt_path).read()
                 else:
                     # Fallback system prompt if file doesn't exist
-                    logger.warning(f"System prompt file not found: {system_prompt_path}, using fallback prompt")
-                    system_prompt = """You are a helpful assistant that generates concise Git commit messages. 
-                    Analyze the provided diff and create a brief, descriptive commit message following these guidelines:
-                    - Start with a verb in the imperative mood (Add, Fix, Update, etc.)
-                    - Keep the message concise (under 50 characters if possible)
-                    - Focus on the what and why, not the how
-                    - Use a consistent style"""
+                    logger.warning(f"System prompt file not found: {system_prompt_path}")
                 
                 # Set up OpenAI client
                 client = openai.OpenAI(
