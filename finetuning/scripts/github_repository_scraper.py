@@ -584,6 +584,27 @@ def print_stats_report():
     
     print("="*80)
 
+def estimate_tokens(text):
+    """
+    Estimate the number of tokens in a text string.
+    This is a rough estimate for filtering purposes.
+    
+    Parameters:
+        text (str): Text to estimate tokens for
+        
+    Returns:
+        int: Estimated token count
+    """
+    # Simple heuristic: count words and add overhead for special characters
+    # Most tokenizers process spaces and punctuation as tokens
+    words = len(text.split())
+    chars = len(text)
+    
+    # Rough estimate: 1 token per word plus extra tokens for non-word characters
+    # This is conservative and will likely overestimate
+    estimated_tokens = words + (chars - words) // 4
+    return estimated_tokens
+
 def main():
     """
     Main function that parses command line arguments and runs the repository scraper.
@@ -606,6 +627,8 @@ def main():
                        help='Output file for the Alpaca dataset (default: github_diff_dataset.json)')
     parser.add_argument('--max-diff-size', type=int, default=100000,
                        help='Maximum diff size in characters to process (default: 100000)')
+    parser.add_argument('--max-tokens-limit', type=int, default=1024,
+                       help='Skip commits with diffs exceeding this token limit (default: 1024)')
     parser.add_argument('--max-commits', type=int, default=None,
                        help='Maximum number of commits to process per branch (default: all commits)')
     parser.add_argument('--after-date', type=str, default=None,
@@ -635,6 +658,7 @@ def main():
         server_url = args.server_url
         output_file = args.output_file
         max_diff_size = args.max_diff_size
+        max_tokens_limit = args.max_tokens_limit
         max_commits = args.max_commits
         after_date = args.after_date
         skip_branches = args.skip_branches
@@ -846,6 +870,24 @@ def main():
                     if diff_content.startswith("No changes detected") or diff_content.startswith("Error getting diff"):
                         logger.info(f"Skipping commit {commit.hexsha[:8]}: {diff_content}")
                         # We still need to count this commit in one of our categories
+                        if is_conventional:
+                            stats['conventional_commits'] += 1
+                            prefix = extract_commit_prefix(commit_message)
+                            if prefix:
+                                stats['conventional_prefixes'][prefix] += 1
+                        else:
+                            stats['non_conventional_commits'] += 1
+                            message = analyze_non_conventional_commit(commit_message)
+                            if message:
+                                stats['non_conventional_messages'][message] += 1
+                        processed_commits.add(commit.hexsha)
+                        continue
+                    
+                    # Check if the diff exceeds the token limit
+                    estimated_tokens = estimate_tokens(diff_content)
+                    if estimated_tokens > max_tokens_limit:
+                        logger.info(f"Skipping commit {commit.hexsha[:8]}: Diff exceeds token limit ({estimated_tokens} > {max_tokens_limit})")
+                        # Count this commit in our statistics
                         if is_conventional:
                             stats['conventional_commits'] += 1
                             prefix = extract_commit_prefix(commit_message)
