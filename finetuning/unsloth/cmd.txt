@@ -9,6 +9,9 @@ conda activate ft
 
 pip install unsloth
 
+pip uninstall xformers -y
+pip install xformers --index-url https://download.pytorch.org/whl/cu124
+
 # IN WINDOWS:
 cd to this directory, then:
 
