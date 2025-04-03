@@ -9,6 +9,8 @@ Functions:
     find_json_files(directory): Finds all JSON files in the specified directory
     load_json_file(file_path): Loads a JSON file and returns its contents
     save_combined_dataset(data, output_file): Saves the combined dataset to a JSON file
+    extract_commit_prefix(commit_message): Extracts the commit type prefix from a commit message
+    print_prefix_stats(prefix_counts, total_entries): Prints statistics about commit prefix frequencies
 
 Command Line Usage Examples:
     python combine_repo_datasets.py
@@ -20,7 +22,9 @@ import json
 import logging
 import os
 import sys
+import re
 from pathlib import Path
+from collections import Counter
 
 # Import the JSON to Parquet conversion function
 from json_to_parquet import convert_json_to_parquet
@@ -31,6 +35,76 @@ logging.basicConfig(
     format='%(levelname)s:%(funcName)s: %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Define conventional commit types (same as in github_repository_scraper.py)
+CONVENTIONAL_TYPES = ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'grunt', 'dist']
+
+def extract_commit_prefix(commit_message):
+    """
+    Extract the prefix (type and scope) from a commit message.
+    
+    Parameters:
+        commit_message (str): The commit message to analyze
+        
+    Returns:
+        str: The extracted prefix or None if not a conventional commit
+    """
+    if not commit_message:
+        return None
+        
+    # Get the first part before any colon
+    parts = commit_message.strip().split(':', 1)
+    if len(parts) < 2:
+        return None
+    
+    prefix = parts[0].lower()
+    
+    # Extract just the type from the prefix (without scope)
+    match = re.match(r'^([\w-]+)(?:\([\w-]+\))?$', prefix)
+    if match and match.group(1) in CONVENTIONAL_TYPES:
+        return prefix
+    
+    return None
+
+def print_prefix_stats(prefix_counts, total_entries):
+    """
+    Print statistics about commit prefix frequencies in the dataset.
+    
+    Parameters:
+        prefix_counts (Counter): Counter of prefix frequencies
+        total_entries (int): Total number of entries in the dataset
+        
+    Returns:
+        None
+    """
+    print("\n===== COMMIT PREFIX STATISTICS =====")
+    print(f"Total entries in dataset: {total_entries}")
+    
+    # Extract just the commit types (without scopes)
+    type_counts = Counter()
+    for prefix, count in prefix_counts.items():
+        commit_type = prefix.split('(')[0] if '(' in prefix else prefix
+        type_counts[commit_type] += count
+    
+    # Print summary of commit types
+    print("\nCommit types summary:")
+    for commit_type, count in type_counts.most_common():
+        percentage = (count / total_entries) * 100 if total_entries > 0 else 0
+        print(f"  {commit_type}: {count} ({percentage:.1f}%)")
+    
+    # Print the top prefixes with scopes
+    print("\nTop 20 prefixes with scopes:")
+    for prefix, count in prefix_counts.most_common(20):
+        percentage = (count / total_entries) * 100 if total_entries > 0 else 0
+        print(f"  {prefix}: {count} ({percentage:.1f}%)")
+    
+    # Print entries without recognized prefixes
+    non_conventional = total_entries - sum(prefix_counts.values())
+    if non_conventional > 0:
+        percentage = (non_conventional / total_entries) * 100 if total_entries > 0 else 0
+        print(f"\nEntries without recognized prefixes: {non_conventional} ({percentage:.1f}%)")
+    
+    print("====================================")
 
 def find_json_files(directory):
     """
@@ -147,6 +221,7 @@ def combine_datasets(source_dir, output_file, convert_to_parquet=True):
         # Combine all datasets
         combined_data = []
         unique_entries = set()  # Track entries we've already seen to avoid duplicates
+        prefix_counts = Counter()  # Count prefix frequencies
         
         for file_path in json_files:
             logger.info(f"Processing file: {file_path}")
@@ -167,6 +242,12 @@ def combine_datasets(source_dir, output_file, convert_to_parquet=True):
                     if entry_hash not in unique_entries:
                         combined_data.append(entry)
                         unique_entries.add(entry_hash)
+                        
+                        # Extract and count prefix from output
+                        output = entry.get('output', '')
+                        prefix = extract_commit_prefix(output)
+                        if prefix:
+                            prefix_counts[prefix] += 1
                 except (TypeError, AttributeError):
                     # Skip entries that aren't dictionaries or don't have the right fields
                     logger.warning(f"Skipping invalid entry: {entry}")
@@ -185,6 +266,9 @@ def combine_datasets(source_dir, output_file, convert_to_parquet=True):
             
             print(f"Successfully combined {len(json_files)} files into {output_file}")
             print(f"Total entries: {len(combined_data)}")
+            
+            # Print prefix statistics
+            print_prefix_stats(prefix_counts, len(combined_data))
             
             # Convert to Parquet if requested
             if convert_to_parquet:
