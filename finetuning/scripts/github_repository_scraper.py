@@ -74,6 +74,7 @@ stats = {
     'skipped_token_limit': 0,        # Commits skipped due to token limit
     'skipped_duplicate': 0,          # Commits skipped due to duplicate diff
     'skipped_no_diff': 0,            # Commits skipped due to no diff content
+    'skipped_excluded_type': 0,      # Commits skipped due to excluded types
     'added_to_dataset': 0            # Commits actually added to dataset
 }
 
@@ -559,11 +560,12 @@ def print_stats_report():
     print(f"  Commits skipped due to token limit: {stats['skipped_token_limit']}")
     print(f"  Commits skipped due to duplicate diff: {stats['skipped_duplicate']}")
     print(f"  Commits skipped due to no diff content: {stats['skipped_no_diff']}")
+    print(f"  Commits skipped due to excluded types: {stats['skipped_excluded_type']}")
     print(f"  Commits added to dataset: {stats['added_to_dataset']}")
     
     # Expected additions - conventional commits minus skipped ones
     if no_llm_scan_mode:
-        expected_additions = conventional - stats['skipped_token_limit'] - stats['skipped_duplicate'] - stats['skipped_no_diff']
+        expected_additions = conventional - stats['skipped_token_limit'] - stats['skipped_duplicate'] - stats['skipped_no_diff'] - stats['skipped_excluded_type']
         print(f"  Expected additions (conventional - skipped): {expected_additions}")
         if expected_additions != stats['added_to_dataset']:
             print(f"  WARNING: Addition mismatch! expected = {expected_additions}, actual = {stats['added_to_dataset']}")
@@ -659,6 +661,8 @@ def main():
                        help='Run in statistics-only mode: analyze commit messages without using LLM or writing dataset')
     parser.add_argument('--no-llm-scan', action='store_true',
                        help='Skip LLM processing and only include conventional commits in the dataset')
+    parser.add_argument('--exclude', type=str, default=None,
+                       help='Comma-separated list of commit types to exclude from dataset (e.g., "chore,fix")')
     
     # Model configuration arguments
     parser.add_argument('--temperature', type=float, default=DEFAULT_TEMPERATURE,
@@ -684,6 +688,13 @@ def main():
         stop_at_commit = args.stop_at
         stats_only = args.stats_only
         no_llm_scan = args.no_llm_scan
+        exclude_types = args.exclude.split(',') if args.exclude else []
+        
+        # Create a list of commit types to exclude
+        excluded_types = [type_name.strip() for type_name in exclude_types]
+        if excluded_types:
+            logger.info(f"Excluding commit types: {excluded_types}")
+            print(f"Excluding commit types: {excluded_types}")
         
         # Make this variable available to print_stats_report
         global no_llm_scan_mode
@@ -958,6 +969,14 @@ def main():
                         prefix = extract_commit_prefix(commit_message)
                         if prefix:
                             stats['conventional_prefixes'][prefix] += 1
+                            
+                        # Check if this commit should be excluded
+                        commit_type = prefix.split('(')[0] if prefix else ''
+                        if commit_type in excluded_types:
+                            logger.info(f"Skipping {commit.hexsha[:8]}: Excluded commit type: {commit_type}")
+                            processed_commits.add(commit.hexsha)
+                            stats['skipped_excluded_type'] += 1
+                            continue
                     else:
                         # In no-llm-scan mode, we shouldn't get here, but let's add a safety check
                         if no_llm_scan:
@@ -976,6 +995,14 @@ def main():
                         prefix = extract_commit_prefix(analysis)
                         if prefix:
                             stats['ai_prefixes'][prefix] += 1
+                            
+                            # Check if AI-generated commit should be excluded
+                            commit_type = prefix.split('(')[0] if prefix else ''
+                            if commit_type in excluded_types:
+                                logger.info(f"Skipping {commit.hexsha[:8]}: Excluded AI-generated commit type: {commit_type}")
+                                processed_commits.add(commit.hexsha)
+                                stats['skipped_excluded_type'] += 1
+                                continue
                             
                         # Also save the original message pattern
                         message = analyze_non_conventional_commit(commit_message)
@@ -1008,7 +1035,7 @@ def main():
             print(f"Repository processing complete. Dataset saved to {output_file} with {len(dataset)} total entries.")
             if no_llm_scan:
                 print(f"Dataset contains only conventional commits (skipped {stats['non_conventional_commits']} non-conventional commits)")
-                print(f"Commits skipped: {stats['skipped_token_limit']} exceeded token limit, {stats['skipped_no_diff']} had no diff, {stats['skipped_duplicate']} were duplicates")
+                print(f"Commits skipped: {stats['skipped_token_limit']} exceeded token limit, {stats['skipped_no_diff']} had no diff, {stats['skipped_duplicate']} were duplicates, {stats['skipped_excluded_type']} from excluded types")
         else:
             logger.info(f"Repository statistics extraction complete. Analyzed {stats['total_commits_processed']} commits.")
             print(f"Repository statistics extraction complete. Analyzed {stats['total_commits_processed']} commits.")
