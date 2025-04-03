@@ -17,7 +17,7 @@ cd to this directory, then:
 
 python github_repository_scraper.py https://github.com/sadmann7/shadcn-table --process-all-branches --output-file ../repo_datasets/shadcn-table_dataset.json --stop-at=70051a0c05d03455dd1ad77062006b95f07b8e46 --no-llm-scan
 
-python github_repository_scraper.py https://github.com/vuejs/core --process-all-branches --stop-at=34989ef7fe846df3d0504d2719149bf42103644c --output-file ../repo_datasets/vue_dataset.json --no-llm-scan
+python github_repository_scraper.py https://github.com/vuejs/core --process-all-branches --stop-at=34989ef7fe846df3d0504d2719149bf42103644c --output-file ../repo_datasets/vue_dataset_no_chores.json --no-llm-scan --exclude=chore
 
 at this point the model output started a lot of chore tasks, but otherwise good commit messages, excluding them on the next entries of the dataset
 
