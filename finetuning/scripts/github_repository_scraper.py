@@ -61,7 +61,7 @@ DEFAULT_MAX_TOKENS = 4096
 SYSTEM_PROMPT = open("../../data/prompts/system/diff_analyzer.txt", "r").read()
 
 # Conventional commit types
-CONVENTIONAL_TYPES = ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore']
+CONVENTIONAL_TYPES = ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'grunt', 'dist']
 
 # Statistics tracking
 stats = {
@@ -475,7 +475,7 @@ def extract_commit_prefix(commit_message):
     first_line = commit_message.strip().split('\n')[0].strip()
     
     # Pattern to match conventional commit format: type(scope): description
-    pattern = r'^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)(\([a-z0-9-_]+\))?:'
+    pattern = r'^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|grunt|dist)(\([a-z0-9-_]+\))?:'
     match = re.match(pattern, first_line.lower())
     
     if match:
@@ -519,7 +519,7 @@ def is_conventional_commit(commit_message):
     # Check if the message follows conventional format with or without scope
     import re
     # Pattern to match: type(scope): description or type: description
-    pattern = r'^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)(\([a-z0-9-_]+\))?:\s.+'
+    pattern = r'^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|grunt|dist)(\([a-z0-9-_]+\))?:\s.+'
     
     if re.match(pattern, first_line.lower()):
         return True
