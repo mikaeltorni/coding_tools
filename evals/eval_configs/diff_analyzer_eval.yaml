@@ -1,0 +1,26 @@
+description: 'Diff Analyzer Agent Evals'
+
+prompts:
+  - file://formats/default.json
+
+providers:
+  - id: llama:gemma-3-1b-it-Q4_K_M
+    config:
+      temperature: 0
+      max_tokens: 4096
+      top_p: 0.9
+      apiEndpoint: ${LLAMA_BASE_URL:-http://localhost:8080}
+
+defaultTest:
+  options:
+    provider: openai:gpt-4o-mini-2024-07-18
+
+tests:
+  - description: 'Test diff analyzer'
+    vars:
+      system_prompt: file://../data/prompts/system/diff_analyzer.xml
+      user_prompt: file://../data/prompts/user/test_calculator_diffs.txt
+      system_assertion_prompt: file://assertion_prompts/diff_analyzer_assertion.md
+    assert:
+      - type: llm-rubric
+        value: "{{system_assertion_prompt}}"
