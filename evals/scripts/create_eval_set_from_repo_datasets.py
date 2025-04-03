@@ -133,7 +133,7 @@ def create_eval_yaml(datasets, output_path, script_dir, max_entries=None, max_di
         diffs_dir.mkdir(exist_ok=True)
         logger.info(f"Created directory for diff files: {diffs_dir}")
         
-        # Create base YAML structure
+        # Create base YAML structure without prompt section (we'll add it manually)
         yaml_structure = {
             "description": "Diff Analyzer Agent Evals - Auto-generated from repository datasets",
             "prompts": [
@@ -144,12 +144,8 @@ def create_eval_yaml(datasets, output_path, script_dir, max_entries=None, max_di
                     "id": "llama:gemma-3-1b-it-Q4_K_M",
                     "config": {
                         "temperature": 0,
-                        "max_tokens": 1024,
+                        "max_new_tokens": 1024,
                         "top_p": 0.9,
-                        "prompt": {
-                            "prefix": "<start_of_turn>user\n",
-                            "suffix": "<end_of_turn>\n<start_of_turn>model\n"
-                        },
                         "apiEndpoint": "${LLAMA_BASE_URL:-http://localhost:8080}"
                     }
                 }
@@ -170,6 +166,22 @@ def create_eval_yaml(datasets, output_path, script_dir, max_entries=None, max_di
             raise FileNotFoundError(f"Assertion prompt file not found at {assertion_file}")
         
         logger.info(f"Using existing assertion prompt at {assertion_file}")
+        
+        # Load system prompt content
+        system_prompt_path = "../../data/prompts/system/diff_analyzer.txt"
+        system_prompt_content = ""
+        try:
+            system_prompt_file = script_dir / system_prompt_path
+            if system_prompt_file.exists():
+                with open(system_prompt_file, 'r', encoding='utf-8') as f:
+                    system_prompt_content = f.read().strip()
+                logger.info(f"Successfully loaded system prompt from {system_prompt_file}")
+            else:
+                system_prompt_content = "You are an expert at analyzing Git diffs and classifying their changes in short, 10-15 word summaries. Make sure to read the diffs line-by-line for the provided diff by reading what has been added, and removed on the currently unstaged files in the repository. Then proceed to classify it with one of the tags, that are the following: feat: A new feature, fix: A bug fix, docs: Documentation only changes, style: Changes that do not affect the meaning of the code, refactor: A code change that neither fixes a bug nor adds a feature, perf: A code change that improves performance, test: Adding missing tests or correcting existing tests, build: Changes that affect the build system or external dependencies, ci: Changes to CI configuration files and scripts, chore: Other changes that don't modify src or test files. You can also use these tags with scopes in parentheses to provide more context, for example: fix(deps): Update dependency versions, feat(auth): Add new authentication method. Your response should be a short 10-15 word summary starting with the tag. For example: 'feat: implemented user authentication with JWT tokens' or 'fix(deps): updated npm dependencies to fix security vulnerabilities'. By any means, do not exceed the 15 word limit, and do not produce anything more than this one sentence."
+                logger.warning(f"System prompt file not found at {system_prompt_file}, using default system prompt")
+        except Exception as e:
+            logger.error(f"Error reading system prompt: {e}")
+            system_prompt_content = "You are an expert at analyzing Git diffs and classifying their changes in short, 10-15 word summaries. Make sure to read the diffs line-by-line for the provided diff by reading what has been added, and removed on the currently unstaged files in the repository. Then proceed to classify it with one of the tags, that are the following: feat: A new feature, fix: A bug fix, docs: Documentation only changes, style: Changes that do not affect the meaning of the code, refactor: A code change that neither fixes a bug nor adds a feature, perf: A code change that improves performance, test: Adding missing tests or correcting existing tests, build: Changes that affect the build system or external dependencies, ci: Changes to CI configuration files and scripts, chore: Other changes that don't modify src or test files. You can also use these tags with scopes in parentheses to provide more context, for example: fix(deps): Update dependency versions, feat(auth): Add new authentication method. Your response should be a short 10-15 word summary starting with the tag. For example: 'feat: implemented user authentication with JWT tokens' or 'fix(deps): updated npm dependencies to fix security vulnerabilities'. By any means, do not exceed the 15 word limit, and do not produce anything more than this one sentence."
         
         # Track statistics
         stats = {}
@@ -217,34 +229,22 @@ def create_eval_yaml(datasets, output_path, script_dir, max_entries=None, max_di
                 diff_path = diffs_dir / diff_filename
                 diff_relative_path = f"diffs/{diff_filename}"
                 
+                # Prepare complete content with system prompt + diff content
+                complete_content = f"{system_prompt_content}\n\n{diff_content}"
+                
                 # Check if we already created this file (avoid duplicates)
                 if diff_hash not in created_files:
-                    # Write diff content to file
+                    # Write complete content to file
                     with open(diff_path, 'w', encoding='utf-8') as f:
-                        f.write(diff_content)
+                        f.write(complete_content)
                     created_files.add(diff_hash)
                     logger.debug(f"Created diff file: {diff_filename}")
                 
-                # Load system prompt content
-                system_prompt_path = "../../data/prompts/system/diff_analyzer.txt"
-                system_prompt_content = ""
-                try:
-                    system_prompt_file = script_dir / system_prompt_path
-                    if system_prompt_file.exists():
-                        with open(system_prompt_file, 'r', encoding='utf-8') as f:
-                            system_prompt_content = f.read().strip()
-                    else:
-                        logger.warning(f"System prompt file not found at {system_prompt_file}")
-                        system_prompt_content = "You are an expert Git Diff Analyzer. Analyze the diff and respond with a conventional commit message in the format 'type: description'."
-                except Exception as e:
-                    logger.error(f"Error reading system prompt: {e}")
-                    system_prompt_content = "You are an expert Git Diff Analyzer. Analyze the diff and respond with a conventional commit message in the format 'type: description'."
-                
-                # Create test entry with system prompt and reference to diff file
+                # Create test entry with reference to diff file
                 test_entry = {
                     "description": commit_message,
                     "vars": {
-                        "message": f"{system_prompt_content}\n\nfile://{diff_relative_path}",
+                        "message": f"file://{diff_relative_path}",
                         "system_assertion_prompt": "file://../assertion_prompts/diff_analyzer_assertion.md"
                     },
                     "assert": [
@@ -264,9 +264,23 @@ def create_eval_yaml(datasets, output_path, script_dir, max_entries=None, max_di
                 if (i + 1) % 10 == 0:
                     logger.info(f"Processed {i + 1}/{len(entries_to_process)} entries from {filename}")
         
+        # Generate YAML content
+        yaml_text = yaml.dump(yaml_structure, default_flow_style=False, sort_keys=False)
+        
+        # Manually insert the prompt configuration with correct formatting
+        prompt_yaml = """
+    prompt:
+      prefix: "<start_of_turn>user\\n"
+      suffix: "<end_of_turn>\\n<start_of_turn>model"
+"""
+        yaml_text = yaml_text.replace(
+            "    apiEndpoint:", 
+            prompt_yaml + "    apiEndpoint:"
+        )
+        
         # Write YAML file
         with open(output_path, 'w', encoding='utf-8') as f:
-            yaml.dump(yaml_structure, f, default_flow_style=False, sort_keys=False)
+            f.write(yaml_text)
         
         # Print summary
         logger.info(f"\nProcessing Summary:")
