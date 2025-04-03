@@ -5,7 +5,7 @@ providers:
 - id: llama:gemma-3-1b-it-Q4_K_M
   config:
     temperature: 0
-    max_new_tokens: 1024
+    max_new_tokens: 125000
     top_p: 0.9
     prompt:
       prefix: "<start_of_turn>user\n"
@@ -59,7 +59,7 @@ tests:
     value: '{{system_assertion_prompt}}'
 - description: 'chore: update imports (#955)'
   vars:
-    message: 'file://diffs/diff_299e933f9f8b6a4bb46b514e380dc212.txt'
+    message: 'file://diffs/diff_2394fca1373a5eb9efd9139ba88e22a2.txt'
     system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
   assert:
   - type: llm-rubric
