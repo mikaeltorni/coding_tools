@@ -13,9 +13,7 @@ import logging
 import keyboard
 import openai
 import os
-import sys
 import json
-import time
 from pathlib import Path
 
 from data.model_config import (
