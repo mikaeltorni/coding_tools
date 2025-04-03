@@ -7,7 +7,7 @@ evaluation entries for each item in the datasets.
 
 Functions:
     load_json_datasets(directory): Loads all JSON datasets from a directory
-    create_eval_yaml(datasets, output_path): Creates evaluation YAML file from datasets
+    create_eval_yaml(datasets, output_path, script_dir): Creates evaluation YAML file from datasets
     main(): Main function that orchestrates the evaluation set creation process
 
 Command Line Usage Examples:
@@ -107,13 +107,14 @@ def generate_hash(content):
     """
     return hashlib.md5(content.encode('utf-8')).hexdigest()
 
-def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None):
+def create_eval_yaml(datasets, output_path, script_dir, max_entries=None, max_diff_size=None):
     """
     Creates evaluation YAML file from datasets.
     
     Parameters:
         datasets (list): List of datasets loaded from JSON files
         output_path (str): Path to output the YAML file
+        script_dir (Path): Path to the script directory (for resolving relative paths)
         max_entries (int, optional): Maximum number of entries to include per dataset
         max_diff_size (int, optional): Maximum size of diff content in characters
         
@@ -214,6 +215,7 @@ def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None
                 diff_hash = generate_hash(diff_content)
                 diff_filename = f"diff_{diff_hash}.txt"
                 diff_path = diffs_dir / diff_filename
+                diff_relative_path = f"diffs/{diff_filename}"
                 
                 # Check if we already created this file (avoid duplicates)
                 if diff_hash not in created_files:
@@ -238,14 +240,11 @@ def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None
                     logger.error(f"Error reading system prompt: {e}")
                     system_prompt_content = "You are an expert Git Diff Analyzer. Analyze the diff and respond with a conventional commit message in the format 'type: description'."
                 
-                # Create combined message with system prompt and diff content
-                combined_message = f"{system_prompt_content}\n\n{diff_content}"
-                
-                # Create test entry with combined message
+                # Create test entry with system prompt and reference to diff file
                 test_entry = {
                     "description": commit_message,
                     "vars": {
-                        "message": combined_message,
+                        "message": f"{system_prompt_content}\n\nfile://{diff_relative_path}",
                         "system_assertion_prompt": "file://../assertion_prompts/diff_analyzer_assertion.md"
                     },
                     "assert": [
@@ -348,8 +347,8 @@ def main():
             logger.error("No datasets loaded, exiting")
             return
         
-        # Create evaluation YAML
-        result = create_eval_yaml(datasets, output_file, args.max_entries, args.max_diff_size)
+        # Create evaluation YAML - pass script_dir to the function
+        result = create_eval_yaml(datasets, output_file, script_dir, args.max_entries, args.max_diff_size)
         
         if result:
             logger.info("Evaluation set creation completed successfully")
