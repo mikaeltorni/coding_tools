@@ -136,15 +136,19 @@ def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None
         yaml_structure = {
             "description": "Diff Analyzer Agent Evals - Auto-generated from repository datasets",
             "prompts": [
-                "file://../formats/default.json"
+                "{{message}}"
             ],
             "providers": [
                 {
                     "id": "llama:gemma-3-1b-it-Q4_K_M",
                     "config": {
                         "temperature": 0,
-                        "max_tokens": 4096,
+                        "max_tokens": 1024,
                         "top_p": 0.9,
+                        "prompt": {
+                            "prefix": "<start_of_turn>user\n",
+                            "suffix": "<end_of_turn>\n<start_of_turn>model\n"
+                        },
                         "apiEndpoint": "${LLAMA_BASE_URL:-http://localhost:8080}"
                     }
                 }
@@ -219,12 +223,29 @@ def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None
                     created_files.add(diff_hash)
                     logger.debug(f"Created diff file: {diff_filename}")
                 
-                # Create test entry with reference to the diff file
+                # Load system prompt content
+                system_prompt_path = "../../data/prompts/system/diff_analyzer.txt"
+                system_prompt_content = ""
+                try:
+                    system_prompt_file = script_dir / system_prompt_path
+                    if system_prompt_file.exists():
+                        with open(system_prompt_file, 'r', encoding='utf-8') as f:
+                            system_prompt_content = f.read().strip()
+                    else:
+                        logger.warning(f"System prompt file not found at {system_prompt_file}")
+                        system_prompt_content = "You are an expert Git Diff Analyzer. Analyze the diff and respond with a conventional commit message in the format 'type: description'."
+                except Exception as e:
+                    logger.error(f"Error reading system prompt: {e}")
+                    system_prompt_content = "You are an expert Git Diff Analyzer. Analyze the diff and respond with a conventional commit message in the format 'type: description'."
+                
+                # Create combined message with system prompt and diff content
+                combined_message = f"{system_prompt_content}\n\nHere's the diff to analyze:\n\n{diff_content}\n\nProvide a conventional commit message in the format 'type: description' that summarizes the changes in this diff."
+                
+                # Create test entry with combined message
                 test_entry = {
                     "description": commit_message,
                     "vars": {
-                        "system_prompt": "file://../../data/prompts/system/diff_analyzer.txt",
-                        "user_prompt": f"file://../eval_configs/diffs/{diff_filename}",
+                        "message": combined_message,
                         "system_assertion_prompt": "file://../assertion_prompts/diff_analyzer_assertion.md"
                     },
                     "assert": [
