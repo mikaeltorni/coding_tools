@@ -133,30 +133,25 @@ def create_eval_yaml(datasets, output_path, script_dir, max_entries=None, max_di
         diffs_dir.mkdir(exist_ok=True)
         logger.info(f"Created directory for diff files: {diffs_dir}")
         
-        # Create base YAML structure without prompt section (we'll add it manually)
-        yaml_structure = {
-            "description": "Diff Analyzer Agent Evals - Auto-generated from repository datasets",
-            "prompts": [
-                "{{message}}"
-            ],
-            "providers": [
-                {
-                    "id": "llama:gemma-3-1b-it-Q4_K_M",
-                    "config": {
-                        "temperature": 0,
-                        "max_new_tokens": 1024,
-                        "top_p": 0.9,
-                        "apiEndpoint": "${LLAMA_BASE_URL:-http://localhost:8080}"
-                    }
-                }
-            ],
-            "defaultTest": {
-                "options": {
-                    "provider": "openai:gpt-4o-mini-2024-07-18"
-                }
-            },
-            "tests": []
-        }
+        # Instead of using YAML library, we'll manually create the YAML with correct formatting
+        yaml_header = """description: Diff Analyzer Agent Evals - Auto-generated from repository datasets
+prompts:
+- '{{message}}'
+providers:
+- id: llama:gemma-3-1b-it-Q4_K_M
+  config:
+    temperature: 0
+    max_new_tokens: 1024
+    top_p: 0.9
+    prompt:
+      prefix: "<start_of_turn>user\\n"
+      suffix: "<end_of_turn>\\n<start_of_turn>model"
+    apiEndpoint: ${LLAMA_BASE_URL:-http://localhost:8080}
+defaultTest:
+  options:
+    provider: openai:gpt-4o-mini-2024-07-18
+tests:
+"""
         
         # Check if assertion prompt file exists
         assertion_file = Path(output_path).parent / ".." / "assertion_prompts" / "diff_analyzer_assertion.md"
@@ -191,96 +186,77 @@ def create_eval_yaml(datasets, output_path, script_dir, max_entries=None, max_di
         # Track files created to avoid duplicates
         created_files = set()
         
-        # Process each dataset
-        for dataset_info in datasets:
-            filename = dataset_info["file_name"]
-            data = dataset_info["data"]
+        # Open the file to write the YAML content
+        with open(output_path, 'w', encoding='utf-8') as yaml_file:
+            # Write the header
+            yaml_file.write(yaml_header)
             
-            logger.info(f"Processing dataset {filename} with {len(data)} entries")
-            stats[filename] = {"total": len(data), "processed": 0, "skipped": 0}
-            
-            # Limit entries if specified
-            entries_to_process = data
-            if max_entries is not None and max_entries > 0 and len(data) > max_entries:
-                entries_to_process = data[:max_entries]
-                logger.info(f"Limiting to {len(entries_to_process)} entries from {filename}")
-            
-            # Create test entry for each item in dataset
-            for i, entry in enumerate(entries_to_process):
-                # Extract input and output from dataset entry
-                if "input" not in entry or "output" not in entry:
-                    logger.warning(f"Skipping entry {i} in {filename}: missing input or output")
-                    stats[filename]["skipped"] += 1
-                    skipped_entries += 1
-                    continue
+            # Process each dataset
+            for dataset_info in datasets:
+                filename = dataset_info["file_name"]
+                data = dataset_info["data"]
                 
-                # Get input (diff) and output (commit message)
-                diff_content = entry["input"]
-                commit_message = entry["output"]
+                logger.info(f"Processing dataset {filename} with {len(data)} entries")
+                stats[filename] = {"total": len(data), "processed": 0, "skipped": 0}
                 
-                # Truncate diff if it's too large
-                if max_diff_size and len(diff_content) > max_diff_size:
-                    logger.debug(f"Truncating diff from {len(diff_content)} to {max_diff_size} characters")
-                    diff_content = diff_content[:max_diff_size] + "\n... (truncated)"
+                # Limit entries if specified
+                entries_to_process = data
+                if max_entries is not None and max_entries > 0 and len(data) > max_entries:
+                    entries_to_process = data[:max_entries]
+                    logger.info(f"Limiting to {len(entries_to_process)} entries from {filename}")
                 
-                # Generate hash for diff content to create unique filename
-                diff_hash = generate_hash(diff_content)
-                diff_filename = f"diff_{diff_hash}.txt"
-                diff_path = diffs_dir / diff_filename
-                diff_relative_path = f"diffs/{diff_filename}"
-                
-                # Prepare complete content with system prompt + diff content
-                complete_content = f"{system_prompt_content}\n\n{diff_content}"
-                
-                # Check if we already created this file (avoid duplicates)
-                if diff_hash not in created_files:
-                    # Write complete content to file
-                    with open(diff_path, 'w', encoding='utf-8') as f:
-                        f.write(complete_content)
-                    created_files.add(diff_hash)
-                    logger.debug(f"Created diff file: {diff_filename}")
-                
-                # Create test entry with reference to diff file
-                test_entry = {
-                    "description": commit_message,
-                    "vars": {
-                        "message": f"file://{diff_relative_path}",
-                        "system_assertion_prompt": "file://../assertion_prompts/diff_analyzer_assertion.md"
-                    },
-                    "assert": [
-                        {
-                            "type": "llm-rubric",
-                            "value": "{{system_assertion_prompt}}"
-                        }
-                    ]
-                }
-                
-                # Add test entry to YAML structure
-                yaml_structure["tests"].append(test_entry)
-                total_entries += 1
-                stats[filename]["processed"] += 1
-                
-                # Log progress every 10 entries
-                if (i + 1) % 10 == 0:
-                    logger.info(f"Processed {i + 1}/{len(entries_to_process)} entries from {filename}")
-        
-        # Generate YAML content
-        yaml_text = yaml.dump(yaml_structure, default_flow_style=False, sort_keys=False)
-        
-        # Manually insert the prompt configuration with correct formatting
-        prompt_yaml = """
-    prompt:
-      prefix: "<start_of_turn>user\\n"
-      suffix: "<end_of_turn>\\n<start_of_turn>model"
+                # Create test entry for each item in dataset
+                for i, entry in enumerate(entries_to_process):
+                    # Extract input and output from dataset entry
+                    if "input" not in entry or "output" not in entry:
+                        logger.warning(f"Skipping entry {i} in {filename}: missing input or output")
+                        stats[filename]["skipped"] += 1
+                        skipped_entries += 1
+                        continue
+                    
+                    # Get input (diff) and output (commit message)
+                    diff_content = entry["input"]
+                    commit_message = entry["output"]
+                    
+                    # Truncate diff if it's too large
+                    if max_diff_size and len(diff_content) > max_diff_size:
+                        logger.debug(f"Truncating diff from {len(diff_content)} to {max_diff_size} characters")
+                        diff_content = diff_content[:max_diff_size] + "\n... (truncated)"
+                    
+                    # Generate hash for diff content to create unique filename
+                    diff_hash = generate_hash(diff_content)
+                    diff_filename = f"diff_{diff_hash}.txt"
+                    diff_path = diffs_dir / diff_filename
+                    diff_relative_path = f"diffs/{diff_filename}"
+                    
+                    # Prepare complete content with system prompt + diff content
+                    complete_content = f"{system_prompt_content}\n\n{diff_content}"
+                    
+                    # Check if we already created this file (avoid duplicates)
+                    if diff_hash not in created_files:
+                        # Write complete content to file
+                        with open(diff_path, 'w', encoding='utf-8') as f:
+                            f.write(complete_content)
+                        created_files.add(diff_hash)
+                        logger.debug(f"Created diff file: {diff_filename}")
+                    
+                    # Write test entry directly to YAML file with proper formatting
+                    test_yaml = f"""- description: '{commit_message.replace("'", "''")}'
+  vars:
+    message: 'file://{diff_relative_path}'
+    system_assertion_prompt: 'file://../assertion_prompts/diff_analyzer_assertion.md'
+  assert:
+  - type: llm-rubric
+    value: '{{{{system_assertion_prompt}}}}'
 """
-        yaml_text = yaml_text.replace(
-            "    apiEndpoint:", 
-            prompt_yaml + "    apiEndpoint:"
-        )
-        
-        # Write YAML file
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write(yaml_text)
+                    yaml_file.write(test_yaml)
+                    
+                    total_entries += 1
+                    stats[filename]["processed"] += 1
+                    
+                    # Log progress every 10 entries
+                    if (i + 1) % 10 == 0:
+                        logger.info(f"Processed {i + 1}/{len(entries_to_process)} entries from {filename}")
         
         # Print summary
         logger.info(f"\nProcessing Summary:")
