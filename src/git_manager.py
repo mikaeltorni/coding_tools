@@ -9,7 +9,6 @@ Functions:
     commit_changes(repo_path, commit_message): Commits all staged changes to the Git repository
 """
 import logging
-import os
 from git import Repo, GitCommandError, InvalidGitRepositoryError
 
 # Configure logging
