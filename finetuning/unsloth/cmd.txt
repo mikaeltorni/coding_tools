@@ -19,6 +19,8 @@ python github_repository_scraper.py https://github.com/sadmann7/shadcn-table --p
 
 python github_repository_scraper.py https://github.com/vuejs/core --process-all-branches --stop-at=34989ef7fe846df3d0504d2719149bf42103644c --output-file ../repo_datasets/vue_dataset.json --no-llm-scan
 
+python github_repository_scraper.py https://github.com/gridsome/gridsome --process-all-branches --stop-at=3090be466361730c4d2cd940a8af4cb562f05738 --output-file ../repo_datasets/gridsome_dataset_no_chores.json --no-llm-scan
+
 --stats-only can be added to analyze repos to modify the script to be more efficient
 --no-llm-scan to go FAST (might just be the optimal way to add commits to the dataset)
 
