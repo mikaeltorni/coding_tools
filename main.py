@@ -3,11 +3,19 @@ Main entry point for the Git repository monitoring and LLM feedback system.
 
 This script initializes all components and starts the monitoring system.
 
+Functions:
+    main(): Main function that parses command line arguments and runs the program.
+
 Command Line Usage Examples:
     python main.py /path/to/git/repository
     python main.py C:/Projects/my-project
     python main.py /path/to/git/repository --server-url http://localhost:8080
     python main.py /path/to/git/repository --temperature 0.7 --top-p 0.95
+
+Keyboard Controls:
+    Press configured hotkey (default: alt+q) to get LLM feedback on current changes
+    Press Ctrl+Space to automatically commit changes (with LLM-generated commit message)
+    Press Ctrl+C to exit the program
 """
 import argparse
 import logging

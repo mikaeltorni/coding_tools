@@ -6,6 +6,7 @@ Manages Git repository operations for the LLM feedback system.
 Functions:
     get_repo_diff(repo_path): Gets the latest diff from a Git repository
     is_git_repo(repo_path): Checks if the path is a valid Git repository
+    commit_changes(repo_path, commit_message): Commits all staged changes to the Git repository
 """
 import logging
 import os
@@ -108,4 +109,51 @@ def get_repo_status(repo_path):
         return f"Error getting status: {e}"
     except Exception as e:
         logger.error(f"Error getting status: {e}")
-        return f"Error getting status: {e}" 
+        return f"Error getting status: {e}"
+
+def commit_changes(repo_path, commit_message):
+    """
+    Commit all staged changes to the Git repository.
+    
+    Parameters:
+        repo_path (str): Path to the Git repository
+        commit_message (str): Commit message
+        
+    Returns:
+        str: Result of the commit operation
+    """
+    logger.debug(f"Committing changes to repository: {repo_path} | message: {commit_message}")
+    
+    if not is_git_repo(repo_path):
+        error_msg = f"Cannot commit: Not a valid Git repository: {repo_path}"
+        logger.error(error_msg)
+        return error_msg
+    
+    try:
+        repo = Repo(repo_path)
+        
+        # Check if there are staged changes
+        staged_changes = repo.git.diff('--staged')
+        if not staged_changes:
+            # No staged changes, so stage all changes
+            logger.info("No staged changes found. Staging all changes.")
+            repo.git.add('--all')
+        
+        # Check if there are any changes to commit after staging
+        if not repo.git.diff('--staged'):
+            logger.info("No changes to commit")
+            return "No changes to commit"
+        
+        # Commit the changes
+        # Git will use credentials from environment variables (GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL)
+        # or from the git config if they are set
+        result = repo.git.commit('-m', commit_message)
+        logger.info(f"Successfully committed changes: {result}")
+        return f"Successfully committed changes: {result}"
+    
+    except GitCommandError as e:
+        logger.error(f"Git command error during commit: {e}")
+        return f"Error committing changes: {e}"
+    except Exception as e:
+        logger.error(f"Error committing changes: {e}")
+        return f"Error committing changes: {e}" 

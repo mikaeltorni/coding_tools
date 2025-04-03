@@ -6,18 +6,22 @@ Manages keyboard hotkey detection and handling for LLM feedback.
 Functions:
     send_prompt_to_server(server_url, prompt, model_args): Sends a prompt to the LLM server
     handle_hotkey_press(server_url, model_args): Handles the hotkey press event
+    handle_commit_hotkey(repo_path): Handles the commit hotkey (Ctrl+Space) press event
     setup_keyboard_listener(server_url, model_args, hotkey): Sets up keyboard listener
 """
 import logging
 import keyboard
 import openai
 import os
+import sys
+import json
+import time
+from pathlib import Path
 
 from data.model_config import (
     DEFAULT_HOTKEY
 )
-from src.git_manager import get_repo_diff
-import json
+from src.git_manager import get_repo_diff, commit_changes
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -127,6 +131,104 @@ def handle_hotkey_press(server_url, payload, repo_path):
         logger.error(f"Error handling hotkey press: {e}")
         print(f"Error: {e}")
 
+def handle_commit_hotkey(repo_path, server_url=None, payload=None):
+    """
+    Callback function for commit hotkey (Ctrl+Space) press event.
+    
+    Parameters:
+        repo_path (str): Path to Git repository
+        server_url (str, optional): URL of the LLM server for generating commit messages
+        payload (dict, optional): Model configuration parameters
+        
+    Returns:
+        None
+    """
+    logger.info("Commit hotkey (Ctrl+Space) pressed - processing git commit")
+    
+    if not os.path.exists(repo_path):
+        error_msg = f"Repository path not found: {repo_path}"
+        logger.error(error_msg)
+        print(f"\n--- Git Commit Error ---\n{error_msg}\n------------------------\n")
+        return
+    
+    try:
+        # Get the diff content
+        diff_content = get_repo_diff(repo_path)
+        if not diff_content:
+            logger.warning("Failed to get repository diff")
+            print("\n--- Git Commit Error ---\nFailed to get repository diff\n------------------------\n")
+            return
+        
+        if diff_content == "No changes detected in the repository.":
+            print("\n--- Git Commit ---\nNo changes to commit\n------------------\n")
+            return
+        
+        # Generate commit message
+        commit_message = "Auto-commit from LLM feedback system"
+        llm_message_success = False
+        
+        # If server_url and payload are provided, try to generate a better commit message using LLM
+        if server_url and payload:
+            try:
+                logger.info("Generating commit message with LLM")
+                # Get system prompt for commit message generation
+                system_prompt_path = os.path.join("data", "prompts", "system", "diff_analyzer.txt")
+                if os.path.exists(system_prompt_path):
+                    system_prompt = open(system_prompt_path).read()
+                else:
+                    # Fallback system prompt if file doesn't exist
+                    logger.warning(f"System prompt file not found: {system_prompt_path}, using fallback prompt")
+                    system_prompt = """You are a helpful assistant that generates concise Git commit messages. 
+                    Analyze the provided diff and create a brief, descriptive commit message following these guidelines:
+                    - Start with a verb in the imperative mood (Add, Fix, Update, etc.)
+                    - Keep the message concise (under 50 characters if possible)
+                    - Focus on the what and why, not the how
+                    - Use a consistent style"""
+                
+                # Set up OpenAI client
+                client = openai.OpenAI(
+                    base_url=f"{server_url}/v1",
+                    api_key="sk-no-key-required"
+                )
+                
+                # Create chat completion request for commit message
+                completion = client.chat.completions.create(
+                    model="gemma-3-1b-it-Q4_K_M.gguf",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": diff_content}
+                    ],
+                    temperature=0,
+                    max_tokens=50
+                )
+                
+                generated_message = completion.choices[0].message.content.strip()
+                if generated_message:
+                    commit_message = generated_message
+                    llm_message_success = True
+                    logger.info(f"Generated commit message with LLM: {commit_message}")
+                else:
+                    logger.warning("LLM returned empty commit message, using default")
+            except Exception as e:
+                logger.warning(f"Failed to generate commit message with LLM: {e}. Using default message.")
+                print(f"Note: Failed to generate commit message with LLM: {str(e)[:100]}...")
+        
+        # Commit the changes
+        logger.info(f"Committing changes with message: {commit_message}")
+        result = commit_changes(repo_path, commit_message)
+        
+        print("\n--- Git Commit ---")
+        if llm_message_success:
+            print(f"Commit Message (LLM-generated): {commit_message}")
+        else:
+            print(f"Commit Message (default): {commit_message}")
+        print(result)
+        print("------------------\n")
+    except Exception as e:
+        error_message = str(e)
+        logger.error(f"Error handling commit hotkey press: {error_message}")
+        print(f"\n--- Git Commit Error ---\n{error_message}\n------------------------\n")
+
 def setup_keyboard_listener(server_url, payload, repo_path, hotkey=DEFAULT_HOTKEY):
     """
     Set up keyboard listener for the specified hotkey.
@@ -149,7 +251,16 @@ def setup_keyboard_listener(server_url, payload, repo_path, hotkey=DEFAULT_HOTKE
         # Register the hotkey
         keyboard.add_hotkey(hotkey, hotkey_callback)
         logger.info(f"Keyboard listener set up for hotkey: {hotkey}")
+        
+        # Register the commit hotkey (Ctrl+Space)
+        def commit_hotkey_callback():
+            handle_commit_hotkey(repo_path, server_url, payload)
+        
+        keyboard.add_hotkey('ctrl+space', commit_hotkey_callback)
+        logger.info("Keyboard listener set up for commit hotkey: ctrl+space")
+        
         print(f"Press {hotkey} to get LLM feedback (Ctrl+C to exit)")
+        print(f"Press Ctrl+Space to commit changes")
     
     except Exception as e:
         logger.error(f"Error setting up keyboard listener: {e}")
