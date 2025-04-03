@@ -134,3 +134,5 @@ new_repos/
 finetuning/unsloth/outputs/
 
 finetuning/unsloth/testing/
+
+evals/eval_configs/diffs/

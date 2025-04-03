@@ -46,9 +46,23 @@ python create_eval_set_from_repo_datasets.py --max-diff-size 50000 --verbose
 The script will:
 
 1. Read all JSON files in the specified datasets directory
-2. Use the existing assertion prompt from `assertion_prompts/diff_analyzer_assertion.md`
-3. Generate a YAML file containing evaluation tests for each dataset entry
-4. Output status messages and a summary of processed entries
+2. Create a "diffs" directory to store individual diff files
+3. Write each diff to a separate text file with an MD5 hash-based filename
+4. Create YAML entries that reference the diff files using the file:// protocol
+5. Output status messages and a summary of processed entries
+
+#### File Structure
+
+The script generates the following file structure:
+
+```
+eval_configs/
+├── diff_analyzer_eval_generated.yaml   # Main evaluation YAML
+└── diffs/                             # Directory for diff files
+    ├── diff_<hash1>.txt               # Individual diff files
+    ├── diff_<hash2>.txt
+    └── ...
+```
 
 #### Summary Report
 
@@ -56,5 +70,6 @@ After processing, the script will generate a summary report showing:
 - How many entries were processed from each dataset file
 - How many entries were skipped (due to missing input/output fields)
 - Total number of tests generated
+- Total number of unique diff files created
 
 The script expects the assertion prompt file to exist at the path `assertion_prompts/diff_analyzer_assertion.md`. The generated YAML can be used with the evaluation framework to test the Diff Analyzer model's performance. 

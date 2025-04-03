@@ -21,6 +21,7 @@ import json
 import yaml
 import logging
 import argparse
+import hashlib
 from pathlib import Path
 from datetime import datetime
 
@@ -94,6 +95,18 @@ def load_json_datasets(directory):
         logger.error(f"Error loading datasets: {e}")
         raise
 
+def generate_hash(content):
+    """
+    Generate a hash for content to create unique filenames.
+    
+    Parameters:
+        content (str): Content to hash
+        
+    Returns:
+        str: MD5 hash of the content
+    """
+    return hashlib.md5(content.encode('utf-8')).hexdigest()
+
 def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None):
     """
     Creates evaluation YAML file from datasets.
@@ -113,6 +126,11 @@ def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None
         # Create output directory if it doesn't exist
         output_dir = Path(output_path).parent
         output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Create a directory for diff files
+        diffs_dir = output_dir / "diffs"
+        diffs_dir.mkdir(exist_ok=True)
+        logger.info(f"Created directory for diff files: {diffs_dir}")
         
         # Create base YAML structure
         yaml_structure = {
@@ -153,6 +171,9 @@ def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None
         total_entries = 0
         skipped_entries = 0
         
+        # Track files created to avoid duplicates
+        created_files = set()
+        
         # Process each dataset
         for dataset_info in datasets:
             filename = dataset_info["file_name"]
@@ -185,12 +206,25 @@ def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None
                     logger.debug(f"Truncating diff from {len(diff_content)} to {max_diff_size} characters")
                     diff_content = diff_content[:max_diff_size] + "\n... (truncated)"
                 
-                # Create test entry
+                # Generate hash for diff content to create unique filename
+                diff_hash = generate_hash(diff_content)
+                diff_filename = f"diff_{diff_hash}.txt"
+                diff_path = diffs_dir / diff_filename
+                
+                # Check if we already created this file (avoid duplicates)
+                if diff_hash not in created_files:
+                    # Write diff content to file
+                    with open(diff_path, 'w', encoding='utf-8') as f:
+                        f.write(diff_content)
+                    created_files.add(diff_hash)
+                    logger.debug(f"Created diff file: {diff_filename}")
+                
+                # Create test entry with reference to the diff file
                 test_entry = {
                     "description": commit_message,
                     "vars": {
                         "system_prompt": "file://../../data/prompts/system/diff_analyzer.txt",
-                        "user_prompt": diff_content,
+                        "user_prompt": f"file://../eval_configs/diffs/{diff_filename}",
                         "system_assertion_prompt": "file://../assertion_prompts/diff_analyzer_assertion.md"
                     },
                     "assert": [
@@ -225,6 +259,7 @@ def create_eval_yaml(datasets, output_path, max_entries=None, max_diff_size=None
         logger.info(f"{'=' * 40}")
         logger.info(f"Total tests generated: {total_entries}")
         logger.info(f"Total entries skipped: {skipped_entries}")
+        logger.info(f"Total diff files created: {len(created_files)}")
         
         logger.info(f"Successfully created evaluation YAML with {total_entries} tests at {output_path}")
         return True
