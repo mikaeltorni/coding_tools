@@ -47,6 +47,7 @@ cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_COMPILER="C:\Program Files\NVIDIA GPU
 set CUDA_VISIBLE_DEVICES=-0 && ..\llama.cpp\build\bin\Release\llama-server --model ..\models\gemma-3-1b-it-Q4_K_M.gguf --n-gpu-layers 420
 ```
 (set up a high gpu layers number to increase the models inference speed)
+
 3. The server will start and display information about the model and inference settings.
 4. Connect to the server using HTTP requests to localhost on the default port.
 
