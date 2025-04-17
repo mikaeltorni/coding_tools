@@ -136,3 +136,4 @@ finetuning/unsloth/outputs/
 finetuning/unsloth/testing/
 
 evals/eval_configs/diffs/
+.cursor/rules/global_prompts
