@@ -6,9 +6,10 @@ Manages keyboard hotkey detection and handling for LLM feedback.
 Functions:
     send_prompt_to_server(server_url, prompt, model_args): Sends a prompt to the LLM server
     handle_hotkey_press(server_url, model_args): Handles the hotkey press event
-    handle_commit_hotkey(repo_path): Handles the commit hotkey (Ctrl+Space) press event
+    handle_commit_hotkey(repo_paths): Handles the commit hotkey (Ctrl+Space) press event
     setup_keyboard_listener(server_url, model_args, hotkey): Sets up keyboard listener
 """
+
 import logging
 import keyboard
 import openai
@@ -24,65 +25,80 @@ from src.git_manager import get_repo_diff, commit_changes
 # Configure logging
 logger = logging.getLogger(__name__)
 
-def send_prompt_to_server(server_url, payload, repo_path):
+def send_prompt_to_server(server_url, payload, repo_paths):
     """
     Send a prompt to the LLM server and return the response.
     
     Parameters:
         server_url (str): URL of the LLM server
         payload (dict): Model configuration parameters and generation settings
-        repo_path (str): Path to Git repository
+        repo_paths (list): List of paths to Git repositories
         
     Returns:
-        str: LLM response content
+        dict: Dictionary mapping repository paths to LLM responses
     """
     logger.debug(f"server_url: {server_url} | payload: {payload}")
-
+    
     # Get system prompt
-    system_prompt = open(os.path.join("data", "prompts", "system", "diff_analyzer.xml")).read()     
+    system_prompt = open(os.path.join("data", "prompts", "system", "diff_analyzer.xml")).read()
     
-    # Get diff from the repository
-    logger.info(f"Getting diff from repository: {repo_path}")
-    diff_content = get_repo_diff(repo_path)
+    all_responses = {}
     
-    # Save diff content to output.txt
-    if diff_content and diff_content != "No changes detected in the repository.":
-        save_diff_to_file(diff_content)
-        print(f"Diff content saved to output.txt")
-    
-    # Return if no diff content
-    if not diff_content:
-        logger.info("No diff content found - skipping prompt")
-        return
-
-    try:
-        # Set up OpenAI client
-        client = openai.OpenAI(
-            base_url=f"{server_url}/v1",
-            api_key="sk-no-key-required"
-        )   
-
-        # Create chat completion request
-        completion = client.chat.completions.create(
-            model="gemma-3-1b-it-Q4_K_M.gguf",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": diff_content}
-            ],
-            temperature=payload["generation_settings"]["temperature"],
-            top_p=payload["generation_settings"]["top_p"],
-            max_tokens=payload["generation_settings"]["n_predict"]
-        )
-
-        response = completion.choices[0].message.content
-        formatted_response = json.dumps({"response": response}, indent=2)
+    for repo_path in repo_paths:
+        logger.info(f"Processing repository: {repo_path}")
         
-        logger.debug(f"response received | content length: {len(formatted_response)}")
-        return formatted_response
+        # Get diff from the repository
+        logger.info(f"Getting diff from repository: {repo_path}")
+        diff_content = get_repo_diff(repo_path)
+        
+        # Save diff content to output file for current repository
+        repo_name = os.path.basename(os.path.normpath(repo_path))
+        output_file = f"output_{repo_name}.txt"
+        if diff_content and diff_content != "No changes detected in the repository.":
+            save_diff_to_file(diff_content, output_file)
+            print(f"Diff content saved to {output_file}")
+        
+        # Skip if no diff content
+        if not diff_content:
+            logger.info(f"No diff content found in {repo_path} - skipping prompt")
+            all_responses[repo_path] = "No changes detected in the repository."
+            continue
+            
+        if diff_content == "No changes detected in the repository.":
+            all_responses[repo_path] = diff_content
+            continue
 
-    except Exception as e:
-        logger.error(f"Error sending request to server: {e}")
-        raise RuntimeError(f"Failed to communicate with LLM server: {e}")
+        try:
+            # Set up OpenAI client
+            client = openai.OpenAI(
+                base_url=f"{server_url}/v1",
+                api_key="sk-no-key-required"
+            )   
+
+            # Create chat completion request
+            completion = client.chat.completions.create(
+                model="gemma-3-1b-it-Q4_K_M.gguf",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": diff_content}
+                ],
+                temperature=payload["generation_settings"]["temperature"],
+                top_p=payload["generation_settings"]["top_p"],
+                max_tokens=payload["generation_settings"]["n_predict"]
+            )
+
+            response = completion.choices[0].message.content
+            formatted_response = json.dumps({"response": response}, indent=2)
+            
+            logger.debug(f"Response received for {repo_path} | content length: {len(formatted_response)}")
+            all_responses[repo_path] = formatted_response
+
+        except Exception as e:
+            error_msg = f"Error sending request to server for {repo_path}: {e}"
+            logger.error(error_msg)
+            all_responses[repo_path] = error_msg
+    
+    return all_responses
 
 def save_diff_to_file(diff_content, output_file="output.txt"):
     """
@@ -106,60 +122,56 @@ def save_diff_to_file(diff_content, output_file="output.txt"):
         logger.error(f"Error saving diff content to file: {e}")
         return False
 
-def handle_hotkey_press(server_url, payload, repo_path):
+def handle_hotkey_press(server_url, payload, repo_paths):
     """
     Callback function for hotkey press event.
     
     Parameters:
         server_url (str): URL of the LLM server
-        model_args (dict): Model configuration parameters
+        payload (dict): Model configuration parameters
+        repo_paths (list): List of paths to Git repositories
         
     Returns:
         None
     """
-    logger.info("Hotkey pressed - sending prompt to LLM")
+    logger.info(f"Hotkey pressed - processing {len(repo_paths)} repositories")
     
     try:                
-        # Send the prompt to the server
-        response = send_prompt_to_server(server_url, payload, repo_path)
-        print("\n--- LLM Response ---")
-        print(response)
-        print("-------------------\n")
+        # Send the prompt to the server for each repository
+        responses = send_prompt_to_server(server_url, payload, repo_paths)
+        
+        for repo_path, response in responses.items():
+            repo_name = os.path.basename(os.path.normpath(repo_path))
+            print(f"\n--- LLM Response for {repo_name} ---")
+            print(response)
+            print("-------------------\n")
     except Exception as e:
         logger.error(f"Error handling hotkey press: {e}")
         print(f"Error: {e}")
 
-def handle_commit_hotkey(repo_path, server_url=None, payload=None):
+def handle_commit_hotkey(repo_paths, server_url=None, payload=None):
     """
     Callback function for commit hotkey (Ctrl+Space) press event.
     
     Parameters:
-        repo_path (str): Path to Git repository
+        repo_paths (list): List of paths to Git repositories
         server_url (str, optional): URL of the LLM server for generating commit messages
         payload (dict, optional): Model configuration parameters
         
     Returns:
         None
     """
-    logger.info("Commit hotkey (Ctrl+Space) pressed - processing git commit")
+    logger.info(f"Commit hotkey (Ctrl+Space) pressed - processing git commit for {len(repo_paths)} repositories")
     
-    if not os.path.exists(repo_path):
-        error_msg = f"Repository path not found: {repo_path}"
-        logger.error(error_msg)
-        print(f"\n--- Git Commit Error ---\n{error_msg}\n------------------------\n")
-        return
-    
-    try:
-        # Get the diff content
-        diff_content = get_repo_diff(repo_path)
-        if not diff_content:
-            logger.warning("Failed to get repository diff")
-            print("\n--- Git Commit Error ---\nFailed to get repository diff\n------------------------\n")
-            return
+    for repo_path in repo_paths:
+        repo_name = os.path.basename(os.path.normpath(repo_path))
+        logger.info(f"Processing repository: {repo_path}")
         
-        if diff_content == "No changes detected in the repository.":
-            print("\n--- Git Commit ---\nNo changes to commit\n------------------\n")
-            return
+        if not os.path.exists(repo_path):
+            error_msg = f"Repository path not found: {repo_path}"
+            logger.error(error_msg)
+            print(f"\n--- Git Commit Error for {repo_name} ---\n{error_msg}\n------------------------\n")
+            continue
         
         try:
             # Get the diff content
@@ -188,6 +200,14 @@ def handle_commit_hotkey(repo_path, server_url=None, payload=None):
                     else:
                         # Fallback system prompt if file doesn't exist
                         logger.warning(f"System prompt file not found: {system_prompt_path}")
+                        system_prompt = "You are a helpful assistant that creates concise Git commit messages based on code diffs."
+
+                    # Truncate diff content if it's too large (first 5000 chars should be enough)
+                    MAX_DIFF_LENGTH = 5000
+                    truncated_diff = diff_content
+                    if len(diff_content) > MAX_DIFF_LENGTH:
+                        truncated_diff = diff_content[:MAX_DIFF_LENGTH] + "\n\n[... additional changes truncated due to size ...]"
+                        logger.info(f"Truncated diff content from {len(diff_content)} to {len(truncated_diff)} characters")
                     
                     # Set up OpenAI client
                     client = openai.OpenAI(
@@ -200,15 +220,22 @@ def handle_commit_hotkey(repo_path, server_url=None, payload=None):
                         model="gemma-3-1b-it-Q4_K_M.gguf",
                         messages=[
                             {"role": "system", "content": system_prompt},
-                            {"role": "user", "content": diff_content}
+                            {"role": "user", "content": truncated_diff}
                         ],
                         temperature=0,
-                        max_tokens=4096
+                        max_tokens=100
                     )
                     
                     generated_message = completion.choices[0].message.content.strip()
                     if generated_message:
-                        commit_message = generated_message
+                        # If message is too long, truncate to about 10-15 words
+                        words = generated_message.split()
+                        if len(words) > 15:
+                            commit_message = ' '.join(words[:15])
+                            logger.info(f"Truncated commit message from {len(words)} to 15 words")
+                        else:
+                            commit_message = generated_message
+                            
                         llm_message_success = True
                         logger.info(f"Generated commit message with LLM for {repo_path}: {commit_message}")
                     else:
@@ -233,13 +260,14 @@ def handle_commit_hotkey(repo_path, server_url=None, payload=None):
             logger.error(f"Error handling commit hotkey press for {repo_path}: {error_message}")
             print(f"\n--- Git Commit Error for {repo_name} ---\n{error_message}\n------------------------\n")
 
-def setup_keyboard_listener(server_url, payload, repo_path, hotkey=DEFAULT_HOTKEY):
+def setup_keyboard_listener(server_url, payload, repo_paths, hotkey=DEFAULT_HOTKEY):
     """
     Set up keyboard listener for the specified hotkey.
     
     Parameters:
         server_url (str): URL of the LLM server
-        model_args (dict): Model configuration parameters
+        payload (dict): Model configuration parameters
+        repo_paths (list): List of paths to Git repositories
         hotkey (str): Keyboard hotkey combination to trigger LLM prompt
         
     Returns:
@@ -250,7 +278,7 @@ def setup_keyboard_listener(server_url, payload, repo_path, hotkey=DEFAULT_HOTKE
     try:
         # Create a callback that includes the server_url and payload
         def hotkey_callback():
-            handle_hotkey_press(server_url, payload, repo_path)
+            handle_hotkey_press(server_url, payload, repo_paths)
         
         # Register the hotkey
         keyboard.add_hotkey(hotkey, hotkey_callback)
@@ -258,14 +286,11 @@ def setup_keyboard_listener(server_url, payload, repo_path, hotkey=DEFAULT_HOTKE
         
         # Register the commit hotkey (Ctrl+Space)
         def commit_hotkey_callback():
-            handle_commit_hotkey(repo_path, server_url, payload)
+            handle_commit_hotkey(repo_paths, server_url, payload)
         
         keyboard.add_hotkey('ctrl+space', commit_hotkey_callback)
         logger.info("Keyboard listener set up for commit hotkey: ctrl+space")
         
-        print(f"Press {hotkey} to get LLM feedback (Ctrl+C to exit)")
-        print(f"Press Ctrl+Space to commit changes")
-    
     except Exception as e:
         logger.error(f"Error setting up keyboard listener: {e}")
-        raise RuntimeError(f"Failed to set up keyboard listener: {e}") 
+        raise RuntimeError(f"Failed to setup keyboard listener: {e}") 
