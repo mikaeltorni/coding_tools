@@ -9,7 +9,6 @@ Functions:
 Command Line Usage Examples:
     python main.py /path/to/git/repository
     python main.py C:/Projects/my-project
-    python main.py /path/to/git/repository1 /path/to/git/repository2
     python main.py /path/to/git/repository --server-url http://localhost:8080
     python main.py /path/to/git/repository --temperature 0.7 --top-p 0.95
 
@@ -56,9 +55,9 @@ def main():
         None
     """
     parser = argparse.ArgumentParser(
-        description='Monitor Git repositories and feed diffs to LLM on hotkey press.'
+        description='Monitor Git repository and feed diffs to LLM on hotkey press.'
     )
-    parser.add_argument('repo_paths', type=str, nargs='+', help='Paths to the Git repositories to monitor')
+    parser.add_argument('repo_path', type=str, help='Path to the Git repository to monitor')
     parser.add_argument('--server-url', type=str, default='http://localhost:8080', 
                         help='URL of the llama server (default: http://localhost:8080)')
     parser.add_argument('--hotkey', type=str, default=DEFAULT_HOTKEY,
@@ -74,35 +73,20 @@ def main():
     
     try:
         args = parser.parse_args()
-        repo_paths = args.repo_paths
+        repo_path = args.repo_path
         server_url = args.server_url
         hotkey = args.hotkey
         
-        # Validate each repository path
-        valid_repos = []
-        for repo_path in repo_paths:
-            if not os.path.exists(repo_path):
-                logger.warning(f"Repository path not found: {repo_path}")
-                print(f"Warning: Repository path not found: {repo_path}")
-                continue
-            
-            # Check if the path is a valid Git repository
-            if not is_git_repo(repo_path):
-                logger.warning(f"Not a valid Git repository: {repo_path}")
-                print(f"Warning: Not a valid Git repository: {repo_path}")
-                continue
-                
-            valid_repos.append(repo_path)
-            
-        if not valid_repos:
-            logger.error("No valid Git repositories found.")
-            print("Error: No valid Git repositories found.")
+        if not os.path.exists(repo_path):
+            logger.error(f"Repository path not found: {repo_path}")
+            print(f"Error: Repository path not found: {repo_path}")
             sys.exit(1)
-                
-        logger.info(f"Monitoring {len(valid_repos)} valid repositories: {valid_repos}")
-        print(f"Monitoring {len(valid_repos)} valid repositories:")
-        for repo in valid_repos:
-            print(f"  - {repo}")
+        
+        # Check if the path is a valid Git repository
+        if not is_git_repo(repo_path):
+            logger.error(f"Not a valid Git repository: {repo_path}")
+            print(f"Error: Not a valid Git repository: {repo_path}")
+            sys.exit(1)
 
         payload = {
             "generation_settings": {
@@ -116,8 +100,8 @@ def main():
         # Initialize components
         logger.info("Initializing components")
         
-        # Set up keyboard listener with multiple repositories
-        setup_keyboard_listener(server_url, payload, valid_repos, hotkey)
+        # Set up keyboard listener
+        setup_keyboard_listener(server_url, payload, repo_path, hotkey)
         
         # Keep the program running until Ctrl+C is pressed
         print("Monitoring keyboard. Press Ctrl+C to exit.")

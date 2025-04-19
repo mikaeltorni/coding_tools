@@ -64,35 +64,6 @@ EDIT THIS LATER?
 ---
 
 ## 5. Running the program
-
-You can monitor a single Git repository:
 ```bash
-python main.py /path/to/repo
-```
-
-### Multi-Repository Support
-
-The program now supports monitoring multiple Git repositories simultaneously:
-```bash
-python main.py /path/to/repo1 /path/to/repo2 /path/to/repo3
-```
-
-When monitoring multiple repositories:
-- The program processes each repository individually when you press the hotkey
-- Diff content for each repository is saved to separate files (output_repo-name.txt)
-- LLM responses and commits will be labeled with the repository name
-- Invalid repositories will be skipped with a warning
-
-### Other Options
-
-Additional command-line options:
-```bash
-python main.py /path/to/repo [options]
-
-Options:
-  --server-url URL        URL of the llama server (default: http://localhost:8080)
-  --hotkey KEY            Hotkey combination to trigger LLM feedback (default: alt+q)
-  --temperature TEMP      Temperature parameter for text generation (default: 0.7)
-  --max-tokens TOKENS     Maximum number of tokens to generate (default: 512)
-  --context-length LENGTH Context length for the model (default: 2048)
+main.py [REPO FOLDER LOCATION]
 ```
