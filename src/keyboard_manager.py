@@ -201,13 +201,6 @@ def handle_commit_hotkey(repo_paths, server_url=None, payload=None):
                         # Fallback system prompt if file doesn't exist
                         logger.warning(f"System prompt file not found: {system_prompt_path}")
                         system_prompt = "You are a helpful assistant that creates concise Git commit messages based on code diffs."
-
-                    # Truncate diff content if it's too large (first 5000 chars should be enough)
-                    MAX_DIFF_LENGTH = 5000
-                    truncated_diff = diff_content
-                    if len(diff_content) > MAX_DIFF_LENGTH:
-                        truncated_diff = diff_content[:MAX_DIFF_LENGTH] + "\n\n[... additional changes truncated due to size ...]"
-                        logger.info(f"Truncated diff content from {len(diff_content)} to {len(truncated_diff)} characters")
                     
                     # Set up OpenAI client
                     client = openai.OpenAI(
@@ -220,7 +213,7 @@ def handle_commit_hotkey(repo_paths, server_url=None, payload=None):
                         model="gemma-3-1b-it-Q4_K_M.gguf",
                         messages=[
                             {"role": "system", "content": system_prompt},
-                            {"role": "user", "content": truncated_diff}
+                            {"role": "user", "content": diff_content}
                         ],
                         temperature=0,
                         max_tokens=100
