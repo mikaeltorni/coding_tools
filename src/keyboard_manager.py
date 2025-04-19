@@ -215,7 +215,7 @@ def handle_commit_hotkey(repo_paths, server_url=None, payload=None):
                             {"role": "user", "content": diff_content}
                         ],
                         temperature=0,
-                        max_tokens=50
+                        max_tokens=4096
                     )
                     
                     generated_message = completion.choices[0].message.content.strip()
