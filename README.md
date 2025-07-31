@@ -1,4 +1,29 @@
-# Model Inference with llama.cpp
+# AI-Powered Git Commit Message Generator
+
+### AI System Information
+- **Purpose**: Automated generation of git commit messages based on code diff analysis
+- **AI Model**: Fine-tuned Gemma 3 (1B parameters) specialized for code change classification
+
+---
+
+## Project Overview
+
+This tool uses a fine-tuned Gemma 3 model to automatically analyze git diffs and generate appropriate commit messages following conventional commit standards. The system monitors git repositories in real-time and provides AI-generated commit message suggestions when triggered.
+
+### Key Features
+- Real-time git repository monitoring
+- AI-powered diff analysis and commit message generation
+- Multi-repository support
+- Conventional commit format compliance (feat:, fix:, docs:, etc.)
+
+### How It Works
+1. Monitors specified git repositories for changes
+2. When triggered (via hotkey), analyzes current git diff using AI
+3. Generates appropriate commit message based on code changes
+
+---
+
+## Setup Guide
 
 This guide explains how to set up your environment to run optimized inference with llama.cpp. Follow these steps:
 
