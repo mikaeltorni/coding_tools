@@ -78,7 +78,7 @@ set CUDA_VISIBLE_DEVICES=-0 && ..\llama.cpp\build\bin\Release\llama-server --mod
 
 ---
 
-EDIT THIS LATER?
+### Additional Configuration Parameters
 
 - Other useful parameters:
   - `--ctx-size`: Context window size (default: 2048)
