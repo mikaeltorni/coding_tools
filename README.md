@@ -1,5 +1,14 @@
 # AI-Powered Git Commit Message Generator
 
+Generate **conventional-commit** messages automatically from your `git diff`
+using a **fine-tuned Gemma 3 (1B) language model** running locally through
+[llama.cpp](https://github.com/ggml-org/llama.cpp) with CUDA/GPU acceleration.
+Monitor one or many git repositories and get an AI-written commit message on a
+hotkey — fully offline, no API keys.
+
+**Topics:** git · commit-message-generator · conventional-commits · gemma ·
+fine-tuning · llama-cpp · gguf · local-llm · cuda · ai-developer-tools · python
+
 ### AI System Information
 - **Purpose**: Automated generation of git commit messages based on code diff analysis
 - **AI Model**: Fine-tuned Gemma 3 (1B parameters) specialized for code change classification
