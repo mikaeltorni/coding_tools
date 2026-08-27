@@ -14,6 +14,15 @@ with a hotkey; no API key is required.
 **Topics:** git · commit-message-generator · conventional-commits · gemma ·
 fine-tuning · llama-cpp · gguf · local-llm · cuda · ai-developer-tools · python
 
+## Contents
+
+- [Local AI Git Commit Message Generator Features](#local-ai-git-commit-message-generator-features)
+- [Installation](#installation)
+- [Local AI Git Commit Message Generator Usage Examples](#local-ai-git-commit-message-generator-usage-examples)
+- [Configuration](#configuration)
+- [Troubleshooting and FAQ](#troubleshooting-and-faq)
+- [Contributing](#contributing)
+
 ## Quickstart
 
 After installing Conda and the local llama.cpp server, inspect the CLI options:
@@ -33,20 +42,20 @@ the local server when the configured hotkey is pressed.
 
 ---
 
-## Project Overview
+## Local AI Git Commit Message Generator Overview
 
 This tool uses a fine-tuned Gemma 3 model to automatically analyze git diffs and generate appropriate commit messages following conventional commit standards. The system monitors git repositories in real-time and provides AI-generated commit message suggestions when triggered.
 
 For additional standalone automation utilities, see the related
 [`scripts`](https://github.com/mikaeltorni/scripts) collection.
 
-### Key Features
+## Local AI Git Commit Message Generator Features
 - Real-time git repository monitoring
 - AI-powered diff analysis and commit message generation
 - Multi-repository support
 - Conventional commit format compliance (feat:, fix:, docs:, etc.)
 
-### How It Works
+## How the Local AI Git Commit Message Generator Works
 1. Monitors specified git repositories for changes
 2. When triggered (via hotkey), analyzes current git diff using AI
 3. Generates appropriate commit message based on code changes
@@ -59,7 +68,7 @@ This guide explains how to set up your environment to run optimized inference wi
 
 ---
 
-## 1. Create and Activate the Conda Environment
+### 1. Create and Activate the Conda Environment
 
 Make sure you have [Conda](https://www.anaconda.com/docs/getting-started/miniconda/main) installed (via Anaconda or Miniconda). Create a new environment named **ct** with Python version 3.12.8:
 
@@ -70,7 +79,7 @@ conda activate ct
 
 ---
 
-## 2. GPU Acceleration Setup for Llama.cpp
+### 2. GPU Acceleration Setup for Llama.cpp
 
 ### Prerequisites
 - Install CUDA Toolkit 12.8 (or newer) from the official NVIDIA website.
@@ -85,7 +94,7 @@ cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_COMPILER="C:\Program Files\NVIDIA GPU
 
 ---
 
-## 3. Download a GGUF Model
+### 3. Download a GGUF Model
 
 1. **Download the Gemma 3 1B Model:**
    - Visit [unsloth/gemma-3-1b-it-GGUF](https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/tree/main)
@@ -94,7 +103,7 @@ cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_COMPILER="C:\Program Files\NVIDIA GPU
 
 ---
 
-## 4. Running the Llama Server
+### 4. Running the Llama Server
 
 1. Open a new Command Prompt.
 2. Set the CUDA_VISIBLE_DEVICES environment variable and start the server with your model by running:
@@ -118,7 +127,7 @@ set CUDA_VISIBLE_DEVICES=-0 && ..\llama.cpp\build\bin\Release\llama-server --mod
 
 ---
 
-## Usage Examples
+## Local AI Git Commit Message Generator Usage Examples
 
 You can monitor a single Git repository:
 ```bash
