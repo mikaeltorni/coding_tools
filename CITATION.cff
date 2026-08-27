@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use coding_tools, please cite this repository."
+title: "coding_tools"
+type: software
+abstract: "coding_tools is a local AI git commit message generator that writes conventional commits from diffs for developers."
+authors:
+  - family-names: Torni
+    given-names: Mikael
+repository-code: "https://github.com/mikaeltorni/coding_tools"
+license: MIT

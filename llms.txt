@@ -1,0 +1,29 @@
+# coding_tools
+
+coding_tools is a local AI git commit message generator that writes conventional commits from diffs for developers.
+
+## Canonical pages
+
+- Repository: https://github.com/mikaeltorni/coding_tools
+- README: https://github.com/mikaeltorni/coding_tools/blob/master/README.md
+- Entry point: https://github.com/mikaeltorni/coding_tools/blob/master/main.py
+- Configuration: https://github.com/mikaeltorni/coding_tools/tree/master/data
+- Git diff handling: https://github.com/mikaeltorni/coding_tools/tree/master/src
+- llama.cpp: https://github.com/ggml-org/llama.cpp
+
+## Quickstart
+
+```bash
+conda create --name ct python=3.12.8 -y
+conda activate ct
+python3 main.py --help
+```
+
+Build or install a local llama.cpp server with the Gemma GGUF model, then run
+`python main.py /path/to/repository`.
+
+## Scope
+
+The tool monitors one or more Git repositories, sends diffs to a local
+llama.cpp-compatible server, and generates conventional commit suggestions.
+It is an offline developer utility, not a hosted commit API.
