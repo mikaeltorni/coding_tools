@@ -203,4 +203,6 @@ request. Never commit model files, credentials, or generated output.
 
 ## License
 
-Released under the [MIT License](LICENSE.md).
+Released under the [MIT License](LICENSE). Third-party components bundled or
+built upon by this project keep their own terms, collected in
+[third-party license notices](THIRD_PARTY_NOTICES.md).
