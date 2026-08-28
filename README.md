@@ -11,9 +11,6 @@ It uses a fine-tuned Gemma 3 (1B) language model running locally through
 Monitor one or many Git repositories and request an AI-written commit message
 with a hotkey; no API key is required.
 
-**Topics:** git · commit-message-generator · conventional-commits · gemma ·
-fine-tuning · llama-cpp · gguf · local-llm · cuda · ai-developer-tools · python
-
 ## Contents
 
 - [Local AI Git Commit Message Generator Features](#local-ai-git-commit-message-generator-features)
