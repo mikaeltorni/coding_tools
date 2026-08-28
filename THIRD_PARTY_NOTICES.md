@@ -1,6 +1,9 @@
-Copyright (c) 2024 Mikael Törni
+# Third-party license notices
 
-# LICENSE NOTICES
+coding_tools itself is released under the MIT License; see [LICENSE](LICENSE).
+This file collects the license notices of third-party work the project
+builds on. Each notice below applies to that upstream project, not to
+coding_tools as a whole.
 
 Copyright (c) 2024 Sadman Sakib
 
