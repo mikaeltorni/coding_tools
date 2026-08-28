@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mikaeltorni.github.io/coding_tools/sitemap.xml
