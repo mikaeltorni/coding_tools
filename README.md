@@ -6,6 +6,8 @@
 
 coding_tools is a local AI git commit message generator that writes conventional commits from diffs for developers.
 
+![Diagram showing coding_tools sending a Git diff to a local llama.cpp Gemma model and returning a conventional commit message](docs/commit-flow.svg)
+
 It uses a fine-tuned Gemma 3 (1B) language model running locally through
 [llama.cpp](https://github.com/ggml-org/llama.cpp) with CUDA/GPU acceleration.
 Monitor one or many Git repositories and request an AI-written commit message
