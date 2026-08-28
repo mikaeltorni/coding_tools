@@ -48,8 +48,8 @@ the local server when the configured hotkey is pressed.
 
 This tool uses a fine-tuned Gemma 3 model to automatically analyze git diffs and generate appropriate commit messages following conventional commit standards. The system monitors git repositories in real-time and provides AI-generated commit message suggestions when triggered.
 
-For additional standalone automation utilities, see the related
-[`scripts`](https://github.com/mikaeltorni/scripts) collection.
+For reusable coding-agent workflows that document commit practices, see the
+[Programming Prompts commit-guidelines source](https://github.com/mikaeltorni/programming_prompts/tree/master/plugins/commit-guidelines).
 
 ## Local AI Git Commit Message Generator Features
 - Real-time git repository monitoring
