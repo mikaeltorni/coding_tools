@@ -40,3 +40,12 @@ embeds — keep them.
 
 Do not add `.github/workflows/` or any other CI/CD pipeline, and do not add a
 build-status badge. Verification runs locally.
+
+## Never add community-process files
+
+This repository follows the owner-wide SEO policy for public repositories. Do
+not add or restore `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`,
+`.github/ISSUE_TEMPLATE/`, or `.github/PULL_REQUEST_TEMPLATE.md` (or equivalent
+pull-request templates). These community and contribution workflows are out of
+scope for this research and evaluation repository; keep project-specific
+licensing and citation metadata instead.
