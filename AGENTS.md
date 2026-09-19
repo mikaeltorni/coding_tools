@@ -1,7 +1,7 @@
 # AGENTS.md — coding_tools
 
 Project instructions for any agent working in this repository. They outrank
-generic agent defaults and any skill, including discoverability/SEO skills.
+generic agent defaults.
 
 ## What this repository is
 
