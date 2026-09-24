@@ -13,6 +13,25 @@ It uses a fine-tuned Gemma 3 (1B) language model running locally through
 Monitor one or many Git repositories and request an AI-written commit message
 with a hotkey; no API key is required.
 
+## Quickstart
+
+From this checkout, install the Python requirements and inspect the actual CLI
+without starting keyboard monitoring or contacting the local model server:
+
+```bash
+conda create --name ct python=3.12.8 -y
+conda activate ct
+python3 -m pip install --no-cache-dir -r requirements.txt
+python3 main.py --help
+```
+
+The help output confirms that `repo_paths` accepts one or more Git checkouts
+and shows the local server URL and generation options. To start feedback
+monitoring from this repository after starting the local llama.cpp server, use
+`python3 main.py . --hotkey alt+q`; press Alt+Q to request a suggestion and
+Ctrl+C to stop. Ctrl+Space is also registered as the commit action, so use the
+separate Alt+Q feedback key and press Ctrl+Space only when you intend to commit.
+
 ## Contents
 
 - [Local AI Git Commit Message Generator Features](#local-ai-git-commit-message-generator-features)
@@ -21,19 +40,6 @@ with a hotkey; no API key is required.
 - [Configuration](#configuration)
 - [Troubleshooting and FAQ](#troubleshooting-and-faq)
 - [Contributing](#contributing)
-
-## Quickstart
-
-After installing Conda and the local llama.cpp server, inspect the CLI options:
-
-```bash
-conda create --name ct python=3.12.8 -y
-conda activate ct
-python3 main.py --help
-```
-
-The program accepts one or more Git repository paths and sends their diffs to
-the local server when the configured hotkey is pressed.
 
 ### AI System Information
 - **Purpose**: Automated generation of git commit messages based on code diff analysis
@@ -154,10 +160,10 @@ python main.py /path/to/repo [options]
 
 Options:
   --server-url URL        URL of the llama server (default: http://localhost:8080)
-  --hotkey KEY            Hotkey combination to trigger LLM feedback (default: alt+q)
-  --temperature TEMP      Temperature parameter for text generation (default: 0.7)
-  --max-tokens TOKENS     Maximum number of tokens to generate (default: 512)
-  --context-length LENGTH Context length for the model (default: 2048)
+  --hotkey KEY            Hotkey for LLM feedback (default: ctrl+space)
+  --temperature TEMP      Temperature parameter for text generation (default: 0)
+  --max-tokens TOKENS     Maximum number of tokens to generate (default: 4096)
+  --context-length LENGTH Context length for the model (default: 32768)
 ```
 
 ## Configuration
@@ -172,8 +178,9 @@ multiple paths enable multi-repository monitoring.
 ### What does coding_tools generate?
 
 It proposes conventional Git commit messages from the current diff using a
-locally hosted Gemma model. It does not commit changes automatically unless the
-configured keyboard action requests that behavior.
+locally hosted Gemma model. Ctrl+Space invokes the built-in commit action; use
+`--hotkey alt+q` for the separate feedback shortcut and press Ctrl+Space only
+when you intend to commit changes.
 
 ### Does the tool send diffs to a cloud API?
 
