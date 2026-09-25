@@ -4,7 +4,7 @@ title: "coding_tools"
 type: software
 abstract: "coding_tools is a local AI git commit message generator that writes conventional commits from diffs for developers."
 authors:
-  - family-names: Torni
+  - family-names: Törni
     given-names: Mikael
 repository-code: "https://github.com/mikaeltorni/coding_tools"
 license: MIT
